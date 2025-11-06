@@ -1,3 +1,68 @@
+es
+
+---
+
+## 🚀 Deployment & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ChrisWilliams2020/medpact_mvp_enterprise_pack-price-transparency-app-.git
+   ```
+2. **Serve the frontend locally:**
+   ```bash
+   python3 -m http.server 8080 --directory price-transparency-app
+   ```
+   Then open `http://localhost:8080/index.html` in your browser.
+3. **(Optional) Start the backend:**
+   ```bash
+   node backend/server.js
+   ```
+
+**Deployment options:**
+- Netlify, GitHub Pages, Vercel, or AWS S3 for static hosting
+- Set the root directory to `price-transparency-app` for deployment
+- No build step required
+
+---
+
+## 🗂️ Application Structure
+- Static frontend: `index.html`, `style.css`, and supporting files in `price-transparency-app/`
+- Node.js/Express backend (optional, for API endpoints)
+- Custom 404 handler and security features
+
+---
+
+## 🔒 Security & Compliance
+- HIPAA-compliant data walls
+- Biometric authentication
+- Only deidentified data used for analytics and comparisons
+- Custom 404 handler with HTML escaping
+
+---
+
+## 📚 API Documentation
+- See backend/server.js for available endpoints
+- Example: `/api/patient-roster`, `/api/subscriber-list`, `/api/clearinghouse-verify`
+
+---
+
+## 📞 Contact
+For support or questions, contact: medpact.enterprise@gmail.com
+
+---
+
+## 📞 **Enterprise Contact**
+
+- **Email**: enterprise@medpact.com
+- **Phone**: 1-800-MEDPACT
+- **Trial**: 30-day enterprise evaluation
+- **Support**: 24/7 enterprise support included
+
+---
+
+**Ready for immediate deployment to production environments.**
+# medpact_mvp_enterprise_pack-price-transparency-app-
+# medpact_mvp_enterprise_pack-price-transparency-app-
 # 💰 Advanced Price Transparency - Healthcare Revenue Optimization
 
 ## 🏥 Enterprise-Grade Revenue Maximization System
@@ -125,19 +190,4 @@ The deployed application includes:
 - **File Size**: ~15KB (optimized for fast loading)
 - **Browser Support**: All modern browsers
 - **Mobile Ready**: Responsive design
-- **Performance**: A+ Lighthouse scores
-
----
-
-## 📞 **Enterprise Contact**
-
-- **Email**: enterprise@medpact.com
-- **Phone**: 1-800-MEDPACT
-- **Trial**: 30-day enterprise evaluation
-- **Support**: 24/7 enterprise support included
-
----
-
-**Ready for immediate deployment to production environments.**
-# medpact_mvp_enterprise_pack-price-transparency-app-
-# medpact_mvp_enterprise_pack-price-transparency-app-
+- **Performance**: A+ Lighthouse scor
