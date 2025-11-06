@@ -1,0 +1,16 @@
+# Files to ignore during Vercel deployment
+.git/
+node_modules/
+.env*
+*.log
+.DS_Store
+README.md
+DEPLOYMENT.md
+FEATURE_SUMMARY.md
+SERVER_STATUS.md
+# Code Citations.md
+
+# Keep only essential files for deployment
+!index.html
+!vercel.json
+!package.json
