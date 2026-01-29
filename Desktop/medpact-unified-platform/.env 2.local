@@ -1,0 +1,259 @@
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://demo.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=demo_key_123
+
+# Google Maps API Key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=demo_maps_key
+
+# Application Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Skip Create React App preflight check
+SKIP_PREFLIGHT_CHECK=true
+
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Standalone Google Map</title>
+    <style>
+        #map { height: 100vh; width: 100%; }
+        body { margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script>
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 10,
+                center: { lat: 37.7749, lng: -122.4194 }, // San Francisco
+            });
+
+            // Add markers for practices
+            const practices = [
+                { lat: 37.3382, lng: -121.8863, name: "Silicon Valley Eye Institute" },
+                { lat: 37.7849, lng: -122.4094, name: "Bay Area Vision Center" },
+                { lat: 37.4419, lng: -122.1430, name: "Peninsula Eye Care" }
+            ];
+
+            practices.forEach(practice => {
+                new google.maps.Marker({
+                    position: { lat: practice.lat, lng: practice.lng },
+                    map: map,
+                    title: practice.name
+                });
+            });
+        }
+    </script>
+    <script async defer 
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+    </script>
+</body>
+</html>
+
+// components/auth/ProtectedRoute.tsx
+'use client';
+
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requiredPermission?: any;
+}
+
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  // Simple passthrough for now - no authentication required
+  return <>{children}</>;
+}
+
+// components/maps/GoogleMapComponent.tsx
+'use client';
+
+import React from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+
+const mapContainerStyle = {
+  width: '100vw',
+  height: '100vh'
+};
+
+const center = {
+  lat: 37.7749,
+  lng: -122.4194
+};
+
+const practices = [
+  { id: 1, lat: 37.3382, lng: -121.8863, name: "Silicon Valley Eye Institute" },
+  { id: 2, lat: 37.7849, lng: -122.4094, name: "Bay Area Vision Center" },
+  { id: 3, lat: 37.4419, lng: -122.1430, name: "Peninsula Eye Care" }
+];
+
+export default function GoogleMapComponent() {
+  return (
+    <LoadScript googleMapsApiKey="your_api_key_here">
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={10}
+      >
+        {practices.map(practice => (
+          <Marker
+            key={practice.id}
+            position={{ lat: practice.lat, lng: practice.lng }}
+            title={practice.name}
+          />
+        ))}
+      </GoogleMap>
+    </LoadScript>
+  );
+}
+
+// app/market-intel/page.tsx
+'use client';
+
+import { useState } from 'react';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import GoogleMapComponent from '@/components/maps/GoogleMapComponent';
+import { Building, Users, DollarSign, TrendingUp, Map, BarChart3, FileText, Settings } from 'lucide-react';
+
+export default function MarketIntelPage() {
+  const [activeTab, setActiveTab] = useState('snapshot');
+
+  const tabs = [
+    { id: 'snapshot', name: '📊 Market Snapshot', icon: BarChart3 },
+    { id: 'map', name: '🗺️ Interactive Map', icon: Map },
+    { id: 'analytics', name: '📈 Analytics', icon: TrendingUp },
+    { id: 'export', name: '📄 Export Center', icon: FileText },
+    { id: 'settings', name: '⚙️ Settings', icon: Settings }
+  ];
+
+  return (
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+                  <span className="mr-3">🗺️</span>
+                  Market Intelligence
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  Comprehensive healthcare market analysis and insights
+                </p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <main className="max-w-7xl mx-auto p-6">
+          {/* Tab Navigation */}
+          <div className="mb-6">
+            <div className="border-b border-gray-200">
+              <nav className="-mb-px flex space-x-8">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors flex items-center ${
+                        activeTab === tab.id
+                          ? 'border-blue-500 text-blue-600'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4 mr-2" />
+                      {tab.name}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'snapshot' && (
+            <div className="space-y-6">
+              {/* Key Metrics */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Building className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-sm font-medium text-gray-700">Total Practices</h3>
+                      <p className="text-2xl font-bold text-gray-900">127</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Users className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-sm font-medium text-gray-700">Total Physicians</h3>
+                      <p className="text-2xl font-bold text-gray-900">1,847</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                      <DollarSign className="w-5 h-5 text-yellow-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-sm font-medium text-gray-700">Market Size</h3>
+                      <p className="text-2xl font-bold text-gray-900">$2.4B</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <TrendingUp className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-sm font-medium text-gray-700">Growth Rate</h3>
+                      <p className="text-2xl font-bold text-gray-900">12.3%</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'map' && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Practice Locations Map
+                </h3>
+                <GoogleMapComponent />
+              </div>
+            </div>
+          )}
+
+          {/* Other tabs - placeholder */}
+          {activeTab !== 'snapshot' && activeTab !== 'map' && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+              <div className="text-4xl mb-4">🚧</div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                {tabs.find(tab => tab.id === activeTab)?.name} Coming Soon
+              </h3>
+              <p className="text-gray-600">
+                This feature is under development.
+              </p>
+            </div>
+          )}
+        </main>
+      </div>
+    </ProtectedRoute>
+  );
+}

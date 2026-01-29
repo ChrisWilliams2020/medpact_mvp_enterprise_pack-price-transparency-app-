@@ -1,0 +1,47 @@
+import Link from 'next/link'
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200 px-6 py-4">
+        <h1 className="text-2xl font-bold text-gray-900">MedPact Healthcare SaaS</h1>
+      </header>
+      
+      <main className="p-6">
+        <h2 className="text-3xl font-bold mb-8">Dashboard</h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold mb-2">🎯 Market Intelligence</h3>
+            <p className="text-gray-600 text-sm">Comprehensive market analysis</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold mb-2">📋 Contracts</h3>
+            <p className="text-gray-600 text-sm">Payer contract management</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold mb-2">📊 Analytics</h3>
+            <p className="text-gray-600 text-sm">Performance insights</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold mb-2">🏥 Care Management</h3>
+            <p className="text-gray-600 text-sm">Patient coordination</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold mb-2">🔔 Notifications</h3>
+            <p className="text-gray-600 text-sm">Alert system</p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-sm border p-6">
+            <h3 className="text-lg font-semibold mb-2">📈 Reporting</h3>
+            <p className="text-gray-600 text-sm">Healthcare reports</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}

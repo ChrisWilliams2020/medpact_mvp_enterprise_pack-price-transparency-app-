@@ -1,0 +1,9 @@
+# Copy this template and replace with your actual Supabase credentials
+# DATABASE_URL - Get this from Supabase Settings > Database > Connection string
+DATABASE_URL="postgresql://postgres.[ref]:[password]@aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+
+# SUPABASE_URL - Get this from Supabase Settings > API > Project URL  
+NEXT_PUBLIC_SUPABASE_URL="https://[your-project-ref].supabase.co"
+
+# SUPABASE_ANON_KEY - Get this from Supabase Settings > API > Project API keys > anon public
+NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJ[your-anon-key]"

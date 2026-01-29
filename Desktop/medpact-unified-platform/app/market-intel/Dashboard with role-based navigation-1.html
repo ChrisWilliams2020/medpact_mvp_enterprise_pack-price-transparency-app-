@@ -1,0 +1,321 @@
+// app/dashboard/page.tsx
+'use client';
+
+import { useAuth } from '@/contexts/AuthContext';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import UserProfile from '@/components/auth/UserProfile';
+import { useState } from 'react';
+
+function DashboardContent() {
+  const { profile, hasPermission } = useAuth();
+  const [activeSection, setActiveSection] = useState('overview');
+
+  const getNavigationItems = () => {
+    const baseItems = [
+      { id: 'overview', name: 'Overview', icon: '📊', permission: null },
+      { id: 'market-intel', name: 'Market Intelligence', icon: '🗺️', permission: 'view_market_data' },
+    ];
+
+    const conditionalItems = [];
+
+    // Add items based on permissions
+    if (hasPermission('export_reports')) {
+      conditionalItems.push({ id: 'reports', name: 'Reports & Export', icon: '📄', permission: 'export_reports' });
+    }
+
+    if (hasPermission('manage_users')) {
+      conditionalItems.push({ id: 'users', name: 'User Management', icon: '👥', permission: 'manage_users' });
+    }
+
+    if (hasPermission('view_analytics')) {
+      conditionalItems.push({ id: 'analytics', name: 'Analytics', icon: '📈', permission: 'view_analytics' });
+    }
+
+    return [...baseItems, ...conditionalItems, { id: 'profile', name: 'Profile', icon: '👤', permission: null }];
+  };
+
+  const getWelcomeMessage = () => {
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    return `${greeting}, ${profile?.full_name || profile?.email}`;
+  };
+
+  const getRoleCapabilities = () => {
+    switch (profile?.role) {
+      case 'admin':
+        return ['Full system access', 'User management', 'Export reports', 'View analytics', 'Manage settings'];
+      case 'manager':
+        return ['Market intelligence', 'Team reports', 'Export data', 'View analytics'];
+      case 'analyst':
+        return ['Market intelligence', 'Generate reports', 'Export data'];
+      case 'viewer':
+        return ['View market data', 'Basic reports'];
+      default:
+        return ['Limited access'];
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+                <span className="mr-3">🏥</span>
+                MedPact Dashboard
+              </h1>
+              <p className="text-gray-600 mt-1">{getWelcomeMessage()}</p>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Role:</span>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  profile?.role === 'admin' ? 'bg-red-100 text-red-800' :
+                  profile?.role === 'manager' ? 'bg-purple-100 text-purple-800' :
+                  profile?.role === 'analyst' ? 'bg-blue-100 text-blue-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {profile?.role?.charAt(0).toUpperCase() + (profile?.role?.slice(1) || '')}
+                </span>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Plan:</span>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  profile?.subscription_tier === 'enterprise' ? 'bg-purple-100 text-purple-800' :
+                  profile?.subscription_tier === 'professional' ? 'bg-blue-100 text-blue-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}>
+                  {profile?.subscription_tier?.charAt(0).toUpperCase() + (profile?.subscription_tier?.slice(1) || '')}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar Navigation */}
+          <div className="lg:col-span-1">
+            <nav className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Navigation</h3>
+              <ul className="space-y-1">
+                {getNavigationItems().map((item) => (
+                  <li key={item.id}>
+                    <button
+                      onClick={() => setActiveSection(item.id)}
+                      className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        activeSection === item.id
+                          ? 'bg-blue-100 text-blue-700'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="mr-3">{item.icon}</span>
+                      {item.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* Role Capabilities */}
+            <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Your Capabilities</h3>
+              <ul className="space-y-2">
+                {getRoleCapabilities().map((capability, index) => (
+                  <li key={index} className="flex items-center text-sm text-gray-600">
+                    <span className="mr-2 text-green-500">✓</span>
+                    {capability}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {/* Overview Section */}
+            {activeSection === 'overview' && (
+              <div className="space-y-6">
+                {/* Welcome Card */}
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-sm text-white p-6">
+                  <h2 className="text-xl font-semibold mb-2">Welcome to MedPact Intelligence</h2>
+                  <p className="text-blue-100">
+                    Access comprehensive healthcare market data, competitive analysis, and actionable insights.
+                  </p>
+                  <div className="mt-4 flex space-x-3">
+                    <button
+                      onClick={() => setActiveSection('market-intel')}
+                      className="bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                    >
+                      Explore Market Data
+                    </button>
+                    {hasPermission('export_reports') && (
+                      <button
+                        onClick={() => setActiveSection('reports')}
+                        className="bg-blue-400 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-500 transition-colors"
+                      >
+                        Generate Reports
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <span>🏥</span>
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-semibold text-gray-900">5</h3>
+                        <p className="text-sm text-gray-600">Tracked Practices</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <span>👨‍⚕️</span>
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-semibold text-gray-900">66</h3>
+                        <p className="text-sm text-gray-600">Total Physicians</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <span>⭐</span>
+                      </div>
+                      <div className="ml-4">
+                        <h3 className="text-lg font-semibold text-gray-900">4.6</h3>
+                        <p className="text-sm text-gray-600">Average Rating</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Activity */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="mr-3">📊</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Market analysis report generated</p>
+                        <p className="text-xs text-gray-600">2 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="mr-3">🗺️</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Interactive map data updated</p>
+                        <p className="text-xs text-gray-600">5 hours ago</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="mr-3">👤</span>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Profile information updated</p>
+                        <p className="text-xs text-gray-600">1 day ago</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Market Intelligence Section */}
+            {activeSection === 'market-intel' && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900">Market Intelligence</h2>
+                  <a 
+                    href="/market-intel"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  >
+                    Open Full Suite
+                  </a>
+                </div>
+                <p className="text-gray-600 mb-4">
+                  Access comprehensive healthcare market data, interactive maps, and competitive analysis tools.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors">
+                    <h3 className="font-medium text-gray-900 mb-2">📊 Market Snapshot</h3>
+                    <p className="text-sm text-gray-600">View practice metrics and KPIs</p>
+                  </div>
+                  <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 cursor-pointer transition-colors">
+                    <h3 className="font-medium text-gray-900 mb-2">🗺️ Interactive Maps</h3>
+                    <p className="text-sm text-gray-600">Google Maps integration with practice locations</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Reports Section */}
+            {activeSection === 'reports' && hasPermission('export_reports') && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Reports & Export</h2>
+                <p className="text-gray-600 mb-6">Generate and export comprehensive market intelligence reports.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 border border-gray-200 rounded-lg">
+                    <h3 className="font-medium text-gray-900 mb-2">📄 PDF Reports</h3>
+                    <p className="text-sm text-gray-600 mb-3">Professional market analysis reports</p>
+                    <a 
+                      href="/market-intel?tab=export"
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      Generate Report →
+                    </a>
+                  </div>
+                  <div className="p-4 border border-gray-200 rounded-lg">
+                    <h3 className="font-medium text-gray-900 mb-2">📊 Data Export</h3>
+                    <p className="text-sm text-gray-600 mb-3">Export raw data to CSV/Excel</p>
+                    <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                      Export Data →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* User Management Section */}
+            {activeSection === 'users' && hasPermission('manage_users') && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">User Management</h2>
+                <p className="text-gray-600 mb-6">Manage user accounts, roles, and permissions.</p>
+                <div className="text-center py-8">
+                  <span className="text-4xl mb-4 block">👥</span>
+                  <p className="text-gray-500">User management interface coming soon...</p>
+                </div>
+              </div>
+            )}
+
+            {/* Profile Section */}
+            {activeSection === 'profile' && (
+              <UserProfile />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
+  );
+}

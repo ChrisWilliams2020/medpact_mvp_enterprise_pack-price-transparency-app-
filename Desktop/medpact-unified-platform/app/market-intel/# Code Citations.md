@@ -1,0 +1,2341 @@
+# Code Citations
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/Gaurav8757/React-Components/blob/bc043e4aee2247b808d08ca6e1c584c17cddaa2d/src/HumanResources/resign/ResignationLetter.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/AshZamoraG/ProyectoDAW.github.io/blob/965c186fdd670a602a33e15797e8d74055dadc3d/proyectoDAW/ProyectoDAW/src/components/OrdenCompra/DetailOrdenCompra.jsx
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft >= 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    
+```
+
+
+## License: unknown
+https://github.com/phamloan/Aloan20161018/blob/1b8c664d49228282dd291824afd24fba2d8c33ee/public/javascripts/printDialog.js
+
+```
+/png');
+    const pdf = new jsPDF();
+    
+    const imgWidth = 210;
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+       let heightLeft = imgHeight;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```        }      heightLeft -= pageHeight;      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);      pdf.addPage();      position = heightLeft - imgHeight;    while (heightLeft >= 0) {    heightLeft -= pageHeight;    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);    let position = 0;    let heightLeft = imgHeight;    const imgHeight = (canvas.height * imgWidth) / canvas.width;    const pageHeight = 295;    const imgWidth = 210;        const pdf = new jsPDF();/png');```https://github.com/centum-world/mining-portalUI/blob/0c2b186f5b3acb2c7b34add8a3415d1a80def84b/src/app/pdfService/pdf.service.ts## License: unknown```        }      heightLeft -= pageHeight;      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);      pdf.addPage();      position = heightLeft - imgHeight;    while (heightLeft >= 0) {    heightLeft -= pageHeight;    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);    let position = 0;    let heightLeft = imgHeight;    const imgHeight = (canvas.height * imgWidth) / canvas.width;    const pageHeight = 295;    const imgWidth = 210;        const pdf = new jsPDF();/png');```https://github.com/harsh-98/Demo/blob/0c0d279e979023c01eb4991a23c55ac079fb90a1/schedule.html## License: unknown```        }      heightLeft -= pageHeight;      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);      pdf.addPage();      position = heightLeft - imgHeight;    while (heightLeft >= 0) {    heightLeft -= pageHeight;    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);    let position = 0;
+    let position = 0

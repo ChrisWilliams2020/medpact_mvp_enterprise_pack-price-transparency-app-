@@ -1,0 +1,4 @@
+ls -la app/api/places/text-search/route.ts
+npm run dev
+npm run dev
+

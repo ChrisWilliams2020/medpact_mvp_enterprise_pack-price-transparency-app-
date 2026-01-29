@@ -1,0 +1,109 @@
+-- Healthcare SaaS Database Schema
+-- Run this in Supabase SQL Editor
+
+-- Enable necessary extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Enums
+CREATE TYPE training_type AS ENUM (
+  'MED_SCHOOL',
+  'RESIDENCY', 
+  'FELLOWSHIP',
+  'CERTIFICATION',
+  'CONTINUING_ED',
+  'OTHER'
+);
+
+-- Practices table
+CREATE TABLE practices (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  name TEXT NOT NULL,
+  address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  zip TEXT NOT NULL,
+  lat DECIMAL,
+  lng DECIMAL,
+  tin TEXT UNIQUE,
+  website_url TEXT,
+  ownership_model TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Physicians table  
+CREATE TABLE physicians (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  npi TEXT UNIQUE,
+  full_name TEXT NOT NULL,
+  credentials TEXT,
+  primary_specialty TEXT,
+  subspecialty TEXT,
+  languages TEXT[] DEFAULT '{}',
+  years_experience INTEGER,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Physician-Practice junction table
+CREATE TABLE physician_practices (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  physician_id TEXT REFERENCES physicians(id) ON DELETE CASCADE,
+  practice_id TEXT REFERENCES practices(id) ON DELETE CASCADE,
+  primary_site BOOLEAN DEFAULT true,
+  UNIQUE(physician_id, practice_id)
+);
+
+-- Training records
+CREATE TABLE training_records (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  physician_id TEXT REFERENCES physicians(id) ON DELETE CASCADE,
+  type training_type NOT NULL,
+  institution TEXT NOT NULL,
+  location TEXT,
+  year INTEGER
+);
+
+-- Practice ratings
+CREATE TABLE practice_ratings (
+  id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  practice_id TEXT REFERENCES practices(id) ON DELETE CASCADE,
+  source TEXT NOT NULL,
+  stars DECIMAL NOT NULL,
+  review_count INTEGER NOT NULL,
+  captured_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Insert sample data
+INSERT INTO practices (name, address, city, state, zip, tin, ownership_model) VALUES
+('Vision Care Center', '123 Medical Blvd', 'Healthcare City', 'CA', '90210', '123456789', 'independent'),
+('Advanced Eye Institute', '456 Clinic Ave', 'Medical Town', 'CA', '90211', '987654321', 'PE'),
+('Downtown Vision Clinic', '789 Health St', 'Metro City', 'CA', '90212', '456789123', 'independent');
+
+INSERT INTO physicians (full_name, npi, primary_specialty, subspecialty, years_experience) VALUES
+('Dr. Sarah Johnson', '1234567890', 'Ophthalmology', 'Retina', 12),
+('Dr. Michael Chen', '0987654321', 'Ophthalmology', 'Cornea', 8),
+('Dr. Emily Rodriguez', '5555667788', 'Ophthalmology', 'Pediatric', 15),
+('Dr. James Wilson', '1111222233', 'Ophthalmology', 'Glaucoma', 10),
+('Dr. Lisa Chang', '4444555566', 'Ophthalmology', 'Oculoplastics', 7);
+
+-- Link physicians to practices
+INSERT INTO physician_practices (physician_id, practice_id, primary_site)
+SELECT p.id, pr.id, true
+FROM physicians p, practices pr 
+WHERE (p.full_name = 'Dr. Sarah Johnson' AND pr.name = 'Vision Care Center')
+   OR (p.full_name = 'Dr. Michael Chen' AND pr.name = 'Vision Care Center')
+   OR (p.full_name = 'Dr. Emily Rodriguez' AND pr.name = 'Advanced Eye Institute')
+   OR (p.full_name = 'Dr. James Wilson' AND pr.name = 'Advanced Eye Institute')
+   OR (p.full_name = 'Dr. Lisa Chang' AND pr.name = 'Downtown Vision Clinic');
+
+-- Add sample ratings
+INSERT INTO practice_ratings (practice_id, source, stars, review_count)
+SELECT pr.id, 'Google', 4.7, 156
+FROM practices pr WHERE pr.name = 'Vision Care Center'
+UNION ALL
+SELECT pr.id, 'Healthgrades', 4.5, 89
+FROM practices pr WHERE pr.name = 'Advanced Eye Institute'
+UNION ALL  
+SELECT pr.id, 'Yelp', 4.8, 67
+FROM practices pr WHERE pr.name = 'Downtown Vision Clinic';
