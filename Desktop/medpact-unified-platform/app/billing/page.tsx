@@ -3,6 +3,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PLANS } from '@/lib/payments/stripe';
+
+export const dynamic = 'force-dynamic';
 import { useAuth } from '@/app/providers/auth-provider';
 import { useState } from 'react';
 import Link from 'next/link';
