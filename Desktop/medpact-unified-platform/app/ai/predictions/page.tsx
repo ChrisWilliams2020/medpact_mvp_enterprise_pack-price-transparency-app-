@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { PredictionEngine } from '@/lib/ai/predictions';
+import { PredictionEngine } from '@/lib/ai/predictionEngine';
 
 export default function AIPredictionsPage() {
   const [loading, setLoading] = useState(false);

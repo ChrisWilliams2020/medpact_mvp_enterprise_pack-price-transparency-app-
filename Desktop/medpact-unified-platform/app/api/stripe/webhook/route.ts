@@ -2,15 +2,30 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { supabase } from '@/lib/db/supabase';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
-});
+// Initialize Stripe only if the key is available
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-11-20.acacia',
+    })
+  : null;
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req: Request) {
+  // Check if Stripe is configured
+  if (!stripe || !webhookSecret) {
+    return NextResponse.json(
+      { error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET environment variables.' },
+      { status: 503 }
+    );
+  }
+
   const body = await req.text();
-  const signature = req.headers.get('stripe-signature')!;
+  const signature = req.headers.get('stripe-signature');
+
+  if (!signature) {
+    return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
+  }
 
   let event: Stripe.Event;
 
