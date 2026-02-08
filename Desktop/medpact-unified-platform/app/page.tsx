@@ -1,5 +1,4 @@
 'use client';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageNavigation } from '@/components/PageNavigation';
@@ -22,11 +21,11 @@ import {
   Share2
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Removed useState for demo mode
 
   const features = [
     {
@@ -162,41 +161,10 @@ export default function Home() {
             </div>
 
             {/* Mobile Menu Button */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="md:hidden"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
+            {/* Mobile menu button removed for demo mode */}
           </div>
 
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <div className="md:hidden mt-4 pb-4 space-y-2">
-              <Button variant="ghost" className="w-full justify-start" onClick={() => {
-                router.push('/financial-dashboard');
-                setMobileMenuOpen(false);
-              }}>
-                Dashboard
-              </Button>
-              <Button variant="ghost" className="w-full justify-start" onClick={() => {
-                router.push('/alerts');
-                setMobileMenuOpen(false);
-              }}>
-                <Bell className="w-4 h-4 mr-2" />
-                Alerts
-              </Button>
-              <Button variant="ghost" className="w-full justify-start" onClick={() => {
-                router.push('/integrations');
-                setMobileMenuOpen(false);
-              }}>
-                Integrations
-              </Button>
-              <Button variant="outline" className="w-full">Sign In</Button>
-            </div>
-          )}
+          {/* Mobile menu removed for demo mode */}
         </div>
       </div>
 
@@ -366,9 +334,8 @@ export default function Home() {
 
       {/* Page Navigation */}
       <PageNavigation
-        previousPage={{ label: 'Alerts', path: '/alerts' }}
-        nextPage={{ label: 'Revenue Optimization', path: '/revenue-optimization' }}
-        showHomeButton={false}
+        previousPage={{ title: 'Alerts', path: '/alerts' }}
+        nextPage={{ title: 'Revenue Optimization', path: '/revenue-optimization' }}
       />
     </div>
   );

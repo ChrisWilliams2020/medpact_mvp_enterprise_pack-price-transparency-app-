@@ -79,49 +79,75 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="py-8">
-      <h1 className="text-3xl font-bold mb-4">Notifications</h1>
-      <p className="mb-6 text-gray-700 dark:text-gray-300">Manage system and user notifications below.</p>
-      <form onSubmit={addNotification} className="flex flex-col md:flex-row gap-2 mb-6" aria-label="Add notification">
-        <label htmlFor="notificationMessage" className="sr-only">Notification Message</label>
-        <input
-          id="notificationMessage"
-          className="border p-2 rounded w-full md:w-2/3 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          placeholder="Notification Message"
-          required
-          aria-required="true"
-        />
-        <button
-          type="submit"
-          className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded font-bold transition disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          disabled={loading}
-          aria-busy={loading}
-        >
-          {loading ? "Adding..." : "Add Notification"}
-        </button>
-      </form>
-  {error && <div className="text-red-600 mb-4" role="alert">{error}</div>}
-      <div className="border rounded p-4 bg-blue-50 dark:bg-neutral-900">
-        <h2 className="text-xl font-semibold mb-2">Notification List</h2>
-        {loading ? (
-          <span className="text-gray-500">Loading...</span>
-        ) : notifications.length === 0 ? (
-          <span className="text-gray-500">No notifications added yet.</span>
-        ) : (
-          <ul className="divide-y divide-blue-200 dark:divide-neutral-800">
-            {notifications.map(n => (
-              <li key={n.id} className="flex items-center justify-between py-2">
-                <span className="font-bold text-blue-700 dark:text-blue-300">{n.message}</span>
-                <button
-                  onClick={() => deleteNotification(n.id)}
-                  className="bg-red-500 text-white px-3 py-1 rounded font-bold hover:bg-red-600"
-                >Delete</button>
-              </li>
-            ))}
-          </ul>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8 flex">
+      {/* AI Assistant Sidebar */}
+      <aside className="w-72 min-h-screen bg-white border-r p-6 flex flex-col mr-8">
+        <h2 className="text-lg font-bold mb-4 text-blue-700">AI Notification Assistant</h2>
+        <button className="mb-4 px-3 py-1 bg-blue-600 text-white rounded">Get Smart Suggestions</button>
+        <ul className="mb-4">
+          <li className="mb-2 text-gray-700">Send reminders for upcoming appointments</li>
+          <li className="mb-2 text-gray-700">Alert for abnormal lab results</li>
+          <li className="mb-2 text-gray-700">Notify care team of urgent tasks</li>
+          <li className="mb-2 text-gray-700">Automate patient follow-up notifications</li>
+        </ul>
+        <div className="text-xs text-gray-500">AI can optimize notification timing, content, and delivery for maximum impact.</div>
+      </aside>
+      {/* Main Content */}
+      <div className="flex-1">
+        <h1 className="text-3xl font-bold mb-4">Notifications</h1>
+        <p className="mb-6 text-gray-700 dark:text-gray-300">Manage system and user notifications below.</p>
+        <form onSubmit={addNotification} className="flex flex-col md:flex-row gap-2 mb-6" aria-label="Add notification">
+          <label htmlFor="notificationMessage" className="sr-only">Notification Message</label>
+          <input
+            id="notificationMessage"
+            className="border p-2 rounded w-full md:w-2/3 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            placeholder="Notification Message"
+            required
+            aria-required="true"
+          />
+          <button
+            type="submit"
+            className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded font-bold transition disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={loading}
+            aria-busy={loading}
+          >
+            {loading ? "Adding..." : "Add Notification"}
+          </button>
+        </form>
+        {error && <div className="text-red-600 mb-4" role="alert">{error}</div>}
+        <div className="border rounded p-4 bg-blue-50 dark:bg-neutral-900">
+          <h2 className="text-xl font-semibold mb-2">Notification List</h2>
+          {loading ? (
+            <span className="text-gray-500">Loading...</span>
+          ) : notifications.length === 0 ? (
+            <span className="text-gray-500">No notifications added yet.</span>
+          ) : (
+            <ul className="divide-y divide-blue-200 dark:divide-neutral-800">
+              {notifications.map(n => (
+                <li key={n.id} className="flex items-center justify-between py-2">
+                  <span className="font-bold text-blue-700 dark:text-blue-300">{n.message}</span>
+                  <button
+                    onClick={() => deleteNotification(n.id)}
+                    className="bg-red-500 text-white px-3 py-1 rounded font-bold hover:bg-red-600"
+                  >Delete</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-2">Notification Settings</h2>
+          <label className="mr-2">Delivery Method:</label>
+          <select className="border px-2 py-1 rounded">
+            <option>Email</option>
+            <option>SMS</option>
+            <option>In-App</option>
+          </select>
+          <div className="mt-2 text-sm text-gray-600">Choose how you want to receive alerts for key events.</div>
+        </div>
       </div>
     </div>
   );

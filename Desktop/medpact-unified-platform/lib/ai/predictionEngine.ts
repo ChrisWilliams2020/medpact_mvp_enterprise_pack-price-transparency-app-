@@ -79,4 +79,4 @@ export class PredictionEngine {
   }
 }
 
-export default PredictionEngine;
+// No default export; use named export

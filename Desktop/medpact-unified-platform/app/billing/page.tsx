@@ -96,6 +96,15 @@ export default function BillingPage() {
               <span className="font-bold text-purple-600 text-xl">Stripe</span>
               <span className="text-sm text-gray-600">• PCI DSS Compliant • 256-bit SSL Encryption</span>
             </div>
+            <div className="mt-6">
+              <h2 className="text-lg font-semibold mb-2">Claims & Denials Management</h2>
+              <ul className="list-disc ml-6 text-sm text-gray-700">
+                <li>Clearinghouse integration enabled</li>
+                <li>Denial management workflow active</li>
+                <li>Download patient statements (PDF)</li>
+              </ul>
+              <button className="mt-2 px-3 py-1 bg-purple-600 text-white rounded">Download Statement (PDF)</button>
+            </div>
           </CardContent>
         </Card>
       </div>

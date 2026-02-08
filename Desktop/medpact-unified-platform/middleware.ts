@@ -95,15 +95,9 @@ export async function middleware(request: NextRequest) {
 }
 
 // Apply middleware only to specific patterns that need protection
+// Removed invalid matcher patterns for Next.js 14 compatibility
 export const config = {
   matcher: [
-    // Only match potential source file requests
-    '/:path*.map',
-    '/:path*.env*',
-    '/:path*.git*',
-    '/:path*node_modules*',
-    '/:path*.config.*',
-    '/:path*package.json',
-    '/:path*tsconfig.json',
+    '/:path*', // Apply to all routes for now; adjust as needed
   ],
 };

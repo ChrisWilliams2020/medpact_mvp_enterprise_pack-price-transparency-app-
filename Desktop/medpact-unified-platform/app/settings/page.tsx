@@ -124,7 +124,8 @@ export default function SettingsPage() {
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'organization', label: 'Organization', icon: Building2 },
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'security', label: 'Security', icon: Shield }
+    { id: 'security', label: 'Security', icon: Shield },
+    { id: 'employees', label: 'Employee Management', icon: User },
   ];
 
   return (
@@ -169,55 +170,81 @@ export default function SettingsPage() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
+
             <Card className="p-8">
+              {/* Employee Management Tab */}
+              {activeTab === 'employees' && (
+                <div className="flex gap-8">
+                  {/* AI Assistant Sidebar */}
+                  <aside className="w-72 min-h-full bg-white border-r p-6 flex flex-col mr-8">
+                    <h2 className="text-lg font-bold mb-4 text-blue-700">AI Employee Assistant</h2>
+                    <button className="mb-4 px-3 py-1 bg-blue-600 text-white rounded">Get Smart Suggestions</button>
+                    <ul className="mb-4">
+                      <li className="mb-2 text-gray-700">Bulk onboard new employees</li>
+                      <li className="mb-2 text-gray-700">Smart scheduling for shifts</li>
+                      <li className="mb-2 text-gray-700">Track compliance and credentials</li>
+                      <li className="mb-2 text-gray-700">Automate reminders for renewals</li>
+                    </ul>
+                    <div className="text-xs text-gray-500">AI can help you manage staff, optimize schedules, and ensure compliance.</div>
+                  </aside>
+                  {/* Main Employee Management Content */}
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Employee Management</h2>
+                    <p className="text-gray-600 mb-6">Onboard, schedule, and track employees with smart automation.</p>
+                    {/* Bulk Upload Placeholder */}
+                    <div className="bg-blue-50 rounded-xl shadow p-6 mb-4">
+                      <div className="font-semibold mb-2">Bulk Onboarding (integrated with Bulk Actions)</div>
+                      <div className="h-24 bg-white rounded flex items-center justify-center text-gray-400">Upload employee roster, auto-detect format, and map fields</div>
+                    </div>
+                    {/* Smart Scheduling Placeholder */}
+                    <div className="bg-blue-50 rounded-xl shadow p-6 mb-4">
+                      <div className="font-semibold mb-2">Smart Scheduling</div>
+                      <div className="h-24 bg-white rounded flex items-center justify-center text-gray-400">AI-driven shift and task scheduling UI</div>
+                    </div>
+                    {/* Compliance Tracking Placeholder */}
+                    <div className="bg-blue-50 rounded-xl shadow p-6 mb-4">
+                      <div className="font-semibold mb-2">Compliance & Credential Tracking</div>
+                      <div className="h-24 bg-white rounded flex items-center justify-center text-gray-400">Track licenses, certifications, and send renewal reminders</div>
+                    </div>
+                  </div>
+                </div>
+              )}
               {/* Profile Tab */}
               {activeTab === 'profile' && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">User Profile</h2>
-                    <p className="text-gray-600 mb-6">
-                      Update your personal information and account details
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      value={userProfile.name}
+                      onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={userProfile.email}
+                      disabled
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Email cannot be changed
                     </p>
                   </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        value={userProfile.name}
-                        onChange={(e) => setUserProfile({ ...userProfile, name: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        value={userProfile.email}
-                        disabled
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">
-                        Email cannot be changed
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        Role
-                      </label>
-                      <Badge variant="outline" className="text-sm">
-                        {userProfile.role}
-                      </Badge>
-                    </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Role
+                    </label>
+                    <Badge variant="outline" className="text-sm">
+                      {userProfile.role}
+                    </Badge>
                   </div>
-
                   <div className="pt-4">
                     <Button className="bg-blue-600 hover:bg-blue-700">
                       <Save className="w-4 h-4 mr-2" />

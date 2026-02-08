@@ -4,7 +4,6 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-export default function DashboardPage() {
   const [stats, setStats] = useState({
     contracts: 0,
     payorNetworks: 0,
@@ -12,6 +11,24 @@ export default function DashboardPage() {
     totalRevenue: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [aiInsights, setAiInsights] = useState<string[]>([]);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  // AI Assistant: fetch insights
+  const fetchAiInsights = async () => {
+    setAiLoading(true);
+    // Simulate AI call (replace with real API)
+    setTimeout(() => {
+      setAiInsights([
+        "Your contract renewal rate is above average this quarter.",
+        "Revenue opportunities are trending up 12% month-over-month.",
+        "Payor network expansion is recommended in your region.",
+        "Consider reviewing contracts with low performance scores.",
+        "AI detected a spike in patient satisfaction scores.",
+      ]);
+      setAiLoading(false);
+    }, 1200);
+  };
 
   useEffect(() => {
     async function fetchStats() {
@@ -83,8 +100,26 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <main className="max-w-7xl mx-auto p-6">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* AI Assistant Sidebar */}
+      <aside className="w-72 min-h-screen bg-gray-50 border-r p-6 flex flex-col">
+        <h2 className="text-lg font-bold mb-4 text-purple-700">AI Dashboard Assistant</h2>
+        <button
+          className="mb-4 px-3 py-1 bg-purple-600 text-white rounded"
+          onClick={fetchAiInsights}
+          disabled={aiLoading}
+        >
+          {aiLoading ? "Loading..." : "Get AI Insights"}
+        </button>
+        <ul className="mb-4">
+          {aiInsights.map((s, idx) => (
+            <li key={idx} className="mb-2 text-gray-700">{s}</li>
+          ))}
+        </ul>
+        <div className="text-xs text-gray-500">AI can surface trends, risks, and opportunities for your practice.</div>
+      </aside>
+      {/* Main Content */}
+      <main className="flex-1 max-w-7xl mx-auto p-6">
         {/* Hero Section */}
         <div className="mb-8">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
