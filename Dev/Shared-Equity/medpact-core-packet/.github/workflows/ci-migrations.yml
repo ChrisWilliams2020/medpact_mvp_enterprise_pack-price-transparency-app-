@@ -13,8 +13,31 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+      - name: Configure secrets (require repo secrets or .env)
+        run: |
+          if [ -n "${{ secrets.CONNECTION_STRING }}" ]; then
+            echo "ConnectionStrings__Default=${{ secrets.CONNECTION_STRING }}" > .env
+          elif [ -f .env ]; then
+            echo ".env found in repo; using it"
+          else
+            echo "CONNECTION_STRING secret missing and .env not found; failing"
+            exit 1
+          fi
 
       - name: Run migrator container
         run: |
+          set -o pipefail
           docker compose -f docker-compose.yml up --no-start postgres
-          docker compose -f docker-compose.yml up migrator
+          docker compose -f docker-compose.yml up migrator 2>&1 | tee migrator.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then
+            echo "Migrator failed with rc=$rc"
+            exit $rc
+          fi
+
+      - name: Upload migrator logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migrator-logs
+          path: migrator.log
