@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: medpact_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - medpact_pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:latest
+    container_name: medpact_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/MedPact.Api/Dockerfile
+    image: medpact/api:local
+    container_name: medpact_api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=${CONNECTION_STRING}
+      - RUN_MIGRATIONS_ON_STARTUP=false
+    ports:
+      - "${API_PORT:-5000}:80"
+    depends_on:
+      - postgres
+  migrator:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: medpact_migrator
+    command: ["/bin/bash","/src/ops/migrate.sh"]
+    environment:
+      - ConnectionStrings__Default=${CONNECTION_STRING}
+    volumes:
+      - ./:/src:cached
+    depends_on:
+      - postgres
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    image: medpact/web:local
+    container_name: medpact_web
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  medpact_pgdata:
