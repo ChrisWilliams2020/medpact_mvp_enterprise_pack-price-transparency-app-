@@ -21,13 +21,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Configure secrets
-        env:
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-          JWT__Key: ${{ secrets.JWT_KEY }}
+      - name: Configure secrets (use repo secrets or local .env)
         run: |
-          echo "ConnectionStrings__Default=$CONNECTION_STRING" > .env
-          echo "JWT__Key=$JWT__Key" >> .env
+          if [ -n "${{ secrets.CONNECTION_STRING }}" ] && [ -n "${{ secrets.JWT_KEY }}" ]; then
+            echo "Using repository secrets"
+            echo "ConnectionStrings__Default=${{ secrets.CONNECTION_STRING }}" > .env
+            echo "JWT__Key=${{ secrets.JWT_KEY }}" >> .env
+          elif [ -f .env ]; then
+            echo "Using existing .env in repo"
+          else
+            echo "No secrets provided and no .env found; failing build"
+            exit 1
+          fi
 
       - name: Build images
         run: docker compose build --no-cache
@@ -36,12 +41,41 @@ jobs:
         run: docker compose up -d postgres
 
       - name: Run migrator
-        run: docker compose up migrator
+        id: migrator
+        run: |
+          set -o pipefail
+          docker compose up migrator 2>&1 | tee migrator.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then
+            echo "Migrator failed with rc=$rc"
+            exit $rc
+          fi
+
+      - name: Upload migrator logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: migrator-logs
+          path: migrator.log
 
       - name: Start services
         run: docker compose up -d api web
 
       - name: Wait and run E2E smoke
+        id: e2e
         run: |
           chmod +x scripts/e2e_smoke.sh
-          BASE_URL="http://localhost:5100" TENANT_ID="" ADMIN_EMAIL="e2e@example.com" DOCKER_CLEANUP=true bash scripts/e2e_smoke.sh
+          set -o pipefail
+          BASE_URL="http://localhost:5100" TENANT_ID="" ADMIN_EMAIL="e2e@example.com" DOCKER_CLEANUP=true bash scripts/e2e_smoke.sh 2>&1 | tee e2e.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then
+            echo "E2E smoke failed with rc=$rc"
+            exit $rc
+          fi
+
+      - name: Upload E2E logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-logs
+          path: e2e.log
