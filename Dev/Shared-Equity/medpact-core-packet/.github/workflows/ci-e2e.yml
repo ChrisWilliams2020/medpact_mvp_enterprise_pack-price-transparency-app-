@@ -1,0 +1,47 @@
+name: CI - Migrator + E2E Smoke
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        # Docker service is provided by the runner; this guarantees Docker is available
+        image: docker:20.10.16
+        options: --privileged
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Configure secrets
+        env:
+          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+          JWT__Key: ${{ secrets.JWT_KEY }}
+        run: |
+          echo "ConnectionStrings__Default=$CONNECTION_STRING" > .env
+          echo "JWT__Key=$JWT__Key" >> .env
+
+      - name: Build images
+        run: docker compose build --no-cache
+
+      - name: Run Postgres
+        run: docker compose up -d postgres
+
+      - name: Run migrator
+        run: docker compose up migrator
+
+      - name: Start services
+        run: docker compose up -d api web
+
+      - name: Wait and run E2E smoke
+        run: |
+          chmod +x scripts/e2e_smoke.sh
+          BASE_URL="http://localhost:5100" TENANT_ID="" ADMIN_EMAIL="e2e@example.com" DOCKER_CLEANUP=true bash scripts/e2e_smoke.sh
