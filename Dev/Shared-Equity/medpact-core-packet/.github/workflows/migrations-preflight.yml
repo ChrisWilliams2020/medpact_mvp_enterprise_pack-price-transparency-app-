@@ -1,3 +1,46 @@
+name: Migrations preflight
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install dotnet-ef tool
+        run: |
+          dotnet tool install --global dotnet-ef --version 8.* || true
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Generate migrations SQL
+        run: |
+          dotnet ef migrations script --idempotent -o migrations.sql --project apps/api/MedPact.Api/MedPact.Api.csproj || true
+          ls -lah migrations.sql || true
+
+      - name: Start temporary Postgres
+        run: |
+          docker run --name preflight-postgres -e POSTGRES_USER=preflight -e POSTGRES_PASSWORD=preflight -e POSTGRES_DB=preflight -p 5433:5432 -d postgres:16
+          sleep 6
+
+      - name: Dry-run migrations in single transaction
+        run: |
+          docker cp migrations.sql preflight-postgres:/tmp/migrations.sql
+          docker exec -i preflight-postgres psql -U preflight -d preflight --set ON_ERROR_STOP=1 --single-transaction -f /tmp/migrations.sql || true
+
+      - name: Stop and remove postgres
+        if: always()
+        run: |
+          docker rm -f preflight-postgres || true
 name: Migrations preflight (dry-run)
 
 on:
