@@ -32,7 +32,20 @@ jobs:
         run: |
           echo "Running tests to validate Dependabot PR"
           docker compose up -d postgres api || true
-          sleep 3
+          # Run migrator to ensure schema
+          docker compose run --rm migrator || true
+          # Wait for health
+          i=0
+          until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || (curl --silent --fail http://localhost:5100/api/health >/dev/null 2>&1) || [ $i -ge 60 ]; do
+            echo -n "."
+            sleep 1
+            i=$((i+1))
+          done
+          if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) && ! (curl --silent --fail http://localhost:5100/api/health >/dev/null 2>&1); then
+            echo "API did not become healthy in time"
+            docker logs --tail 200 medpact_api || true
+            exit 1
+          fi
           dotnet test apps/api/MedPact.ProviderTests/MedPact.ProviderTests.csproj -c Debug || exit 1
 
       - name: Ensure smoke-fast passed (checks)
