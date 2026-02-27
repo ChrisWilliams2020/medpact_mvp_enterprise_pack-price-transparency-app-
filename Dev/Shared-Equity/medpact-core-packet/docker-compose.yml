@@ -29,11 +29,14 @@ services:
     container_name: medpact_api
     restart: unless-stopped
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=${CONNECTION_STRING}
-      - RUN_MIGRATIONS_ON_STARTUP=false
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "${CONNECTION_STRING}"
+      # also provide ConnectionStrings__DefaultConnection so the entrypoint can detect the DB and wait
+      ConnectionStrings__DefaultConnection: "${CONNECTION_STRING}"
+      RUN_MIGRATIONS_ON_STARTUP: "true"
+      PROVIDER_STATES_ENABLED: "${PROVIDER_STATES_ENABLED}"
     ports:
-      - "${API_PORT:-5000}:80"
+      - "${API_PORT:-5100}:8080"
     depends_on:
       - postgres
   migrator:

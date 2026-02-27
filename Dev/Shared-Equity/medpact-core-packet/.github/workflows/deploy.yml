@@ -1,0 +1,94 @@
+name: Deploy
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Kubernetes (if KUBE_CONFIG provided)
+        if: ${{ secrets.KUBE_CONFIG != '' }}
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          set -euo pipefail
+          echo "Writing kubeconfig"
+          echo "$KUBECONFIG_CONTENT" > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+          kubectl version --client
+          # Capture current image for rollback
+          prev_image=$(kubectl get deployment medpact-api -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo '')
+          echo "Previous image: $prev_image"
+          kubectl apply -f deploy/k8s
+          # Run migrator Job (built migrator image)
+          kubectl apply -f deploy/k8s/medpact-migrator-job.yaml
+          if ! kubectl rollout status job/medpact-migrator --timeout=120s; then
+            kubectl logs job/medpact-migrator --tail=200 || true
+            if [ -n "$prev_image" ]; then
+              echo "Migrator failed; rolling back to $prev_image"
+              kubectl set image deployment/medpact-api medpact-api=$prev_image || true
+            fi
+            exit 1
+          fi
+          # Wait for pods to become ready; if failure, rollback to previous image
+          if ! kubectl rollout status deployment/medpact-api --timeout=120s; then
+            kubectl describe deployment medpact-api || true
+            kubectl get pods -o wide || true
+            if [ -n "$prev_image" ]; then
+              echo "Deployment failed; rolling back to $prev_image"
+              kubectl set image deployment/medpact-api medpact-api=$prev_image || true
+            fi
+            exit 1
+          fi
+          # Simple health check
+          svc_ip=$(kubectl get svc medpact-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo 'localhost')
+          echo "Service endpoint: $svc_ip"
+          # Note: cluster-dependent; operator should verify externally
+
+      - name: Deploy via SSH/docker-compose (if SSH_HOST provided)
+        if: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' && secrets.SSH_KEY != '' }}
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          script: |
+            set -euo pipefail
+            echo "Logging into GHCR"
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            # Pull latest image and restart compose stack, then run migrator container
+            ssh_host=${{ secrets.SSH_HOST }}
+            mkdir -p ~/medpact_deploy
+            cat > ~/medpact_deploy/docker-compose.prod.yml <<'EOF'
+            ...existing code...
+            EOF
+            # Ensure previous containers are stopped, pull images, and start
+            docker compose -f ~/medpact_deploy/docker-compose.prod.yml pull || true
+            docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans
+            # Run migrator as a one-off container using the migrator image
+            docker run --rm \
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+              -e BACKUP_DSN="$CONNECTION_STRING" \
+              -e BACKUP_PATH="/tmp/backup.dump" \
+              ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest
+            # Optionally capture backup from migrator container (if created)
+            # Health check
+            i=0
+            until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || [ $i -ge 60 ]; do echo -n "."; sleep 2; i=$((i+1)); done
+            if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1); then
+              echo "Health check failed after deploy; printing logs"
+              docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              exit 1
+            fi
+
+      - name: Notify
+        run: |
+          echo "Deploy job completed. Check workflow logs for outcome."

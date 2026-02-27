@@ -1,0 +1,32 @@
+repos:
+  - repo: https://github.com/dotnet/format
+    rev: v6.1.700
+    hooks:
+      - id: dotnet-format
+        args: ["--check"]
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.51.0
+    hooks:
+      - id: eslint
+        files: ^apps/web/.*\.(js|ts|tsx|jsx)$
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+
+  - repo: https://github.com/koalaman/shellcheck
+    rev: "stable"
+    hooks:
+      - id: shellcheck
+
+  - repo: local
+    hooks:
+      - id: repo-lint
+        name: Run repo lint script
+        entry: bash scripts/detect_and_run.sh lint
+        language: system
+        files: '\.(sh|yml|yaml|md|cs|json)$'

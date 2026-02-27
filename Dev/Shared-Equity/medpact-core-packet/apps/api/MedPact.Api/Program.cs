@@ -38,25 +38,57 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
-// JWT (dev scaffold)
-var issuer = builder.Configuration["JWT__Issuer"] ?? builder.Configuration["Jwt:Issuer"];
-var audience = builder.Configuration["JWT__Audience"] ?? builder.Configuration["Jwt:Audience"];
-var key = builder.Configuration["JWT__Key"] ?? builder.Configuration["Jwt:Key"];
+// Authentication: OIDC when enabled, otherwise fall back to the symmetric dev JWT key.
+// Enable OIDC by setting OIDC__Enabled=true and OIDC__Authority / OIDC__Audience (or AUTH__OIDC__* variants).
+var oidcEnabled = builder.Configuration["OIDC__Enabled"] ?? builder.Configuration["AUTH__OIDC__Enabled"];
+if (!string.IsNullOrEmpty(oidcEnabled) && oidcEnabled.Equals("true", StringComparison.OrdinalIgnoreCase))
+{
+    var authority = builder.Configuration["OIDC__Authority"] ?? builder.Configuration["AUTH__OIDC__Authority"];
+    var audience = builder.Configuration["OIDC__Audience"] ?? builder.Configuration["AUTH__OIDC__Audience"] ?? builder.Configuration["JWT__Audience"] ?? builder.Configuration["Jwt:Audience"];
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(o =>
-    {
-        o.TokenValidationParameters = new TokenValidationParameters
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(o =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = issuer,
-            ValidAudience = audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!))
-        };
-    });
+            o.Authority = authority;
+            o.Audience = audience;
+            o.RequireHttpsMetadata = true;
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                // PKI-signed tokens validated via identity provider's signing keys
+                ValidateIssuerSigningKey = false
+            };
+        });
+}
+else
+{
+    // dev symmetric key fallback (existing behavior)
+    var issuer = builder.Configuration["JWT__Issuer"] ?? builder.Configuration["Jwt:Issuer"];
+    var audience = builder.Configuration["JWT__Audience"] ?? builder.Configuration["Jwt:Audience"];
+    var key = builder.Configuration["JWT__Key"] ?? builder.Configuration["Jwt:Key"];
+
+    if (string.IsNullOrEmpty(key))
+    {
+        Log.Warning("JWT__Key not set; ensure OIDC is enabled or JWT__Key is provided for production.");
+    }
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(o =>
+        {
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = !string.IsNullOrEmpty(key),
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+                IssuerSigningKey = !string.IsNullOrEmpty(key) ? new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)) : null
+            };
+        });
+}
 
 builder.Services.AddAuthorization();
 

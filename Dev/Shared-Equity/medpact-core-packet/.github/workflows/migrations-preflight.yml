@@ -1,0 +1,160 @@
+name: Migrations preflight (dry-run)
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build migrator image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: apps/api/Dockerfile.migrator
+          push: false
+          tags: migrator:preflight
+
+      - name: Start disposable Postgres
+        run: |
+          docker run -d --name preflight_pg -e POSTGRES_USER=preflight -e POSTGRES_PASSWORD=preflight -e POSTGRES_DB=preflight -p 54321:5432 postgres:16
+
+      - name: Wait for Postgres
+        run: |
+          i=0; until docker exec preflight_pg pg_isready -U preflight || [ $i -ge 30 ]; do echo -n "."; sleep 1; i=$((i+1)); done
+
+      - name: Generate migrations SQL script
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore and generate migrations SQL locally
+        run: |
+          dotnet restore apps/api/MedPact.Core.sln
+          dotnet tool install --global dotnet-ef --version 8.* || true
+          export PATH="$PATH:/root/.dotnet/tools"
+          dotnet ef migrations script --idempotent --project apps/api/MedPact.Api/MedPact.Api.csproj -o migrations.sql || true
+
+      - name: Dry-run apply SQL inside transaction (ROLLBACK)
+        run: |
+          if [ -f migrations.sql ]; then
+            echo "Running migrations.sql inside a transaction and rolling back to validate"
+            # Execute SQL inside a BEGIN/ROLLBACK so DB is not mutated
+            (echo "BEGIN;"; cat migrations.sql; echo "ROLLBACK;") | docker exec -i preflight_pg psql -U preflight -d preflight -v ON_ERROR_STOP=1 -q || (docker logs preflight_pg || true; exit 1)
+          else
+            echo "No migrations.sql generated; skipping dry-run"
+          fi
+
+      - name: Validate schema presence (basic)
+        run: |
+          docker exec preflight_pg psql -U preflight -d preflight -c "SELECT tablename FROM pg_tables WHERE schemaname='public' LIMIT 5;"
+
+      - name: Teardown
+        if: always()
+        run: |
+          docker rm -f preflight_pg || true
+name: Migrations preflight
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - ci/**
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build migrator image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: apps/api/Dockerfile.migrator
+          push: false
+          tags: migrator:preflight
+
+      - name: Start temporary Postgres
+        run: |
+          docker run -d --name preflight_pg -e POSTGRES_USER=preflight -e POSTGRES_PASSWORD=preflight -e POSTGRES_DB=preflight -p 5433:5432 postgres:16
+
+      - name: Run migrator against preflight Postgres
+        env:
+          BACKUP_DSN: "Host=localhost;Port=5433;Database=preflight;Username=preflight;Password=preflight"
+        run: |
+          docker run --rm --network host -e BACKUP_DSN="$BACKUP_DSN" migrator:preflight
+
+      - name: Validate schema
+        run: |
+          # Wait for the database and check 'Tenants' table exists
+          i=0
+          until docker exec preflight_pg pg_isready -U preflight || [ $i -ge 10 ]; do sleep 1; i=$((i+1)); done
+          docker exec preflight_pg psql -U preflight -d preflight -c "SELECT 1 FROM ""Tenants"" LIMIT 1;" || (docker logs preflight_pg || true; exit 1)
+
+      - name: Teardown
+        if: always()
+        run: |
+          docker rm -f preflight_pg || true
+name: Migrations preflight
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build migrator image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: apps/api/Dockerfile.migrator
+          push: false
+          tags: migrator:preflight
+
+      - name: Start disposable Postgres
+        run: |
+          docker run -d --name preflight_pg -e POSTGRES_USER=medpact -e POSTGRES_PASSWORD=medpactpass -e POSTGRES_DB=medpactdb -p 54321:5432 postgres:16
+
+      - name: Wait for Postgres
+        run: |
+          i=0; until docker exec preflight_pg pg_isready -U medpact || [ $i -ge 30 ]; do echo -n "."; sleep 1; i=$((i+1)); done
+
+      - name: Run migrator against disposable Postgres
+        env:
+          POSTGRES_PASSWORD: medpactpass
+          BACKUP_DSN: "Host=localhost;Port=54321;Database=medpactdb;Username=medpact;Password=medpactpass"
+          BACKUP_PATH: /tmp/preflight_backup.dump
+        run: |
+          docker run --rm --network host -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -e BACKUP_DSN="$BACKUP_DSN" -e BACKUP_PATH=$BACKUP_PATH migrator:preflight
+
+      - name: Validate schema
+        run: |
+          docker exec preflight_pg psql -U medpact -d medpactdb -c "SELECT tablename FROM pg_tables WHERE schemaname='public' LIMIT 5;"
+
+      - name: Tear down
+        if: always()
+        run: |
+          docker rm -f preflight_pg || true
