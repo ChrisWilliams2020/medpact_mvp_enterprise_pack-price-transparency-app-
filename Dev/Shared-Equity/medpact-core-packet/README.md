@@ -1,4 +1,8 @@
 # MedPact Core (Foundation App)
+![CI](https://github.com/ChrisWilliams2020/medpact_mvp_enterprise_pack-price-transparency-app-/actions/workflows/ci.yml/badge.svg)
+![Smoke](https://github.com/ChrisWilliams2020/medpact_mvp_enterprise_pack-price-transparency-app-/actions/workflows/smoke.yml/badge.svg)
+![CodeQL](https://github.com/ChrisWilliams2020/medpact_mvp_enterprise_pack-price-transparency-app-/actions/workflows/codeql-analysis.yml/badge.svg)
+[![Coverage](https://codecov.io/gh/ChrisWilliams2020/medpact_mvp_enterprise_pack-price-transparency-app-/branch/main/graph/badge.svg?token=)](https://codecov.io/gh/ChrisWilliams2020/medpact_mvp_enterprise_pack-price-transparency-app-)
 A foundation application for MedPact’s data-intelligent platform:
 - Multi-tenant organization model
 - RBAC (roles/permissions-ready)
@@ -11,6 +15,20 @@ A foundation application for MedPact’s data-intelligent platform:
 - .NET 8 (ASP.NET Core Web API)
 - EF Core (PostgreSQL recommended)
 - Docker Compose for local infrastructure
+
+## Devcontainer & pre-commit
+
+This repo includes a `.devcontainer` for Visual Studio Code. Open the workspace in VS Code and it will prompt to reopen in the dev container which contains .NET 8 and Docker-in-Docker support.
+
+Pre-commit hooks are configured in `.pre-commit-config.yaml`. To install locally run:
+
+```bash
+# install pipx then:
+pipx install pre-commit
+pre-commit install
+```
+
+Or use the included devcontainer which installs and enables pre-commit in the container on creation.
 
 ## Getting started (local)
 ### 1) Requirements
@@ -28,6 +46,16 @@ Copy `.env.example` to `.env` and adjust values if needed.
 	- `CONNECTION_STRING` — full Postgres connection string used by the migrator and API (e.g. Host=postgres;Port=5432;Database=medpact;Username=medpact;Password=...)
 	- `JWT_KEY` — secret signing key for the dev JWT (set to a secure random value in non-dev)
 - The CI workflows included (`.github/workflows/ci-migrations.yml`, `.github/workflows/ci-e2e.yml`) expect these secrets and will write a `.env` before running docker-compose.
+
+### Optional: OIDC / Production authentication
+
+This project supports wiring an external OIDC provider for production. To enable it, set the following environment variables (or corresponding CI secrets):
+
+- `OIDC__Enabled=true`
+- `OIDC__Authority` — the provider issuer URL (e.g. https://login.microsoftonline.com/<tenant>/v2.0)
+- `OIDC__Audience` — the audience or API identifier configured in the identity provider
+
+When OIDC is enabled, the API will validate tokens using the provider's metadata and signing keys. If not enabled, the app falls back to a symmetric `JWT__Key` for dev tokens.
 
 ### 3) Start infrastructure (Postgres)
 ```bash

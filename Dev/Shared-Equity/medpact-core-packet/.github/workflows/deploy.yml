@@ -1,0 +1,175 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: '1.27.3'
+
+      - name: Configure Kubeconfig (from secret)
+        if: secrets.KUBE_CONFIG != ''
+        run: |
+          echo "$KUBE_CONFIG" | base64 --decode > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+
+      - name: Patch Deployment image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/medpact-api:${{ github.sha }}
+        run: |
+          kubectl set image deployment/medpact-api medpact-api=$IMAGE --record || true
+
+      - name: Run migrator job
+        run: |
+          kubectl create job medpact-migrator-$(date +%s) --image=ghcr.io/${{ github.repository_owner }}/medpact-api:${{ github.sha }} -- /bin/sh -c "dotnet ef database update"
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/medpact-api --timeout=120s
+
+      - name: Verify health
+        run: |
+          kubectl get pods -l app=medpact-api -o jsonpath='{.items[0].metadata.name}' | xargs -I{} kubectl logs {} --tail=200 || true
+name: Deploy
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - 'release/**'
+
+            # Backup previous compose file so we can rollback if needed
+            if [ -f ~/medpact_deploy/docker-compose.prod.yml ]; then
+              cp ~/medpact_deploy/docker-compose.prod.yml ~/medpact_deploy/docker-compose.prod.yml.prev || true
+            fi
+            cat > ~/medpact_deploy/docker-compose.prod.yml <<'EOF'
+            ...existing code...
+            EOF
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+            if ! docker run --rm \
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+              -e BACKUP_DSN="$CONNECTION_STRING" \
+              -e BACKUP_PATH="/tmp/backup.dump" \
+              ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest; then
+              echo "Migrator failed; collecting logs and attempting rollback"
+              docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              if [ -f ~/medpact_deploy/docker-compose.prod.yml.prev ]; then
+                echo "Restoring previous compose file and restarting previous stack"
+                mv ~/medpact_deploy/docker-compose.prod.yml.prev ~/medpact_deploy/docker-compose.prod.yml || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans || true
+              fi
+              exit 1
+            fi
+          set -euo pipefail
+          echo "Writing kubeconfig"
+          echo "$KUBECONFIG_CONTENT" > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+          kubectl version --client
+          # Capture current image for rollback
+              docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              # Attempt rollback to previous compose file if present
+              if [ -f ~/medpact_deploy/docker-compose.prod.yml.prev ]; then
+                echo "Health check failed; restoring previous compose file and restarting previous stack"
+                mv ~/medpact_deploy/docker-compose.prod.yml.prev ~/medpact_deploy/docker-compose.prod.yml || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans || true
+              fi
+              exit 1
+          kubectl apply -f deploy/k8s
+          # Run migrator Job (built migrator image)
+          kubectl apply -f deploy/k8s/medpact-migrator-job.yaml
+          if ! kubectl rollout status job/medpact-migrator --timeout=120s; then
+            kubectl logs job/medpact-migrator --tail=200 || true
+            if [ -n "$prev_image" ]; then
+              echo "Migrator failed; rolling back to $prev_image"
+              kubectl set image deployment/medpact-api medpact-api=$prev_image || true
+            fi
+            exit 1
+          fi
+          # Wait for pods to become ready; if failure, rollback to previous image
+          if ! kubectl rollout status deployment/medpact-api --timeout=120s; then
+            kubectl describe deployment medpact-api || true
+            kubectl get pods -o wide || true
+            if [ -n "$prev_image" ]; then
+              echo "Deployment failed; rolling back to $prev_image"
+              kubectl set image deployment/medpact-api medpact-api=$prev_image || true
+            fi
+            exit 1
+          fi
+          # Simple health check
+          svc_ip=$(kubectl get svc medpact-api -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo 'localhost')
+          echo "Service endpoint: $svc_ip"
+          # Note: cluster-dependent; operator should verify externally
+
+      - name: Deploy via SSH/docker-compose (if SSH_HOST provided)
+        if: ${{ secrets.SSH_HOST != '' && secrets.SSH_USER != '' && secrets.SSH_KEY != '' }}
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || '22' }}
+          script: |
+            set -euo pipefail
+            echo "Logging into GHCR"
+            echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            # Pull latest image and restart compose stack, then run migrator container
+            ssh_host=${{ secrets.SSH_HOST }}
+            mkdir -p ~/medpact_deploy
+            cat > ~/medpact_deploy/docker-compose.prod.yml <<'EOF'
+            ...existing code...
+            EOF
+            # Capture previous image for rollback
+            prev_image=$(docker compose -f ~/medpact_deploy/docker-compose.prod.yml config | yq -r '.services.api.image' 2>/dev/null || echo '')
+            echo "Previous image: $prev_image"
+            # Ensure previous containers are stopped, pull images, and start
+            docker compose -f ~/medpact_deploy/docker-compose.prod.yml pull || true
+            docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans
+            # Run migrator as a one-off container using the migrator image
+            docker run --rm \
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+              -e BACKUP_DSN="$CONNECTION_STRING" \
+              -e BACKUP_PATH="/tmp/backup.dump" \
+              ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest || true
+            # Health check
+            i=0
+            until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || [ $i -ge 60 ]; do echo -n "."; sleep 2; i=$((i+1)); done
+            if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1); then
+              echo "Health check failed after deploy; printing logs"
+              docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              # Attempt rollback: if we captured a previous image, update compose and restart
+              if [ -n "$prev_image" ]; then
+                echo "Attempting docker-compose rollback to $prev_image"
+                # Update the compose file image and restart the stack
+                sed -i.bak -E "s|(image: ).*|\1$prev_image|" ~/medpact_deploy/docker-compose.prod.yml || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml pull || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans || true
+                # Wait and recheck
+                j=0
+                until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || [ $j -ge 60 ]; do echo -n "."; sleep 2; j=$((j+1)); done
+                if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1); then
+                  echo "Rollback attempt failed; please investigate on host: $ssh_host"
+                else
+                  echo "Rollback to $prev_image succeeded"
+                fi
+              fi
+              exit 1
+            fi
+
+      - name: Notify
+        run: |
+          echo "Deploy job completed. Check workflow logs for outcome."

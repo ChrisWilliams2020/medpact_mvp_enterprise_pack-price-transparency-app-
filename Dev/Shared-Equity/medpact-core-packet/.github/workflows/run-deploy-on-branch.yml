@@ -1,0 +1,33 @@
+name: Run deploy from feature branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'ci/trigger-1772016095'
+
+jobs:
+  run-deploy-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Run deploy.yml contents
+        run: |
+          echo "Running deploy steps from branch ${{ github.event.inputs.branch }}"
+          # invoke the deploy job script directly from this runner by calling kubectl as in deploy.yml
+          if [ -z "$KUBE_CONFIG" ]; then
+            echo 'KUBE_CONFIG secret not set.'
+            exit 1
+          fi
+          echo "$KUBE_CONFIG" | base64 --decode > kubeconfig
+          export KUBECONFIG=$PWD/kubeconfig
+          IMAGE=ghcr.io/${{ github.repository_owner }}/medpact-api:${{ github.sha }}
+          kubectl set image deployment/medpact-api medpact-api=$IMAGE --record || true
+          kubectl create job medpact-migrator-$(date +%s) --image=$IMAGE -- /bin/sh -c "dotnet ef database update" || true
+          kubectl rollout status deployment/medpact-api --timeout=120s || true

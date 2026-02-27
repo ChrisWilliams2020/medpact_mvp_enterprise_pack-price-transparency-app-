@@ -1,0 +1,13 @@
+{
+  "consumer": { "name": "consumer-ui" },
+  "provider": { "name": "MedPact.Core.Api" },
+  "interactions": [
+    {
+      "description": "Get health",
+      "providerState": "No tenants",
+      "request": { "method": "GET", "path": "/api/health" },
+      "response": { "status": 200 }
+    }
+  ],
+  "metadata": { "pactSpecification": { "version": "2.0.0" } }
+}

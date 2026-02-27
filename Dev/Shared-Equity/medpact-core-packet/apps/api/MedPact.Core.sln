@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedPact.Api", "MedPact.Api\MedPact.Api.csproj", "{A1A1A1A1-A1A1-4D4D-9A9A-111111111111}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedPact.Domain", "MedPact.Domain\MedPact.Domain.csproj", "{B2B2B2B2-B2B2-4D4D-9A9A-222222222222}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedPact.Application", "MedPact.Application\MedPact.Application.csproj", "{C3C3C3C3-C3C3-4D4D-9A9A-333333333333}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedPact.Infrastructure", "MedPact.Infrastructure\MedPact.Infrastructure.csproj", "{D4D4D4D4-D4D4-4D4D-9A9A-444444444444}"
+EndProject
+Global
+  GlobalSection(SolutionConfigurationPlatforms) = preSolution
+    Debug|Any CPU = Debug|Any CPU
+    Release|Any CPU = Release|Any CPU
+  EndGlobalSection
+  GlobalSection(ProjectConfigurationPlatforms) = postSolution
+    {A1A1A1A1-A1A1-4D4D-9A9A-111111111111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {A1A1A1A1-A1A1-4D4D-9A9A-111111111111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {A1A1A1A1-A1A1-4D4D-9A9A-111111111111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {A1A1A1A1-A1A1-4D4D-9A9A-111111111111}.Release|Any CPU.Build.0 = Release|Any CPU
+
+    {B2B2B2B2-B2B2-4D4D-9A9A-222222222222}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {B2B2B2B2-B2B2-4D4D-9A9A-222222222222}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {B2B2B2B2-B2B2-4D4D-9A9A-222222222222}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {B2B2B2B2-B2B2-4D4D-9A9A-222222222222}.Release|Any CPU.Build.0 = Release|Any CPU
+
+    {C3C3C3C3-C3C3-4D4D-9A9A-333333333333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {C3C3C3C3-C3C3-4D4D-9A9A-333333333333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {C3C3C3C3-C3C3-4D4D-9A9A-333333333333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {C3C3C3C3-C3C3-4D4D-9A9A-333333333333}.Release|Any CPU.Build.0 = Release|Any CPU
+
+    {D4D4D4D4-D4D4-4D4D-9A9A-444444444444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+    {D4D4D4D4-D4D4-4D4D-9A9A-444444444444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    {D4D4D4D4-D4D4-4D4D-9A9A-444444444444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+    {D4D4D4D4-D4D4-4D4D-9A9A-444444444444}.Release|Any CPU.Build.0 = Release|Any CPU
+  EndGlobalSection
+EndGlobal

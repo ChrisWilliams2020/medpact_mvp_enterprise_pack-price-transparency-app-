@@ -1,0 +1,114 @@
+name: Publish images to GHCR
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'master'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    name: Build and push API image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (for multi-arch)
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry (OIDC)
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          oidc: true
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: apps/api/MedPact.Api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/medpact-api:latest
+            ghcr.io/${{ github.repository_owner }}/medpact-api:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Export image info
+        id: image_info
+        run: |
+          echo "image=ghcr.io/${{ github.repository_owner }}/medpact-api:${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload built image metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: image-info
+          path: |
+            image-info.txt
+name: Publish Docker image
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - release/**
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: apps/api/MedPact.Api/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/medpact-api:latest
+            ghcr.io/${{ github.repository_owner }}/medpact-api:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push migrator image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: apps/api/Dockerfile.migrator
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest
+            ghcr.io/${{ github.repository_owner }}/medpact-migrator:${{ github.sha }}
+          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

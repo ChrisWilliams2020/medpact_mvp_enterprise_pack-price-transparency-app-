@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: medpact-migrator
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+        - name: migrator
+          image: ghcr.io/REPLACE_OWNER/medpact-migrator:latest
+          envFrom:
+            - secretRef:
+                name: medpact-secrets
+      restartPolicy: OnFailure

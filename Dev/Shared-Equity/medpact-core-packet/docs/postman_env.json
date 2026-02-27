@@ -1,0 +1,8 @@
+{
+  "id": "medpact-local",
+  "name": "MedPact Local",
+  "values": [
+    { "key": "baseUrl", "value": "http://localhost:5000", "enabled": true },
+    { "key": "tenantId", "value": "default-tenant", "enabled": true }
+  ]
+}
