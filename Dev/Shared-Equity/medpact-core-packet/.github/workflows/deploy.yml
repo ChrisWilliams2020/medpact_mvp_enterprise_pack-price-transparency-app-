@@ -70,6 +70,9 @@ jobs:
             cat > ~/medpact_deploy/docker-compose.prod.yml <<'EOF'
             ...existing code...
             EOF
+            # Capture previous image for rollback
+            prev_image=$(docker compose -f ~/medpact_deploy/docker-compose.prod.yml config | yq -r '.services.api.image' 2>/dev/null || echo '')
+            echo "Previous image: $prev_image"
             # Ensure previous containers are stopped, pull images, and start
             docker compose -f ~/medpact_deploy/docker-compose.prod.yml pull || true
             docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans
@@ -78,14 +81,29 @@ jobs:
               -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
               -e BACKUP_DSN="$CONNECTION_STRING" \
               -e BACKUP_PATH="/tmp/backup.dump" \
-              ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest
-            # Optionally capture backup from migrator container (if created)
+              ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest || true
             # Health check
             i=0
             until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || [ $i -ge 60 ]; do echo -n "."; sleep 2; i=$((i+1)); done
             if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1); then
               echo "Health check failed after deploy; printing logs"
               docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              # Attempt rollback: if we captured a previous image, update compose and restart
+              if [ -n "$prev_image" ]; then
+                echo "Attempting docker-compose rollback to $prev_image"
+                # Update the compose file image and restart the stack
+                sed -i.bak -E "s|(image: ).*|\1$prev_image|" ~/medpact_deploy/docker-compose.prod.yml || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml pull || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans || true
+                # Wait and recheck
+                j=0
+                until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || [ $j -ge 60 ]; do echo -n "."; sleep 2; j=$((j+1)); done
+                if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1); then
+                  echo "Rollback attempt failed; please investigate on host: $ssh_host"
+                else
+                  echo "Rollback to $prev_image succeeded"
+                fi
+              fi
               exit 1
             fi
 
