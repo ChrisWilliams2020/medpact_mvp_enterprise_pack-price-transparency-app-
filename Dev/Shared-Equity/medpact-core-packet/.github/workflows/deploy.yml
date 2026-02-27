@@ -6,26 +6,45 @@ on:
     branches:
       - 'release/**'
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+            # Backup previous compose file so we can rollback if needed
+            if [ -f ~/medpact_deploy/docker-compose.prod.yml ]; then
+              cp ~/medpact_deploy/docker-compose.prod.yml ~/medpact_deploy/docker-compose.prod.yml.prev || true
+            fi
+            cat > ~/medpact_deploy/docker-compose.prod.yml <<'EOF'
+            ...existing code...
+            EOF
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Kubernetes (if KUBE_CONFIG provided)
-        if: ${{ secrets.KUBE_CONFIG != '' }}
-        env:
-          KUBECONFIG_CONTENT: ${{ secrets.KUBE_CONFIG }}
-        run: |
+            if ! docker run --rm \
+              -e POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+              -e BACKUP_DSN="$CONNECTION_STRING" \
+              -e BACKUP_PATH="/tmp/backup.dump" \
+              ghcr.io/${{ github.repository_owner }}/medpact-migrator:latest; then
+              echo "Migrator failed; collecting logs and attempting rollback"
+              docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              if [ -f ~/medpact_deploy/docker-compose.prod.yml.prev ]; then
+                echo "Restoring previous compose file and restarting previous stack"
+                mv ~/medpact_deploy/docker-compose.prod.yml.prev ~/medpact_deploy/docker-compose.prod.yml || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans || true
+              fi
+              exit 1
+            fi
           set -euo pipefail
           echo "Writing kubeconfig"
           echo "$KUBECONFIG_CONTENT" > kubeconfig
           export KUBECONFIG=$PWD/kubeconfig
           kubectl version --client
           # Capture current image for rollback
-          prev_image=$(kubectl get deployment medpact-api -o jsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || echo '')
-          echo "Previous image: $prev_image"
+              docker compose -f ~/medpact_deploy/docker-compose.prod.yml logs --tail 200 || true
+              # Attempt rollback to previous compose file if present
+              if [ -f ~/medpact_deploy/docker-compose.prod.yml.prev ]; then
+                echo "Health check failed; restoring previous compose file and restarting previous stack"
+                mv ~/medpact_deploy/docker-compose.prod.yml.prev ~/medpact_deploy/docker-compose.prod.yml || true
+                docker compose -f ~/medpact_deploy/docker-compose.prod.yml up -d --remove-orphans || true
+              fi
+              exit 1
           kubectl apply -f deploy/k8s
           # Run migrator Job (built migrator image)
           kubectl apply -f deploy/k8s/medpact-migrator-job.yaml
