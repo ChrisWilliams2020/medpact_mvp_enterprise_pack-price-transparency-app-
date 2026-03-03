@@ -1,0 +1,11 @@
+# Node / Next
+node_modules
+.next
+dist
+.DS_Store
+.env
+.env.*
+.env.local
+.env.production
+.dev-log
+public/media/*

@@ -1,0 +1,24 @@
+name: Scheduled cleanup
+
+on:
+  schedule:
+    - cron: '0 4 * * *' # daily at 04:00 UTC
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deps
+        run: npm ci
+      - name: Run cleanup
+        run: node scripts/cleanup.js 30
+        env:
+          # optional: set S3 creds if you want cleanup to operate on S3 (not implemented)
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

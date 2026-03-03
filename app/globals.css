@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 255 255 255;
+  --fg: 11 15 23;
+  /* MedPACT Platinum palette */
+  --platinum-50: 245 246 247;
+  --platinum-100: 237 239 241;
+  --platinum-300: 205 208 212;
+  --platinum-500: 169 172 178;
+  --platinum-700: 81 87 94;
+  --platinum-gradient-from: 221 224 228;
+  --platinum-gradient-to: 245 247 249;
+  /* Logo-derived medpact colors (used across site) */
+  --medpact-green: 17 185 129; /* #11B981 */
+  --medpact-blue: 11 95 255; /* #0B5FFF */
+  --medpact-black: 11 15 23; /* #0B0F17 */
+}
+
+html, body { height: 100%; }
+body { color: rgb(var(--fg)); background: linear-gradient(180deg, rgb(var(--platinum-gradient-from)), rgb(var(--platinum-gradient-to))); }
+
+/* subtle platinum accents for hero */
+.hero-platinum-accent {
+  box-shadow: 0 8px 30px rgba(81,87,94,0.06);
+  border-radius: 18px;
+}
