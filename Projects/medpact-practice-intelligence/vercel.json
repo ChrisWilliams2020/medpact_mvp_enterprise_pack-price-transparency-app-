@@ -3,16 +3,16 @@
     {
       "src": "apps/web/package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "apps/web/dist"
-      }
+      "config": { "distDir": "apps/web/dist" }
+    },
+    {
+      "src": "apps/*/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/apps/web/$1"
-    }
+    { "src": "/(.*)", "dest": "/apps/web/$1" }
   ],
   "github": {
     "silent": false
