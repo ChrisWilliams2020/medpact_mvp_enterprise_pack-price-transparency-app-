@@ -26,3 +26,7 @@ docker compose exec -T postgres psql -U medpact -d medpact -c "SELECT * FROM imp
 
 Notes
 - This is a minimal demo for local testing only. Do not use in production with real PHI without adding encryption, access controls, and backups.
+
+Vercel deploy notes
+- The frontend lives in `apps/web` and uses Vite. Set the Vercel Project Root to `apps/web`, Build Command `npm run build`, and Output Directory `dist`. Alternatively, the repository contains `vercel.json` which instructs Vercel to build `apps/web`.
+
