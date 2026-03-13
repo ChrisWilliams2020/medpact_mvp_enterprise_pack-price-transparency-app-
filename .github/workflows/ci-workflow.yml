@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, ci/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install and run frontend tests
+        working-directory: apps/web
+        run: |
+          npm ci
+          npm test
+
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: medpact
+          POSTGRES_USER: medpact
+          POSTGRES_PASSWORD: medpact
+        ports: ['5433:5432']
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install backend deps
+        run: |
+          pip install -r apps/api/requirements.txt
+          pip install pytest
+      - name: Start API and worker and run migrations
+        env:
+          DATABASE_URL: "postgresql+pg8000://medpact:medpact@localhost:5433/medpact"
+          REDIS_URL: "redis://localhost:6379/0"
+        run: |
+          # start uvicorn API in background with logs redirected
+          mkdir -p /tmp/ci-logs
+          python -m uvicorn apps.api.app.main:app --host 0.0.0.0 --port 8000 > /tmp/ci-logs/uvicorn.out 2> /tmp/ci-logs/uvicorn.err &
+          API_PID=$!
+          # run alembic migrations if alembic is present (retry a few times)
+          if [ -f apps/api/alembic.ini ]; then
+            for i in 1 2 3; do
+              alembic -c apps/api/alembic.ini upgrade head && break || {
+                echo "alembic attempt $i failed; retrying..."; sleep $((i*2));
+              }
+            done
+          fi
+          # start a background RQ worker using the CLI (more reliable)
+          # redirect worker logs to file
+          rq worker default --url "$REDIS_URL" > /tmp/ci-logs/worker.out 2> /tmp/ci-logs/worker.err &
+          WORKER_PID=$!
+          # wait for API, Postgres, and Redis to be healthy (script added)
+          chmod +x scripts/wait-for-health.sh
+          API_URL=http://127.0.0.1:8000/ready DATABASE_URL="$DATABASE_URL" REDIS_URL="$REDIS_URL" \
+            API_TIMEOUT=180 DB_TIMEOUT=120 REDIS_TIMEOUT=120 ./scripts/wait-for-health.sh
+          # run pytest
+          pytest -q
+          # teardown
+          kill $API_PID || true
+          kill ${WORKER_PID:-0} || true
+
+      - name: Upload backend logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-ci-logs
+          path: /tmp/ci-logs

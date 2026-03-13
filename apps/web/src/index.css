@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --bg: #0f172a;
+  --card: #0b1220;
+  --muted: #94a3b8;
+}
+
+body{ @apply bg-slate-50 text-slate-900 }
+.container{ @apply max-w-6xl mx-auto p-6 }
+.card{ @apply bg-white shadow rounded-lg p-4 }
+.header{ @apply flex items-center justify-between mb-4 }

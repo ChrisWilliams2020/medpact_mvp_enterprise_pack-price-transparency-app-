@@ -1,0 +1,93 @@
+name: Nightly E2E Smoke
+
+on:
+  schedule:
+    # Run nightly at 03:00 UTC
+    - cron: '0 3 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  nightly-e2e:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: medpact
+          POSTGRES_PASSWORD: medpact
+          POSTGRES_DB: medpact
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U medpact -d medpact" --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install backend dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r apps/api/requirements-dev.txt
+
+      - name: Apply alembic migrations (retry)
+        env:
+          DATABASE_URL: postgresql+pg8000://medpact:medpact@127.0.0.1:5432/medpact
+        run: |
+          set -e
+          for i in 1 2 3; do
+            alembic upgrade head && break || sleep $((i*5))
+          done
+
+      - name: Start API (uvicorn) and RQ worker
+        env:
+          DATABASE_URL: postgresql+pg8000://medpact:medpact@127.0.0.1:5432/medpact
+          REDIS_URL: redis://127.0.0.1:6379/0
+          PYTHONUNBUFFERED: '1'
+        run: |
+          mkdir -p /tmp/ci-logs
+          PYTHONPATH=$(pwd) nohup python -m uvicorn apps.api.app.main:app --host 0.0.0.0 --port 8000 &>/tmp/ci-logs/uvicorn.log &
+          nohup .venv/bin/rq worker --url $REDIS_URL &>/tmp/ci-logs/rq-worker.log &
+          sleep 2
+
+      - name: Wait for health
+        env:
+          API_TIMEOUT: 60
+          DB_TIMEOUT: 60
+          REDIS_TIMEOUT: 60
+        run: |
+          chmod +x scripts/wait-for-health.sh || true
+          ./scripts/wait-for-health.sh || (tail -n 200 /tmp/ci-logs/uvicorn.log && false)
+
+      - name: Run backend E2E smoke tests
+        env:
+          PYTHONPATH: $(pwd)
+          DATABASE_URL: postgresql+pg8000://medpact:medpact@127.0.0.1:5432/medpact
+          REDIS_URL: redis://127.0.0.1:6379/0
+        run: |
+          mkdir -p test-results
+          python -m pytest tests/test_metrics_worker_smoke.py tests/test_e2e_schedule_sse.py apps/api/tests/test_sse.py -q --junitxml=test-results/e2e-results.xml || true
+
+      - name: Upload logs and test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-e2e-logs
+          path: |
+            /tmp/ci-logs/uvicorn.log
+            /tmp/ci-logs/rq-worker.log
+            test-results/e2e-results.xml
+
+      - name: Post summary to workflow log
+        run: |
+          echo "Uploaded artifacts: nightly-e2e-logs"

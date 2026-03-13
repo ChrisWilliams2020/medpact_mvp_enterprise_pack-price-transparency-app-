@@ -1,0 +1,4 @@
+claim_id,practice_id,date_of_service,cpt_code,payer_name,allowed_amount,paid_amount,status
+CLM-1,PRAC-1,2026-01-10,99213,Blue Cross,100.0,80.0,paid
+CLM-2,PRAC-1,2026-01-11,93000,United Health,200.0,150.0,paid
+CLM-3,PRAC-2,2026-01-12,99213,Blue Cross,100.0,0.0,denied

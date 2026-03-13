@@ -1,0 +1,104 @@
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: medpact
+      POSTGRES_USER: medpact
+      POSTGRES_PASSWORD: medpact
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d/migrations:ro
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: "postgresql+pg8000://medpact:medpact@postgres:5432/medpact"
+      REDIS_URL: "redis://redis:6379/0"
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: "minio"
+      MINIO_SECRET_KEY: "minio123"
+      MINIO_BUCKET: "uploads"
+    depends_on:
+      - postgres
+      - redis
+      - minio
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./alembic:/app/alembic:ro
+      - ./alembic.ini:/app/alembic.ini:ro
+      - ./migrations:/app/migrations:ro
+    healthcheck:
+      # use python to probe the readiness endpoint which verifies DB connectivity
+      test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://127.0.0.1:8000/ready'); sys.exit(0)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.worker
+    # run RQ worker using rq CLI for clearer logging
+    command: ["rq", "worker", "default", "--verbose"]
+    environment:
+      DATABASE_URL: "postgresql+pg8000://medpact:medpact@postgres:5432/medpact"
+      REDIS_URL: "redis://redis:6379/0"
+      MINIO_ENDPOINT: "minio:9000"
+      MINIO_ACCESS_KEY: "minio"
+      MINIO_SECRET_KEY: "minio123"
+      MINIO_BUCKET: "uploads"
+    depends_on:
+      - redis
+      - postgres
+      - minio
+    volumes:
+      - ./uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "python", "/app/apps/api/worker_health.py"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ""  # Uses relative URLs (proxied through nginx)
+    ports:
+      - "3000:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  postgres_data:
+  minio_data:

@@ -1,0 +1,43 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+apps/web/node_modules/
+apps/web/dist/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Logs
+*.log
+uvicorn.log
+worker.log
+web-build.log
+build.log
+
+# Test artifacts
+test-results/
+tmp/
+uploads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.tar.gz
