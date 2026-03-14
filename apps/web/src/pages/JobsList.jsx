@@ -5,6 +5,8 @@ import FileUpload from '../components/FileUpload'
 
 export default function JobsList(){
   const [jobs, setJobs] = useState([])
+  const [multiplePractices, setMultiplePractices] = useState(false)
+  const [selectedPractices, setSelectedPractices] = useState([])
   const esRef = useRef(null)
   useEffect(()=>{
     axios.get('/imports').then(r=>setJobs(r.data)).catch(()=>setJobs([]))
@@ -45,10 +47,35 @@ export default function JobsList(){
           <div>
             <a href="/todos" className="text-sm text-indigo-600 hover:underline mr-4">Local TODOs</a>
             <a href="/benchmarks" className="text-sm text-indigo-600 hover:underline mr-4">Benchmarks</a>
-            <FileUpload onUploaded={(d)=>{ setJobs(prev => [d, ...prev]) }} />
+            <FileUpload onUploaded={(d)=>{ setJobs(prev => [d, ...prev]) }} multiplePractices={multiplePractices} />
           </div>
         </div>
-      
+        
+        {/* Multiple Practices Toggle */}
+        <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={multiplePractices}
+                onChange={(e) => setMultiplePractices(e.target.checked)}
+                className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <span className="text-sm font-medium text-slate-700">Enable Multiple Practices</span>
+            </label>
+            {multiplePractices && (
+              <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+                Multi-practice mode active
+              </span>
+            )}
+          </div>
+          {multiplePractices && (
+            <p className="mt-2 text-xs text-slate-500">
+              When enabled, you can import data for multiple practices in a single CSV file. 
+              Ensure your CSV includes a "practice_id" column to identify each practice.
+            </p>
+          )}
+        </div>
       </div>
       <div className="card">
         <div className="overflow-x-auto">
@@ -56,11 +83,12 @@ export default function JobsList(){
             <thead>
               <tr className="text-left text-xs text-slate-500">
                 <th className="px-3 py-2">ID</th>
-                <th className="px-3 py-2">Job ID</th>
+                <th className="px-3 py-2">Practice ID</th>
                 <th className="px-3 py-2">Filename</th>
                 <th className="px-3 py-2">Status</th>
                 <th className="px-3 py-2">Processed</th>
                 <th className="px-3 py-2">Created</th>
+                {multiplePractices && <th className="px-3 py-2">Practices</th>}
               </tr>
             </thead>
             <tbody>
@@ -72,6 +100,13 @@ export default function JobsList(){
                   <td className="px-3 py-2"><span className="text-sm text-slate-600">{j.status}</span></td>
                   <td className="px-3 py-2">{j.processed_rows}</td>
                   <td className="px-3 py-2 text-slate-500">{j.created_at}</td>
+                  {multiplePractices && (
+                    <td className="px-3 py-2">
+                      <span className="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">
+                        {j.practice_count || 1}
+                      </span>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

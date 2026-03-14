@@ -1,4 +1,41 @@
-# Medpact Practice Intelligence — Local MVP
+# MedPact Practice Intelligence
+
+## 🏥 Healthcare Practice Analytics & Benchmarking Platform
+
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![License](https://img.shields.io/badge/license-Proprietary-red.svg)]()
+
+MedPact Practice Intelligence is a comprehensive analytics platform designed for healthcare practices to monitor financial performance, benchmark against peers, and receive AI-powered insights for operational improvement.
+
+---
+
+## ✨ Version 1.0.0 - Foundation Release (March 14, 2026)
+
+This release establishes the production-ready baseline with 18 fully hardened React components.
+
+### Key Features
+- **AI-Powered Analytics** - Insights, suggestions, and expert narration
+- **Financial Dashboards** - NCR, EBITDA, Days in A/R tracking
+- **Peer Benchmarking** - Multi-practice comparison
+- **Quality Metrics** - MIPS scorecard, patient satisfaction
+- **Report Builder** - Custom drag-and-drop reports
+- **Multi-Channel Delivery** - Email, SMS, Slack, Teams
+
+See [CHANGELOG.md](CHANGELOG.md) for full release notes.
+
+---
+
+## 🚀 Quick Start (Development)
+
+### Frontend Only (Recommended for UI development)
+```bash
+cd apps/web
+npm install
+npm run dev
+# Open http://localhost:3000
+```
+
+### Full Stack (Original MVP Setup)
 
 This repo contains a small prototype for importing claims CSVs, processing them in a background worker, and streaming job status updates to clients (SSE via Redis pub/sub).
 
@@ -83,3 +120,58 @@ To test from the browser UI, run in the console:
 ```js
 localStorage.setItem('mp_token', 'token-practice-a')
 ```
+
+---
+
+## 🧩 Component Architecture
+
+### Fully Hardened Components (18 total)
+
+All components include PropTypes, React.memo, error handling, and accessibility features.
+
+| Category | Components |
+|----------|-----------|
+| **Analytics** | AIInsights, Charts, Forecasting, PeerBenchmarking, QualityMetrics |
+| **AI Tools** | AIAssistant, AISuggestionsTodo, ExpertNarration |
+| **Operations** | Alerts, ConsultantEngagement, DashboardDelivery, DataExport, ReportBuilder |
+| **UI** | Button, Toast, FileUpload, DebugPublishButton, RoleBasedDashboard |
+
+---
+
+## 🔐 Version Control & Releases
+
+```bash
+# View current version
+git describe --tags
+
+# Create a new release (example)
+git tag -a v1.1.0 -m "Feature release description"
+git push origin v1.1.0
+```
+
+### Branching Strategy
+- `main` - Production-ready code
+- `ci/production-mvp` - Current production branch (v1.0.0)
+- `feature/*` - Feature development
+- `hotfix/*` - Production fixes
+
+---
+
+## 📦 Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | React 18.2, Vite 5.2, TailwindCSS 3.4 |
+| **Backend** | Python, FastAPI, Uvicorn |
+| **Database** | PostgreSQL, Alembic migrations |
+| **Infrastructure** | Docker, Redis, MinIO |
+
+---
+
+## 📄 License
+
+Proprietary - MedPact Healthcare Solutions
+
+---
+
+*Foundation Release v1.0.0 - March 14, 2026*
