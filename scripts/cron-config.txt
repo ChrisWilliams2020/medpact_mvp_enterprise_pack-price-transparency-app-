@@ -1,0 +1,43 @@
+# =============================================
+# MEDPACT OVERNIGHT BUILD - Cron Configuration
+# =============================================
+#
+# To install this cron job, run:
+#   crontab -e
+# Then add the following line (modify path as needed):
+#
+# =============================================
+
+# Run overnight build at 2:00 AM every day
+0 2 * * * /Users/christopherwilliams/Projects/medpact-practice-intelligence/scripts/overnight-build.sh >> /Users/christopherwilliams/Projects/medpact-practice-intelligence/logs/cron.log 2>&1
+
+# Alternative: Run at 11:00 PM on weekdays only (Mon-Fri)
+# 0 23 * * 1-5 /Users/christopherwilliams/Projects/medpact-practice-intelligence/scripts/overnight-build.sh >> /Users/christopherwilliams/Projects/medpact-practice-intelligence/logs/cron.log 2>&1
+
+# Alternative: Run twice daily (2 AM and 2 PM)
+# 0 2,14 * * * /Users/christopherwilliams/Projects/medpact-practice-intelligence/scripts/overnight-build.sh >> /Users/christopherwilliams/Projects/medpact-practice-intelligence/logs/cron.log 2>&1
+
+# =============================================
+# HOW TO SET UP:
+# =============================================
+# 
+# 1. Open terminal and run: crontab -e
+# 2. Copy the cron line you want (without the # comment)
+# 3. Save and exit
+# 4. Verify with: crontab -l
+#
+# On macOS, you may need to grant "Full Disk Access" to cron:
+#   System Preferences > Security & Privacy > Privacy > Full Disk Access
+#   Add /usr/sbin/cron
+#
+# =============================================
+# LAUNCHD ALTERNATIVE (RECOMMENDED FOR MACOS):
+# =============================================
+#
+# macOS prefers launchd over cron. Create a plist file:
+#   ~/Library/LaunchAgents/com.medpact.overnight-build.plist
+#
+# Then load it with:
+#   launchctl load ~/Library/LaunchAgents/com.medpact.overnight-build.plist
+#
+# =============================================
