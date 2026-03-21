@@ -1,0 +1,11 @@
+{
+  "Rules": [
+    {
+      "ID": "MedPactBackupsLifecycle",
+      "Prefix": "backups/",
+      "Status": "Enabled",
+      "Expiration": { "Days": 30 },
+      "NoncurrentVersionExpiration": { "NoncurrentDays": 30 }
+    }
+  ]
+}

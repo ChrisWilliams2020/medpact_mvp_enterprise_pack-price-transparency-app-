@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  tag-and-changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create semver tag
+        id: tag
+        run: |
+          # derive tag from date+shortsha
+          TAG=v$(date +%Y.%m.%d)-${GITHUB_SHA::8}
+          git tag $TAG
+          git push origin $TAG
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        run: |
+          last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
+          if [ "$last_tag" = "none" ]; then
+            echo "No previous tag; listing recent commits"
+            git log -n 50 --pretty=format:"%h %s" > CHANGELOG.md
+          else
+            git log ${last_tag}..HEAD --pretty=format:"%h %s" > CHANGELOG.md
+          fi
+          git add CHANGELOG.md
+          git commit -m "chore(release): add changelog for ${{ steps.tag.outputs.tag }}" || true
+          git push origin HEAD:refs/heads/${GITHUB_REF##*/} || true
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,1468 @@
+import React, { useState, useRef, useEffect } from 'react';
+// ============================================
+// MedPact Practice Intelligence v2.8.0========
+// Features: AI Registration Bot, OnPacePlus, KCN Chat, CSV Conversion
+// ============================================d Access
+// ============================================
+// Admin Role Definitions
+const ADMIN_ROLES = {uction, these would be hashed and stored securely)
+  medpact_team: {
+    id: 'medpact_team',
+    name: 'MedPact Team',', 'survey'] },
+    icon: '🏢','admin': { password: 'admin2026', role: 'Administrator', access: ['survey'] }
+    password: 'medpact2026',};
+    access: ['survey', 'csv', 'emr', 'kcn', 'navigator', 'consultant', 'registration', 'onpaceplus', 'payment', 'renewal'],
+    description: 'Full platform access'
+  },
+  owner: { },
+    id: 'owner',
+    name: 'Owner', },
+    icon: '👔',ange' },
+    password: 'owner2026',
+    access: ['payment', 'renewal', 'survey'],{ id: 'productivity', name: 'Provider Productivity', value: '32 pts/day', trend: '+4.2%', trendUp: true, percentile: 71, peerAvg: '28 pts/day', icon: '⚡', color: 'teal' }
+    description: 'Payment, renewal & survey access'];
+  },
+  administrator: {
+    id: 'administrator',
+    name: 'Administrator',e },
+    icon: '⚙️',{ id: 2, name: "Bay Area Eye Associates", type: "Optometry", address: "456 Mission St, San Francisco", distance: 1.2, ratings: { google: 4.3, yelp: 4.2, healthgrades: 4.4 }, reviewCount: 189, providers: ["Dr. Michael Park, OD"], equipment: ["Optos California"], services: ["Eye Exams", "Contact Lens"], staffSize: 8, telehealth: true, avgWaitTime: 15, acceptingNew: true }
+    password: 'admin2026',];
+    access: ['survey'],
+    description: 'Survey generation access'
+  }
+};
+
+// OnPacePlus Innovation Phases,
+const INNOVATION_PHASES = [
+  { id: 'discovery', name: 'Discovery', icon: '🔍', color: '#6366F1', description: 'Identify opportunities and challenges' },{ zip: "94109", patients: 212, profitIndex: 78 }
+  { id: 'ideation', name: 'Ideation', icon: '💡', color: '#8B5CF6', description: 'Generate and evaluate ideas' },];
+  { id: 'planning', name: 'Planning', icon: '📋', color: '#EC4899', description: 'Define scope and resources' },
+  { id: 'development', name: 'Development', icon: '🛠️', color: '#F59E0B', description: 'Build and iterate' },
+  { id: 'implementation', name: 'Implementation', icon: '🚀', color: '#10B981', description: 'Deploy and launch' },
+  { id: 'optimization', name: 'Optimization', icon: '📈', color: '#06B6D4', description: 'Measure and improve' }high' },
+];{ type: 'alert', icon: '🎯', title: 'Wait Time Improvement', description: 'Wait times decreased 8.5% this quarter.', impact: 'Retention +2.1%', priority: 'positive' }
+];
+// Practice Registration Questions (25 questions)
+const REGISTRATION_QUESTIONS = [
+  { id: 'practice_name', question: "What is your practice name?", type: 'text', category: 'basic' },
+  { id: 'practice_type', question: "What type of practice is this?", type: 'select', options: ['Solo Practice', 'Group Practice', 'Multi-Location', 'Health System'], category: 'basic' },,
+  { id: 'specialty', question: "What is your primary specialty?", type: 'select', options: ['Ophthalmology', 'Optometry', 'Retina', 'Glaucoma', 'Cornea', 'Oculoplastics', 'Pediatric'], category: 'basic' },👩‍💼" },
+  { id: 'npi', question: "What is your practice NPI number?", type: 'text', category: 'basic' },{ id: 3, name: "Mike Chen", role: "Lead Technician", department: "Technical", tenure: "4 years", avatar: "👨‍🔬" }
+  { id: 'tax_id', question: "What is your Tax ID / EIN?", type: 'text', category: 'basic' },];
+  { id: 'address', question: "What is your primary practice address?", type: 'text', category: 'location' },
+  { id: 'city', question: "What city is your practice located in?", type: 'text', category: 'location' },
+  { id: 'state', question: "What state?", type: 'select', options: ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'], category: 'location' },
+  { id: 'zip', question: "What is your ZIP code?", type: 'text', category: 'location' },
+  { id: 'phone', question: "What is your main phone number?", type: 'text', category: 'contact' },,
+  { id: 'email', question: "What is your practice email?", type: 'text', category: 'contact' },3: { growth: { g1: 4, g2: 3, g3: 4, g4: 5, g5: 3 }, efficiency: { e1: 5, e2: 4, e3: 5, e4: 4, e5: 4 } }
+  { id: 'website', question: "What is your website URL?", type: 'text', category: 'contact' },};
+  { id: 'provider_count', question: "How many providers work at your practice?", type: 'number', category: 'operations' },
+  { id: 'staff_count', question: "How many staff members do you employ?", type: 'number', category: 'operations' },
+  { id: 'locations_count', question: "How many locations do you operate?", type: 'number', category: 'operations' },
+  { id: 'annual_patients', question: "Approximately how many patients do you see annually?", type: 'number', category: 'operations' },
+  { id: 'emr_system', question: "What EMR/EHR system do you use?", type: 'select', options: ['Modernizing Medicine', 'Nextech', 'Epic', 'Athenahealth', 'DrChrono', 'AdvancedMD', 'Other', 'None'], category: 'technology' },
+  { id: 'pm_system', question: "What Practice Management system do you use?", type: 'text', category: 'technology' },{ cptCode: "66984", description: "Cataract Surgery with IOL", commercial: { avg: 3500 }, medicare: 2156.00, medicaid: 1509.20, yourPrice: 3200, volume: 85 }
+  { id: 'payer_mix', question: "What is your approximate payer mix? (e.g., 40% Medicare, 30% Commercial, 30% Medicaid)", type: 'text', category: 'financial' },];
+  { id: 'annual_revenue', question: "What is your approximate annual revenue range?", type: 'select', options: ['Under $500K', '$500K - $1M', '$1M - $2.5M', '$2.5M - $5M', '$5M - $10M', 'Over $10M'], category: 'financial' },
+  { id: 'services', question: "What services do you offer? (e.g., LASIK, Cataract Surgery, Glaucoma Treatment)", type: 'text', category: 'services' },
+  { id: 'surgical_volume', question: "How many surgeries do you perform monthly?", type: 'number', category: 'services' },
+  { id: 'goals', question: "What are your primary goals for using MedPact?", type: 'text', category: 'goals' },expansion." },
+  { id: 'challenges', question: "What are your biggest operational challenges?", type: 'text', category: 'goals' },er negotiations." },
+  { id: 'contact_name', question: "Who is the primary contact for this account?", type: 'text', category: 'contact' }
+];{ id: 4, name: "Michael Chen, CPA", specialty: "Healthcare Finance", experience: "18 years", rating: 4.9, hourlyRate: 400, avatar: "👨‍💼", availability: "Available", bio: "Healthcare accounting specialist with focus on practice profitability." }
+];
+// CSV Templates for Data Uploads
+const CSV_TEMPLATES = [
+  {re",
+    id: 'practice_registration',
+    name: 'Practice Registration',
+    icon: '🏥',ma Treatment"],
+    description: 'Basic practice information for onboarding',enSx"],
+    fields: [providers: ["Dr. John Smith, MD - UCSF"]
+      { name: 'practice_name', description: 'Practice legal name', example: 'Bay Area Eye Care' },};
+      { name: 'practice_type', description: 'Type of practice', example: 'Group Practice' },
+      { name: 'specialty', description: 'Primary specialty', example: 'Ophthalmology' },
+      { name: 'npi', description: 'Practice NPI number', example: '1234567890' },
+      { name: 'tax_id', description: 'Tax ID / EIN', example: '12-3456789' },e');
+      { name: 'address', description: 'Street address', example: '123 Main St' },const [activeTab, setActiveTab] = useState('overview');
+      { name: 'city', description: 'City', example: 'San Francisco' },
+      { name: 'state', description: 'State (2-letter)', example: 'CA' },
+      { name: 'zip', description: 'ZIP code', example: '94102' },lse);
+      { name: 'phone', description: 'Main phone', example: '415-555-0100' },
+      { name: 'email', description: 'Practice email', example: 'info@bayareaeye.com' },
+      { name: 'provider_count', description: 'Number of providers', example: '5' },
+      { name: 'staff_count', description: 'Number of staff', example: '25' }
+    ]);
+  },const [adminPanelTab, setAdminPanelTab] = useState('survey');
+  {
+    id: 'claims_data',
+    name: 'Claims Data',
+    icon: '📋', useState([]);
+    description: 'Insurance claims for revenue analysis',wth');
+    fields: [  const [sortBy, setSortBy] = useState('volume');
+      { name: 'claim_id', description: 'Unique claim identifier', example: 'CLM-2026-001234' },
+      { name: 'patient_id', description: 'Patient identifier', example: 'PAT-10045' },
+      { name: 'date_of_service', description: 'Service date (YYYY-MM-DD)', example: '2026-03-15' },
+      { name: 'cpt_code', description: 'CPT procedure code', example: '99213' },
+      { name: 'cpt_description', description: 'Procedure description', example: 'Office visit, established patient' },ull);
+      { name: 'icd10_primary', description: 'Primary diagnosis code', example: 'H40.1131' },  const [isGenerating, setIsGenerating] = useState(false);
+      { name: 'icd10_secondary', description: 'Secondary diagnosis', example: 'E11.9' },
+      { name: 'provider_npi', description: 'Rendering provider NPI', example: '1234567890' },
+      { name: 'payer_name', description: 'Insurance company', example: 'Blue Cross Blue Shield' },
+      { name: 'payer_id', description: 'Payer identifier', example: 'BCBS-001' },);
+      { name: 'billed_amount', description: 'Amount billed', example: '150.00' },
+      { name: 'allowed_amount', description: 'Contracted amount', example: '125.00' },  const [isConverting, setIsConverting] = useState(false);
+      { name: 'paid_amount', description: 'Amount paid', example: '100.00' },
+      { name: 'patient_responsibility', description: 'Patient owes', example: '25.00' },
+      { name: 'claim_status', description: 'Current status', example: 'Paid' }
+    ]  const [emrConnectionStatus, setEmrConnectionStatus] = useState('disconnected');
+  },
+  {
+    id: 'charges_data',
+    name: 'Charges Data',  const [consultationRequest, setConsultationRequest] = useState('');
+    icon: '💰',
+    description: 'Practice charges and fee schedules',
+    fields: [
+      { name: 'charge_id', description: 'Unique charge identifier', example: 'CHG-2026-005678' },
+      { name: 'patient_id', description: 'Patient identifier', example: 'PAT-10045' }, || [];
+      { name: 'date_of_service', description: 'Service date', example: '2026-03-15' },return access.includes('all') || access.includes(feature);
+      { name: 'cpt_code', description: 'CPT procedure code', example: '92134' },  };
+      { name: 'cpt_description', description: 'Procedure description', example: 'OCT Retina' },
+      { name: 'modifier', description: 'CPT modifier', example: '26' },oleKey) => {
+      { name: 'units', description: 'Number of units', example: '1' },ey);
+      { name: 'charge_amount', description: 'Fee schedule amount', example: '125.00' },
+      { name: 'provider_npi', description: 'Rendering provider NPI', example: '1234567890' },setPasswordError('');
+      { name: 'facility_code', description: 'Place of service', example: '11' },  };
+      { name: 'department', description: 'Department name', example: 'Diagnostic' },
+      { name: 'referring_provider', description: 'Referring provider NPI', example: '9876543210' },
+      { name: 'authorization_number', description: 'Prior auth number', example: 'AUTH-12345' },
+      { name: 'posting_date', description: 'Date posted', example: '2026-03-15' }Input === credentials.password) {
+    ]
+  },tedRole);
+  {
+    id: 'payments_data',in');
+    name: 'Payments Data',
+    icon: '💳',swordError('');
+    description: 'Payment receipts and remittances',
+    fields: [ setPasswordError('Invalid password. Please try again.');
+      { name: 'payment_id', description: 'Unique payment identifier', example: 'PAY-2026-009012' },}
+      { name: 'claim_id', description: 'Related claim ID', example: 'CLM-2026-001234' },  };
+      { name: 'patient_id', description: 'Patient identifier', example: 'PAT-10045' },
+      { name: 'date_of_service', description: 'Original service date', example: '2026-03-15' },
+      { name: 'payment_date', description: 'Payment received date', example: '2026-03-25' },
+      { name: 'payer_name', description: 'Payer name', example: 'Blue Cross Blue Shield' },;
+      { name: 'check_number', description: 'Check or EFT number', example: '123456789' },');
+      { name: 'era_number', description: 'ERA/Remittance ID', example: 'ERA-2026-0345' },setSelectedRole(null);
+      { name: 'paid_amount', description: 'Amount paid', example: '100.00' },  };
+      { name: 'adjustment_amount', description: 'Contractual adjustment', example: '25.00' },
+      { name: 'adjustment_reason', description: 'Adjustment reason code', example: 'CO-45' },) => {
+      { name: 'patient_paid', description: 'Patient payment amount', example: '25.00' },ue);
+      { name: 'payment_method', description: 'Payment type', example: 'EFT' },
+      { name: 'deposit_date', description: 'Bank deposit date', example: '2026-03-26' }eys = {
+    ]
+  },
+  {: "yesno" },
+    id: 'ar_aging_data',
+    name: 'A/R Aging Data',},
+    icon: '📊',{ q: "How likely are you to recommend this workplace to others?", type: "nps" }
+    description: 'Accounts receivable aging buckets',
+    fields: [
+      { name: 'account_id', description: 'Account identifier', example: 'ACCT-10045' },?", type: "scale" },
+      { name: 'patient_id', description: 'Patient identifier', example: 'PAT-10045' },
+      { name: 'patient_name', description: 'Patient name', example: 'Smith, John' },
+      { name: 'payer_name', description: 'Primary payer', example: 'Blue Cross Blue Shield' },, type: "nps" },
+      { name: 'payer_type', description: 'Payer category', example: 'Commercial' },{ q: "Any additional comments or suggestions?", type: "text" }
+      { name: 'total_balance', description: 'Total outstanding', example: '450.00' },
+      { name: 'current_0_30', description: '0-30 days balance', example: '150.00' },
+      { name: 'aging_31_60', description: '31-60 days balance', example: '200.00' },y?", type: "choice", options: ["<1 hour", "1-2 hours", "2-4 hours", ">4 hours"] },
+      { name: 'aging_61_90', description: '61-90 days balance', example: '100.00' },
+      { name: 'aging_91_120', description: '91-120 days balance', example: '0.00' },cale" },
+      { name: 'aging_over_120', description: '120+ days balance', example: '0.00' },,
+      { name: 'last_payment_date', description: 'Most recent payment', example: '2026-02-15' }, { q: "What technology improvements would help most?", type: "text" }
+      { name: 'last_billed_date', description: 'Most recent statement', example: '2026-03-01' },]
+      { name: 'collection_status', description: 'Collection status', example: 'Active' }
+    ]
+  },urveyType.slice(1)} Survey: ${surveyTopic || 'General Assessment'}`,
+  {eys.staff,
+    id: 'patient_demographics',reatedAt: new Date().toLocaleString()
+    name: 'Patient Demographics',
+    icon: '👥',nerating(false);
+    description: 'Patient information for analytics',}, 2000);
+    fields: [  };
+      { name: 'patient_id', description: 'Unique patient identifier', example: 'PAT-10045' },
+      { name: 'date_of_birth', description: 'Patient DOB', example: '1965-04-12' },
+      { name: 'gender', description: 'Patient gender', example: 'M' },RESPONSES[staffId]?.[goal];
+      { name: 'zip_code', description: 'Patient ZIP code', example: '94102' },
+      { name: 'city', description: 'Patient city', example: 'San Francisco' },
+      { name: 'state', description: 'Patient state', example: 'CA' },return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
+      { name: 'primary_insurance', description: 'Primary insurance name', example: 'Blue Cross Blue Shield' },  };
+      { name: 'insurance_type', description: 'Insurance category', example: 'Commercial' },
+      { name: 'secondary_insurance', description: 'Secondary insurance', example: 'Medicare' },===============================
+      { name: 'referring_provider_npi', description: 'Referring doctor NPI', example: '9876543210' },
+      { name: 'pcp_npi', description: 'Primary care provider NPI', example: '5678901234' },==============
+      { name: 'patient_status', description: 'Active/Inactive', example: 'Active' }tScreen === 'home') {
+    ]
+  },br from-blue-900 via-indigo-900 to-purple-900">
+  {
+    id: 'doctor_roster',
+    name: 'Doctor Roster',
+    icon: '👨‍⚕️', className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+    description: 'Provider information and credentials',          </div>
+    fields: [
+      { name: 'provider_id', description: 'Internal provider ID', example: 'PROV-001' },
+      { name: 'first_name', description: 'First name', example: 'Sarah' },
+      { name: 'last_name', description: 'Last name', example: 'Chen' },s-center justify-between">
+      { name: 'npi', description: 'Provider NPI', example: '1234567890' },3">
+      { name: 'specialty', description: 'Primary specialty', example: 'Ophthalmology' }, className="text-4xl">🏥</span>
+      { name: 'subspecialty', description: 'Subspecialty', example: 'Retina' },
+      { name: 'license_number', description: 'State license', example: 'MD-123456' },
+      { name: 'license_state', description: 'License state', example: 'CA' },lassName="text-xs text-blue-300">Practice Intelligence</p>
+      { name: 'dea_number', description: 'DEA number', example: 'BC1234567' },v>
+      { name: 'email', description: 'Provider email', example: 'schen@practice.com' },
+      { name: 'phone', description: 'Direct phone', example: '415-555-0101' },
+      { name: 'hire_date', description: 'Employment start date', example: '2020-01-15' },assName="text-sm text-blue-200">v2.6.0</span>
+      { name: 'status', description: 'Active/Inactive', example: 'Active' }
+    ]
+  }, className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold hover:from-purple-600 hover:to-pink-600 transition-all"
+  {
+    id: 'employee_roster',n Management
+    name: 'Employee Roster',>
+    icon: '👥',
+    description: 'Staff information and roles',
+    fields: [ className="px-6 py-2 bg-white text-indigo-900 rounded-full font-semibold hover:bg-blue-100 transition-all"
+      { name: 'employee_id', description: 'Employee ID', example: 'EMP-001' },
+      { name: 'first_name', description: 'First name', example: 'Maria' },Dashboard →
+      { name: 'last_name', description: 'Last name', example: 'Garcia' },tton>
+      { name: 'role', description: 'Job title', example: 'Medical Assistant' },v>
+      { name: 'department', description: 'Department', example: 'Clinical' },v>
+      { name: 'supervisor', description: 'Supervisor name', example: 'Dr. Sarah Chen' },          </nav>
+      { name: 'email', description: 'Work email', example: 'mgarcia@practice.com' },
+      { name: 'phone', description: 'Work phone', example: '415-555-0102' },
+      { name: 'hire_date', description: 'Start date', example: '2022-06-01' },xl mx-auto px-8 py-20">
+      { name: 'employment_type', description: 'Full-time/Part-Time', example: 'Full-time' },
+      { name: 'certification', description: 'Certifications held', example: 'CMA, CPR' }, md:text-7xl font-bold text-white mb-6">
+      { name: 'status', description: 'Active/Inactive', example: 'Active' }ce Intelligence
+    ]
+  },ame="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+  {gined
+    id: 'payer_contracts',pan>
+    name: 'Payer Contracts',
+    icon: '📑',
+    description: 'Insurance contract details and fee schedules',ctice with AI-powered insights, competitive intelligence, 
+    fields: [d data-driven decision making.
+      { name: 'contract_id', description: 'Contract identifier', example: 'CONT-BCBS-001' },
+      { name: 'payer_name', description: 'Insurance company', example: 'Blue Cross Blue Shield' },Name="flex gap-4 justify-center">
+      { name: 'payer_id', description: 'Payer ID', example: 'BCBS-001' },
+      { name: 'contract_type', description: 'Contract type', example: 'PPO' },
+      { name: 'effective_date', description: 'Contract start date', example: '2025-01-01' }, className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-purple-600 transition-all shadow-2xl"
+      { name: 'termination_date', description: 'Contract end date', example: '2026-12-31' },
+      { name: 'fee_schedule_type', description: 'Fee schedule basis', example: 'Medicare + 20%' },r Dashboard
+      { name: 'cpt_code', description: 'Procedure code', example: '99213' },>
+      { name: 'contracted_rate', description: 'Contracted amount', example: '95.00' },
+      { name: 'medicare_rate', description: 'Medicare reference', example: '79.17' },
+      { name: 'percent_of_medicare', description: 'Percent of Medicare', example: '120' }, className="px-8 py-4 bg-white/10 backdrop-blur text-white rounded-xl font-bold text-lg hover:bg-white/20 transition-all border border-white/30"
+      { name: 'auto_renew', description: 'Auto-renewal', example: 'Yes' },
+      { name: 'notice_period_days', description: 'Termination notice', example: '90' }n Portal
+    ]tton>
+  }v>
+];            </div>
+
+// Core Metrics
+const CORE_METRICS = [ className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+  { id: 'revenue', name: 'Total Revenue', value: '$2,450,000', trend: '+5.2%', trendUp: true, percentile: 72, icon: '💰' },
+  { id: 'patient-volume', name: 'Patient Volume', value: '1,250', trend: '+3.1%', trendUp: true, percentile: 68, icon: '👥' },e-700' },
+  { id: 'collections', name: 'Collections Rate', value: '94.5%', trend: '+1.8%', trendUp: true, percentile: 82, icon: '📊' },
+  { id: 'wait-time', name: 'Avg Wait Time', value: '12 min', trend: '-8.5%', trendUp: true, percentile: 75, icon: '⏱️' },
+  { id: 'no-show', name: 'No-Show Rate', value: '8.2%', trend: '-12.3%', trendUp: true, percentile: 78, icon: '📅' },' },
+  { id: 'productivity', name: 'Provider Productivity', value: '32 pts/day', trend: '+4.2%', trendUp: true, percentile: 71, icon: '⚡' }0' },
+];0' },
+
+// Consultantsdmin Management', desc: 'Role-based access', color: 'from-red-500 to-red-700' }
+const CONSULTANTS = [feature, idx) => (
+  { id: 1, name: 'Dr. Rebecca Martinez', specialty: 'Practice Growth Strategy', rating: 4.9, hourlyRate: 350, avatar: '👩‍💼', availability: 'Available' },
+  { id: 2, name: 'James Thompson, MBA', specialty: 'Revenue Cycle Management', rating: 4.8, hourlyRate: 275, avatar: '👨‍💼', availability: 'Available' },
+  { id: 3, name: 'Dr. Michael Park', specialty: 'Clinical Operations', rating: 4.9, hourlyRate: 400, avatar: '👨‍⚕️', availability: 'Busy' },
+  { id: 4, name: 'Sarah Williams, CPA', specialty: 'Financial Planning', rating: 4.7, hourlyRate: 250, avatar: '👩‍💼', availability: 'Available' } className={`p-6 rounded-2xl bg-gradient-to-br ${feature.color} cursor-pointer transform hover:scale-105 transition-all shadow-xl`}
+];
+
+const Benchmarks = () => {ure.title}</h3>
+  // Navigation StatelassName="text-sm text-white/80">{feature.desc}</p>
+  const [currentScreen, setCurrentScreen] = useState('home');/div>
+  const [activeTab, setActiveTab] = useState('overview');
+  v>
+  // Admin State          </div>
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [passwordInput, setPasswordInput] = useState('');op-blur-lg border-t border-white/20 mt-16">
+  const [passwordError, setPasswordError] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false); className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+  const [currentAdminRole, setCurrentAdminRole] = useState(null);
+  const [adminPanelTab, setAdminPanelTab] = useState('registration');
+
+  // Practice Registration Bot State
+  const [registrationStep, setRegistrationStep] = useState(0);bel: 'Collections Rate' }
+  const [registrationAnswers, setRegistrationAnswers] = useState({}); => (
+  const [registrationChat, setRegistrationChat] = useState([]);
+  const [registeredPractices, setRegisteredPractices] = useState([]);">{stat.value}</div>
+  const [currentInput, setCurrentInput] = useState(''); className="text-blue-300 text-sm">{stat.label}</div>
+  const chatEndRef = useRef(null);/div>
+
+  // OnPacePlus Statev>
+  const [innovationProjects, setInnovationProjects] = useState([v>
+    { id: 'proj-1', name: 'AI-Powered Scheduling', phase: 'development', priority: 'high', lead: 'Dr. Sarah Chen', team: ['John S.', 'Maria G.'], targetDate: '2026-06-15', description: 'ML-based scheduling to reduce no-shows by 30%', progress: 65, createdAt: '2026-02-01' },v>
+    { id: 'proj-2', name: 'Patient Portal 2.0', phase: 'planning', priority: 'medium', lead: 'Mike Johnson', team: ['Lisa W.'], targetDate: '2026-08-01', description: 'Enhanced portal with telehealth', progress: 25, createdAt: '2026-03-01' },        </div>
+    { id: 'proj-3', name: 'Automated Billing', phase: 'discovery', priority: 'high', lead: 'Anna Kim', team: ['Tom B.', 'Sam R.'], targetDate: '2026-09-01', description: 'Reduce billing errors by 50%', progress: 10, createdAt: '2026-03-10' }
+  ]);l */}
+  const [showNewProjectModal, setShowNewProjectModal] = useState(false);
+  const [newProject, setNewProject] = useState({ name: '', phase: 'discovery', priority: 'medium', lead: '', team: '', targetDate: '', description: '' });">
+">
+  // KCN Chat State (Knowledge & Communication Network)ink-600 p-6 text-white">
+  const [kcnMessages, setKcnMessages] = useState([etween">
+    { id: 1, user: 'Dr. Sarah Chen', avatar: '👩‍⚕️', message: 'Has anyone implemented the new OCT billing codes successfully?', timestamp: '10:30 AM', channel: 'billing' },3">
+    { id: 2, user: 'James Wilson', avatar: '👨‍💼', message: 'Yes! We saw a 15% increase in collections after the update.', timestamp: '10:32 AM', channel: 'billing' }, className="text-3xl">��</span>
+    { id: 3, user: 'Dr. Michael Park', avatar: '👨‍⚕️', message: 'Can you share your documentation template?', timestamp: '10:35 AM', channel: 'billing' },
+    { id: 4, user: 'MedPact Support', avatar: '🤖', message: 'Welcome to the Knowledge & Communication Network! Feel free to ask questions or share insights.', timestamp: '9:00 AM', channel: 'general' }
+  ]);lassName="text-sm opacity-80">Select your role to continue</p>
+  const [kcnInput, setKcnInput] = useState('');v>
+  const [kcnChannel, setKcnChannel] = useState('general');
+  const [kcnUsers, setKcnUsers] = useState([ton onClick={() => { setShowAdminModal(false); setSelectedRole(null); setPasswordError(''); }} className="p-2 hover:bg-white/20 rounded-full">✕</button>
+    { id: 1, name: 'Dr. Sarah Chen', avatar: '👩‍⚕️', status: 'online', practice: 'Bay Area Eye Care' },v>
+    { id: 2, name: 'James Wilson', avatar: '👨‍💼', status: 'online', practice: 'Vision Plus' },              </div>
+    { id: 3, name: 'Dr. Michael Park', avatar: '👨‍⚕️', status: 'away', practice: 'Pacific Eye Institute' },
+    { id: 4, name: 'Lisa Rodriguez', avatar: '👩‍💼', status: 'online', practice: 'Clear Vision Center' }>
+  ]);
+
+  // CSV Conversion State<p className="text-gray-600 text-sm mb-4">Choose your administrative role:</p>
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [convertedData, setConvertedData] = useState(null);},
+  const [isConverting, setIsConverting] = useState(false);
+', icon: '⚙️', title: 'Administrator', desc: 'Survey generation access', color: 'green' }
+  // Scroll chat to bottome => (
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [registrationChat, kcnMessages]);
+ className={`w-full p-4 rounded-xl border-2 text-left hover:border-${role.color}-500 hover:bg-${role.color}-50 transition-all flex items-center gap-4`}
+  // Initialize registration chat
+  const initializeRegistrationChat = () => { className="text-3xl">{role.icon}</span>
+    setRegistrationChat([
+      { type: 'bot', message: "👋 Welcome to MedPact Practice Registration! I'm your AI assistant.", timestamp: new Date() },
+      { type: 'bot', message: "I'll help you register your practice by asking 25 important questions about your organization.", timestamp: new Date() },lassName="text-sm text-gray-500">{role.desc}</p>
+      { type: 'bot', message: "Your answers will create a unique practice profile and generate a CSV data file.", timestamp: new Date() },
+      { type: 'bot', message: `Let's begin! ${REGISTRATION_QUESTIONS[0].question}`, timestamp: new Date() }lassName="ml-auto text-gray-400">→</span>
+    ]);/button>
+  };
+iv>
+  // Admin Login Handler
+  const handleAdminLogin = () => {
+    const role = ADMIN_ROLES[selectedRole];SelectedRole(null)} className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+    if (role && passwordInput === role.password) {to role selection
+      setIsAuthenticated(true);</button>
+      setCurrentAdminRole(role);
+      setPasswordError('');
+      setPasswordInput('');nter gap-3">
+      initializeRegistrationChat();
+    } else {ctedRole === 'medpact-team' ? '🏢' : selectedRole === 'owner' ? '👤' : '⚙️'}
+      setPasswordError('Invalid password. Please try again.');n>
+    }
+  };}</h3>
+lassName="text-xs text-gray-500">Enter password to continue</p>
+  // Registration Input Handlerv>
+  const handleRegistrationInput = () => {v>
+    if (!currentInput.trim()) return;                    </div>
+    
+    const currentQuestion = REGISTRATION_QUESTIONS[registrationStep];
+     className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+    setRegistrationChat(prev => [...prev, { type: 'user', message: currentInput, timestamp: new Date() }]);
+    setRegistrationAnswers(prev => ({ ...prev, [currentQuestion.id]: currentInput }));
+    
+    if (registrationStep < REGISTRATION_QUESTIONS.length - 1) {
+      const nextStep = registrationStep + 1;
+      setRegistrationStep(nextStep);r rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+      setTimeout(() => {placeholder="Enter your password"
+        setRegistrationChat(prev => [...prev, 
+          { type: 'bot', message: `✓ Got it!`, timestamp: new Date() },
+          { type: 'bot', message: REGISTRATION_QUESTIONS[nextStep].question, timestamp: new Date() }<p className="text-red-500 text-sm mt-2">{passwordError}</p>
+        ]);
+      }, 500);                    </div>
+    } else {
+      const practiceData = { ...registrationAnswers, [currentQuestion.id]: currentInput, id: `practice-${Date.now()}`, registeredAt: new Date().toISOString() };
+      setRegisteredPractices(prev => [...prev, practiceData]);
+      setTimeout(() => { className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700"
+        setRegistrationChat(prev => [...prev,
+          { type: 'bot', message: "🎉 Excellent! Registration complete!", timestamp: new Date() },ss Admin Panel
+          { type: 'bot', message: "Your practice profile has been created. You can now download your CSV file.", timestamp: new Date() }                    </button>
+        ]);
+      }, 500);
+    }mo passwords: medpact2026 | owner2026 | admin2026
+    setCurrentInput('');
+  };</div>
+
+  // Reset Registrationv>
+  const resetRegistration = () => {v>
+    setRegistrationStep(0);</div>
+    setRegistrationAnswers({});
+    initializeRegistrationChat();</div>
+    setCurrentInput(''); );
+  };  }
+
+  // Generate and Download CSV========================
+  const generatePracticeCSV = (practice) => {
+    const headers = Object.keys(practice).join(',');=============
+    const values = Object.values(practice).map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');tScreen === 'admin') {
+    const csv = `${headers}\n${values}`;
+    screen bg-gray-100">
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);0 to-pink-700 text-white shadow-lg">
+    const a = document.createElement('a');
+    a.href = url;between">
+    a.download = `practice_${practice.practice_name?.replace(/\s+/g, '_') || 'registration'}_${Date.now()}.csv`;4">
+    a.click(); className="text-3xl">🔐</span>
+    URL.revokeObjectURL(url);
+  };
+lassName="text-sm opacity-80">Logged in as: {ADMIN_CREDENTIALS[currentAdminRole]?.role}</p>
+  // Download Template CSVv>
+  const downloadTemplateCSV = (template) => {
+    const headers = template.fields.map(f => f.name).join(',');
+    const examples = template.fields.map(f => `"${f.example}"`).join(',');
+    const csv = `${headers}\n${examples}`;ccess('all') ? '🌟 Full Access' : hasAccess('payment') ? '💳 Owner Access' : '📝 Admin Access'}
+    
+    const blob = new Blob([csv], { type: 'text/csv' });k={() => setCurrentScreen('app')} className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30">
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;lick={handleLogout} className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600">
+    a.download = `${template.id}_template.csv`;ut
+    a.click();tton>
+    URL.revokeObjectURL(url);v>
+  };v>
+v>
+  // OnPacePlus Handlers        </div>
+  const handleCreateProject = () => {
+    const project = {
+      ...newProject,
+      id: `proj-${Date.now()}`,
+      progress: 0, className="flex gap-1 overflow-x-auto">
+      createdAt: new Date().toISOString(),
+      team: newProject.team.split(',').map(t => t.trim()).filter(Boolean) 'survey' },
+    };
+    setInnovationProjects(prev => [...prev, project]);
+    setShowNewProjectModal(false);
+    setNewProject({ name: '', phase: 'discovery', priority: 'medium', lead: '', team: '', targetDate: '', description: '' });
+  }; },
+
+  const updateProjectPhase = (projectId, newPhase) => {tab => hasAccess(tab.access) || hasAccess('all')).map(tab => (
+    const phaseIndex = INNOVATION_PHASES.findIndex(p => p.id === newPhase);
+    const progress = Math.round((phaseIndex / (INNOVATION_PHASES.length - 1)) * 100);
+    setInnovationProjects(prev => prev.map(p => p.id === projectId ? { ...p, phase: newPhase, progress } : p));
+  };-medium border-b-2 transition-colors whitespace-nowrap ${
+
+  // KCN Chat Handlers
+  const handleSendKcnMessage = () => { : 'border-transparent text-gray-600 hover:text-gray-900'
+    if (!kcnInput.trim()) return; }`}
+    const newMessage = {
+      id: Date.now(),bel}
+      user: 'You',/button>
+      avatar: '👤',
+      message: kcnInput,v>
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),v>
+      channel: kcnChannel        </div>
+    };
+    setKcnMessages(prev => [...prev, newMessage]);
+    setKcnInput('');iv className="max-w-7xl mx-auto px-6 py-8">
+  };
+
+  // File Upload Handler& (
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploadedFile(file);n className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">Powered by AI</span>
+      setIsConverting(true);              </div>
+      // Simulate conversion
+      setTimeout(() => {
+        setConvertedData({
+          fileName: file.name,<h3 className="font-semibold mb-4">Create New Survey</h3>
+          rows: Math.floor(Math.random() * 100) + 50,
+          columns: selectedTemplate?.fields.length || 10,assName="space-y-4">
+          status: 'success'
+        });ium text-gray-700 mb-2">Survey Type</label>
+        setIsConverting(false); className="grid grid-cols-3 gap-2">
+      }, 2000);
+    }
+  };
+ency', label: '⚡ Efficiency', desc: 'Process optimization' }
+  const hasAccess = (feature) => currentAdminRole?.access.includes(feature);e => (
+
+  // ==========================================
+  // HOME SCREEN
+  // ==========================================
+  if (currentScreen === 'home') {urveyType === type.id ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-gray-300'
+    return ( }`}
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+        <div className="absolute inset-0 opacity-10">>
+          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full blur-3xl"></div>assName="text-xs text-gray-500">{type.desc}</div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>/button>
+        </div>
+v>
+        {/* Navigation */}                    </div>
+        <nav className="relative z-10 px-8 py-6">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-3"> className="block text-sm font-medium text-gray-700 mb-2">Survey Topic (Optional)</label>
+              <span className="text-4xl">🏥</span>
+              <div>
+                <h1 className="text-2xl font-bold text-white">MedPact</h1>
+                <p className="text-xs text-blue-300">Practice Intelligence</p>
+              </div>ring-purple-500"
+            </div>placeholder="e.g., Q1 Performance Review, New Equipment Training"
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-blue-200">v2.8.0</span>                    </div>
+              <button onClick={() => setShowAdminModal(true)} className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold hover:from-purple-600 hover:to-pink-600">
+                🔐 Admin Management
+              </button>}
+              <button onClick={() => setCurrentScreen('app')} className="px-6 py-2 bg-white text-indigo-900 rounded-full font-semibold hover:bg-blue-100">
+                Launch Dashboard → className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 disabled:opacity-50"
+              </button>
+            </div>rating ? '⏳ Generating Survey...' : '✨ Generate AI Survey'}
+          </div>tton>
+        </nav>v>
+                </div>
+        {/* Hero */}
+        <div className="relative z-10 max-w-7xl mx-auto px-8 py-16">
+          <div className="text-center mb-12"><h3 className="font-semibold mb-4">Generated Survey Preview</h3>
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
+              Practice Intelligence <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Reimagined</span>
+            </h1>
+            <p className="text-xl text-blue-200 max-w-2xl mx-auto mb-8">
+              AI-powered registration, innovation management, real-time collaboration, and intelligent data conversion.
+            </p>lassName="text-xs text-gray-500">Created: {generatedSurvey.createdAt}</p>
+            <div className="flex gap-4 justify-center"></div>
+              <button onClick={() => setCurrentScreen('app')} className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-bold text-lg hover:from-blue-600 hover:to-purple-600 shadow-2xl">
+                🚀 Enter Dashboard
+              </button>
+              <button onClick={() => setShowAdminModal(true)} className="px-8 py-4 bg-white/10 backdrop-blur text-white rounded-xl font-bold text-lg hover:bg-white/20 border border-white/30">ounded-lg">
+                🔐 Admin Portal
+              </button>rple-600 font-medium">{idx + 1}.</span>
+            </div>
+          </div>
+n className="text-xs text-gray-400">Type: {q.type}</span>
+          {/* Feature Cards */}v>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-12">v>
+            {[/div>
+              { icon: '🤖', title: 'AI Registration Bot', desc: 'Interactive practice onboarding', color: 'from-cyan-500 to-cyan-700' },
+              { icon: '📊', title: 'OnPacePlus Protocol', desc: '6-phase innovation pipeline', color: 'from-emerald-500 to-emerald-700' },                      </div>
+              { icon: '💬', title: 'KCN Chat Network', desc: 'Real-time collaboration', color: 'from-violet-500 to-violet-700' },
+              { icon: '📄', title: 'CSV Conversion Hub', desc: 'Intelligent data import', color: 'from-orange-500 to-orange-700' }
+            ].map((feature, idx) => (="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              <div key={idx} onClick={() => setShowAdminModal(true)} className={`p-6 rounded-2xl bg-gradient-to-br ${feature.color} cursor-pointer transform hover:scale-105 transition-all shadow-xl`}>y Survey
+                <div className="text-4xl mb-3">{feature.icon}</div>
+                <h3 className="text-lg font-bold text-white mb-1">{feature.title}</h3>ssName="flex-1 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                <p className="text-sm text-white/80">{feature.desc}</p>rt
+              </div>tton>
+            ))}v>
+          </div>iv>
+        </div }
+ay-400">
+        {/* Admin Modal */}
+        {showAdminModal && (enerate a survey to see preview</p>
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"></div>
+            <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">v>
+                <div className="flex items-center justify-between">v>
+                  <h2 className="text-xl font-bold">🔐 Admin Management</h2></div>
+                  <button onClick={() => { setShowAdminModal(false); setSelectedRole(null); setPasswordInput(''); setPasswordError(''); }} className="p-2 hover:bg-white/20 rounded-full">✕</button>          )}
+                </div>
+              </div>
+              <div className="p-6">asAccess('all') && (
+                {!selectedRole ? (
+                  <div className="space-y-3"><h2 className="text-2xl font-bold">📁 AI-Guided CSV Conversion</h2>
+                    <p className="text-gray-600 mb-4">Select your role:</p>
+                    {Object.values(ADMIN_ROLES).map(role => (
+                      <button key={role.id} onClick={() => setSelectedRole(role.id)} className="w-full p-4 rounded-xl border-2 text-left hover:border-purple-500 flex items-center gap-4 transition-all"><h3 className="font-semibold mb-4">Upload Data File</h3>
+                        <span className="text-3xl">{role.icon}</span>
+                        <div>rder-gray-300 rounded-xl p-8 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                          <h3 className="font-semibold">{role.title}</h3>
+                          <p className="text-sm text-gray-500">{role.desc}</p> here</p>
+                        </div>e</p>
+                      </button>
+                    ))}                </div>
+                  </div>
+                ) : ( className="mt-6 grid md:grid-cols-3 gap-4">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl">
+                      <span className="text-2xl">{ADMIN_ROLES[selectedRole].icon}</span>
+                      <span className="font-semibold">{ADMIN_ROLES[selectedRole].name}</span> label: 'Appointment Data', desc: 'Scheduling information' }
+                    </div>
+                    <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()} className="w-full p-3 border-2 rounded-xl focus:border-purple-500 focus:outline-none" placeholder="Enter password" />unded-lg hover:bg-purple-50 cursor-pointer">
+                    {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}iv>
+                    <div className="flex gap-3">
+                      <button onClick={() => setSelectedRole(null)} className="flex-1 py-3 border-2 rounded-xl">Back</button>lassName="text-xs text-gray-500">{type.desc}</p>
+                      <button onClick={handleAdminLogin} className="flex-1 py-3 bg-purple-600 text-white rounded-xl">Login</button>/div>
+                    </div>
+                    <p className="text-xs text-gray-400 text-center">Demo passwords: medpact2026 | owner2026 | admin2026</p>v>
+                  </div>              </div>
+                )}
+              </div>
+            </div>
+          </div>lassName="text-sm text-blue-700">Our AI will automatically detect and map your CSV columns to the correct data fields. You can review and adjust mappings before import.</p>
+        )}v>
+      </div></div>
+    );          )}
+  }
+
+  // ==========================================
+  // ADMIN PANEL
+  // ==========================================
+  if (isAuthenticated) {
+    return ( className="grid md:grid-cols-3 gap-4">
+      <div className="min-h-screen bg-gray-100">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 sticky top-0 z-20">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">ution' },
+            <div className="flex items-center gap-4">
+              <span className="text-2xl">{currentAdminRole?.icon}</span>es' },
+              <div>hrono', logo: '📱', status: 'available', desc: 'Mobile EHR platform' }
+                <h1 className="text-xl font-bold">Admin Panel - {currentAdminRole?.name}</h1> => (
+                <p className="text-sm opacity-80">MedPact Practice Intelligence v2.8.0</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setCurrentScreen('app')} className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30">📊 Dashboard</button>electedEMR === emr.name ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-gray-300 bg-white'
+              <button onClick={() => { setIsAuthenticated(false); setCurrentAdminRole(null); setShowAdminModal(false); }} className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600">🚪 Logout</button> }`}
+            </div>
+          </div>v>
+        </div>
+
+        {/* Tab Navigation */}lassName="inline-block mt-2 px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Available</span>
+        <div className="bg-white border-b sticky top-16 z-10">/button>
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex gap-1 overflow-x-auto py-2">              </div>
+              {hasAccess('registration') && <button onClick={() => setAdminPanelTab('registration')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'registration' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>🤖 Practice Registration</button>}
+              {hasAccess('onpaceplus') && <button onClick={() => setAdminPanelTab('onpaceplus')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'onpaceplus' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>📊 OnPacePlus</button>}
+              {hasAccess('kcn') && <button onClick={() => setAdminPanelTab('kcn')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'kcn' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>💬 KCN Chat</button>}
+              {hasAccess('csv') && <button onClick={() => setAdminPanelTab('csv')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'csv' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>📄 CSV Conversion</button>}d mb-4">Connect to {selectedEMR}</h3>
+              {hasAccess('survey') && <button onClick={() => setAdminPanelTab('survey')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'survey' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>🤖 AI Surveys</button>}assName="space-y-4">
+              {hasAccess('emr') && <button onClick={() => setAdminPanelTab('emr')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'emr' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>🏥 EMR Integration</button>}
+              {hasAccess('consultant') && <button onClick={() => setAdminPanelTab('consultant')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'consultant' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>👨‍💼 Consultants</button>}
+              {hasAccess('payment') && <button onClick={() => setAdminPanelTab('payment')} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === 'payment' ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>💳 Payment</button>}ut type="text" className="w-full px-4 py-2 border rounded-lg" placeholder="Enter your API key" />
+            </div>>
+          </div>
+        </div>
+ut type="text" className="w-full px-4 py-2 border rounded-lg" placeholder="Enter practice ID" />
+        {/* Content */}
+        <div className="max-w-7xl mx-auto p-6">e="w-full py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700">
+          ect EMR
+          {/* PRACTICE REGISTRATION BOT */}tton>
+          {adminPanelTab === 'registration' && (v>
+            <div className="grid lg:grid-cols-2 gap-6"></div>
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col" style={{ height: '600px' }}>
+                <div className="bg-gradient-to-r from-cyan-600 to-blue-600 p-4 text-white"></div>
+                  <h2 className="text-xl font-bold">🤖 AI Practice Registration Bot</h2>          )}
+                  <p className="text-sm opacity-80">Interactive 25-question interview</p>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">asAccess('all') && (
+                  {registrationChat.map((msg, idx) => (
+                    <div key={idx} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}><h2 className="text-2xl font-bold">👁️ KCN Assessment Module</h2>
+                      <div className={`max-w-[80%] p-3 rounded-2xl ${msg.type === 'user' ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-white shadow rounded-bl-sm'}`}>
+                        {msg.type === 'bot' && <span className="mr-2">🤖</span>}
+                        {msg.message}<h3 className="font-semibold mb-4">Keratoconus Assessment Tools</h3>
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={chatEndRef} /> Topography Analysis</h4>
+                </div>blue-700">
+                <div className="border-t p-4 bg-white">ng
+                  {registrationStep < REGISTRATION_QUESTIONS.length ? (
+                    <>i>
+                      <div className="flex gap-2">>• Progression tracking</li>
+                        {REGISTRATION_QUESTIONS[registrationStep].type === 'select' ? (>
+                          <select value={currentInput} onChange={(e) => setCurrentInput(e.target.value)} className="flex-1 p-3 border-2 rounded-xl focus:border-blue-500 focus:outline-none"></div>
+                            <option value="">Select...</option>
+                            {REGISTRATION_QUESTIONS[registrationStep].options?.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                          </select> Staging & Classification</h4>
+                        ) : (-700">
+                          <input type={REGISTRATION_QUESTIONS[registrationStep].type === 'number' ? 'number' : 'text'} value={currentInput} onChange={(e) => setCurrentInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleRegistrationInput()} className="flex-1 p-3 border-2 rounded-xl focus:border-blue-500 focus:outline-none" placeholder="Type your answer..." />cation</li>
+                        )}
+                        <button onClick={handleRegistrationInput} className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700">Send</button></li>
+                      </div>>• Follow-up scheduling</li>
+                      <div className="mt-3">>
+                        <div className="flex justify-between text-sm text-gray-500 mb-1">v>
+                          <span>Progress</span>                </div>
+                          <span>{registrationStep + 1}/{REGISTRATION_QUESTIONS.length}</span>
+                        </div>full py-3 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg font-semibold">
+                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">ch KCN Assessment
+                          <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all" style={{ width: `${((registrationStep + 1) / REGISTRATION_QUESTIONS.length) * 100}%` }} />tton>
+                        </div>v>
+                      </div></div>
+                    </>          )}
+                  ) : (
+                    <div className="flex gap-2">
+                      <button onClick={resetRegistration} className="flex-1 py-3 border-2 rounded-xl hover:bg-gray-50">🔄 Register Another</button>' && hasAccess('all') && (
+                      <button onClick={() => generatePracticeCSV(registeredPractices[registeredPractices.length - 1])} className="flex-1 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700">📄 Download CSV</button>
+                    </div><h2 className="text-2xl font-bold">🧭 Navigation Expert</h2>
+                  )}
+                </div>
+              </div><h3 className="font-semibold mb-4">Quick Navigation Guide</h3>
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-green-600 to-teal-600 p-4 text-white"> className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <h2 className="text-xl font-bold">📋 Registered Practices</h2>
+                  <p className="text-sm opacity-80">{registeredPractices.length} practices</p>
+                </div>rs'); }},
+                <div className="p-4 space-y-3 max-h-[520px] overflow-y-auto">
+                  {registeredPractices.length === 0 ? (,
+                    <div className="text-center py-12 text-gray-400">iation'); }},
+                      <span className="text-5xl block mb-3">🏥</span> title: 'Marketing', path: 'Dashboard → Marketing Tab', action: () => { setCurrentScreen('app'); setActiveTab('marketing'); }}
+                      <p>No practices registered yet</p> => (
+                    </div>
+                  ) : (
+                    registeredPractices.map(practice => (
+                      <div key={practice.id} className="border rounded-xl p-4 hover:shadow-md transition-shadow"> className="p-4 bg-gray-50 rounded-xl hover:bg-purple-50 text-left transition-colors"
+                        <div className="flex justify-between mb-2">
+                          <h3 className="font-semibold">{practice.practice_name}</h3>iv>
+                          <span className="text-gray-500 text-sm">{practice.registeredAt.split('T')[0]}</span>
+                        </div>sName="text-xs text-gray-500">{item.path}</p>
+                        <p className="text-sm text-gray-500 mb-2">{practice.specialty} • {practice.practice_type}</p>/button>
+                        <p className="text-sm text-gray-500 mb-2">{practice.city}, {practice.state}</p>
+                        <div className="flex gap-2">v>
+                          <button onClick={() => generatePracticeCSV(practice)} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">📄 Download CSV</button>v>
+                          <button onClick={() => setRegisteredPractices(prev => prev.filter(p => p.id !== practice.id))} className="flex-1 px-4 py-2 border-2 border-red-500 text-red-500 rounded-lg hover:bg-red-50 text-sm">🗑️ Delete</button></div>
+                        </div>          )}
+                      </div>
+                    ))
+                  )}t' && hasAccess('all') && (
+                </div>
+              </div><h2 className="text-2xl font-bold">👨‍💼 Select a Consultant</h2>
+            </div>
+          )}2 gap-6">
+TANTS.map(consultant => (
+          {/* ONPACEPLUS PROTOCOL */}
+          {adminPanelTab === 'onpaceplus' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">electedConsultant?.id === consultant.id ? 'border-purple-500' : 'border-transparent hover:border-gray-200'
+                <div>
+                  <h2 className="text-2xl font-bold">📊 OnPacePlus Protocol</h2> onClick={() => setSelectedConsultant(consultant)}
+                  <p className="text-gray-500">Innovation Management - 6 Phase Pipeline</p>
+                </div>
+                <button onClick={() => setShowNewProjectModal(true)} className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600">+ New Project</button>">{consultant.avatar}</div>
+              </div>
+
+              {/* Phase Overview */}}</h3>
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <div className="grid grid-cols-6 gap-3">able' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                  {INNOVATION_PHASES.map((phase, idx) => ({consultant.availability}</span>
+                    <div key={phase.id} className="text-center">
+                      <div className="p-4 rounded-xl text-white mb-2" style={{ backgroundColor: phase.color }}>
+                        <span className="text-2xl block">{phase.icon}</span>ce} experience</p>
+                        <span className="text-sm font-semibold">{phase.name}</span>o}</p>
+                      </div>etween mt-3">
+                      <span className="text-xs text-gray-500">{innovationProjects.filter(p => p.phase === phase.id).length} projects</span>
+                    </div>
+                  ))}n className="font-medium">{consultant.rating}</span>
+                </div>
+              </div>n className="font-semibold text-green-600">${consultant.hourlyRate}/hr</span>
+v>
+              {/* Projects */}v>
+              <div className="grid lg:grid-cols-3 gap-4">v>
+                {INNOVATION_PHASES.slice(0, 3).map(phase => {/div>
+                  const phaseProjects = innovationProjects.filter(p => p.phase === phase.id);
+                  return (              </div>
+                    <div key={phase.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                      <div className="p-3 text-white flex items-center gap-2" style={{ backgroundColor: phase.color }}>
+                        <span>{phase.icon}</span>
+                        <span className="font-semibold">{phase.name}</span>d mb-4">Request Consultation with {selectedConsultant.name}</h3>
+                        <span className="ml-auto bg-white/20 px-2 py-0.5 rounded-full text-sm">{phaseProjects.length}</span>assName="space-y-4">
+                      </div>
+                      <div className="p-3 space-y-2 min-h-[200px]">ssName="block text-sm font-medium mb-2">Describe your needs</label>
+                        {phaseProjects.length === 0 ? (
+                          <p className="text-gray-400 text-sm text-center py-8">No projects</p>
+                        ) : (lue)}
+                          phaseProjects.map(project => (
+                            <div key={project.id} className="border rounded-lg p-3 hover:shadow-md">placeholder="Tell the consultant about your practice challenges and goals..."
+                              <div className="flex justify-between mb-2">
+                                <h4 className="font-medium text-sm">{project.name}</h4>
+                                <span className={`px-2 py-0.5 rounded text-xs ${project.priority === 'high' ? 'bg-red-100 text-red-700' : project.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>{project.priority}</span>py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold">
+                              </div>dule Consultation
+                              <p className="text-xs text-gray-500 mb-2">{project.description}</p>tton>
+                              <div className="h-1.5 bg-gray-200 rounded-full">v>
+                                <div className="h-full rounded-full" style={{ width: `${project.progress}%`, backgroundColor: phase.color }} /></div>
+                              </div>
+                              <div className="mt-2 flex gap-1"></div>
+                                {INNOVATION_PHASES.map(p => (          )}
+                                  <button key={p.id} onClick={() => updateProjectPhase(project.id, p.id)} className={`flex-1 py-1 rounded text-xs ${project.phase === p.id ? 'text-white' : 'bg-gray-100 hover:bg-gray-200'}`} style={project.phase === p.id ? { backgroundColor: p.color } : {}} title={p.name}>{p.icon}</button>
+                                ))}
+                              </div>&& hasAccess('payment') && (
+                            </div                          ))<h2 className="text-2xl font-bold">💳 Payment & Renewal</h2>
+                        )}
+                      </div>
+                    </div>
+                  );mb-4">Current Plan</h3>
+                })}
+              </div>
+
+              {/* New Project Modal */}text-gray-500">/month</span></p>
+              {showNewProjectModal && (lassName="text-sm text-gray-500 mt-2">Renews: April 20, 2026</p>
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">v>
+                  <div className="bg-white rounded-2xl max-w-lg w-full p-6">                </div>
+                    <h2 className="text-xl font-bold mb-4">📊 New Innovation Project</h2>
+                    <div className="space-y-4">
+                      <input type="text" value={newProject.name} onChange={(e) => setNewProject(p => ({ ...p, name: e.target.value }))} className="w-full p-3 border-2 rounded-xl" placeholder="Project name" />
+                      <div className="grid grid-cols-2 gap-4">-lg flex items-center gap-4">
+                        <select value={newProject.phase} onChange={(e) => setNewProject(p => ({ ...p, phase: e.target.value }))} className="p-3 border-2 rounded-xl"> className="text-2xl">💳</span>
+                          {INNOVATION_PHASES.map(phase => <option key={phase.id} value={phase.id}>{phase.icon} {phase.name}</option>)}
+                        </select>
+                        <select value={newProject.priority} onChange={(e) => setNewProject(p => ({ ...p, priority: e.target.value }))} className="p-3 border-2 rounded-xl">lassName="text-sm text-gray-500">Expires 12/27</p>
+                          <option value="high">🔴 High</option>v>
+                          <option value="medium">🟡 Medium</option>
+                          <option value="low">🟢 Low</option> w-full py-2 border-2 border-purple-500 text-purple-600 rounded-lg hover:bg-purple-50">
+                        </select>Payment Method
+                      </div>tton>
+                      <input type="text" value={newProject.lead} onChange={(e) => setNewProject(p => ({ ...p, lead: e.target.value }))} className="w-full p-3 border-2 rounded-xl" placeholder="Project lead" />                </div>
+                      <input type="text" value={newProject.team} onChange={(e) => setNewProject(p => ({ ...p, team: e.target.value }))} className="w-full p-3 border-2 rounded-xl" placeholder="Team members (comma-separated)" />
+                      <input type="date" value={newProject.targetDate} onChange={(e) => setNewProject(p => ({ ...p, targetDate: e.target.value }))} className="w-full p-3 border-2 rounded-xl" />
+                      <textarea value={newProject.description} onChange={(e) => setNewProject(p => ({ ...p, description: e.target.value }))} className="w-full p-3 border-2 rounded-xl h-24 resize-none" placeholder="Description" />d mb-4">Billing History</h3>
+                      <div className="flex gap-3"> className="space-y-2">
+                        <button onClick={() => setShowNewProjectModal(false)} className="flex-1 py-3 border-2 rounded-xl">Cancel</button>
+                        <button onClick={handleCreateProject} disabled={!newProject.name} className="flex-1 py-3 bg-purple-600 text-white rounded-xl disabled:opacity-50">Create</button>
+                      </div>,
+                    </div>6', amount: '$299', status: 'Paid' }
+                  </div>
+                </div>stify-between py-2 border-b">
+              )}
+            </div>
+          )}n className="text-green-600 text-sm">{bill.status}</span>
+</div>
+          {/* KCN CHAT (Knowledge & Communication Network) */}
+          {adminPanelTab === 'kcn' && (v>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-6 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold">Upgrade to Enterprise</h3>
+                    <p className="opacity-80">Unlock unlimited features, priority support, and custom integrations</p>
+                  </div>
+                  <button className="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100">
+                    View Plans
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // MAIN DASHBOARD SCREEN
+  // ==========================================
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button onClick={() => setCurrentScreen('home')} className="p-2 hover:bg-gray-100 rounded-lg">🏠</button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">🏥 MedPact Practice Intelligence</h1>
+                <p className="text-sm text-gray-500">v2.6.0 | Bay Area Eye Care</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setShowAdminModal(true)} className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-200">
+                🔐 Admin
+              </button>
+              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">72nd Percentile</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="bg-white border-b sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex gap-1 overflow-x-auto py-2">
+            {[
+              { id: 'overview', label: '📊 Overview' },
+              { id: 'metrics', label: '📈 6 Metrics' },
+              { id: 'insights', label: '🤖 AI Insights' },
+              { id: 'competitors', label: '🎯 Competitors' },
+              { id: 'heatmap', label: '🔥 Heat Map' },
+              { id: 'marketing', label: '📣 Marketing' },
+              { id: 'practice-intel', label: '🧠 Practice Intel' },
+              { id: 'pricing', label: '💰 Pricing' },
+              { id: 'negotiation', label: '🤝 Negotiation' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-3 font-medium border-b-2 transition-colors whitespace-nowrap ${
+                  activeTab === tab.id ? 'border-blue-600 text-blue-600 bg-blue-50' : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* OVERVIEW */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {CORE_METRICS.map(m => (
+                <div key={m.id} className="bg-white rounded-xl shadow p-4 border-l-4 border-blue-500">
+                  <div className="text-2xl">{m.icon}</div>
+                  <div className="text-xs text-gray-500">{m.name}</div>
+                  <div className="text-lg font-bold">{m.value}</div>
+                  <div className={`text-sm ${m.trendUp ? 'text-green-600' : 'text-red-600'}`}>{m.trend}</div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-4 gap-4">
+              {[
+                { icon: '🎯', label: 'Competitors', tab: 'competitors', color: 'purple' },
+                { icon: '🔥', label: 'Heat Map', tab: 'heatmap', color: 'green' },
+                { icon: '💰', label: 'Pricing', tab: 'pricing', color: 'yellow' },
+                { icon: '🔐', label: 'Admin', action: () => setShowAdminModal(true), color: 'pink' }
+              ].map(btn => (
+                <button
+                  key={btn.label}
+                  onClick={btn.action || (() => setActiveTab(btn.tab))}
+                  className={`p-5 bg-gradient-to-br from-${btn.color}-500 to-${btn.color}-700 text-white rounded-xl shadow-lg hover:shadow-xl`}
+                >
+                  <div className="text-3xl mb-4">{btn.icon}</div>
+                  <h3 className="font-bold">{btn.label}</h3>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* METRICS */}
+        {activeTab === 'metrics' && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {CORE_METRICS.map(m => (
+              <div key={m.id} className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">{m.icon}</span>
+                  <h3 className="font-semibold">{m.name}</h3>
+                </div>
+                <div className="text-3xl font-bold mb-4">{m.value}</div>
+                <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 rounded-full" style={{ width: `${m.percentile}%` }}></div>
+                </div>
+                <div className="flex justify-between text-sm mt-2">
+                  <span className="text-gray-500">{m.percentile}th percentile</span>
+                  <span className={m.trendUp ? 'text-green-600' : 'text-red-600'}>{m.trend}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* AI INSIGHTS */}
+        {activeTab === 'insights' && (
+          <div className="space-y-4">
+            {AI_INSIGHTS.map((insight, idx) => (
+              <div key={idx} className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+                <div className="flex items-start gap-4">
+                  <span className="text-4xl">{insight.icon}</span>
+                  <div>
+                    <h3 className="font-semibold">{insight.title}</h3>
+                    <p className="text-gray-600">{insight.description}</p>
+                    <p className="text-blue-600 font-medium mt-1">{insight.impact}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* COMPETITORS */}
+        {activeTab === 'competitors' && (
+          <div className="space-y-4">
+            {COMPETITORS.map(c => (
+              <div key={c.id} className="bg-white rounded-xl shadow p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold">{c.name}</h3>
+                    <p className="text-sm text-gray-500">{c.address}</p>
+                    <div className="flex gap-2 mt-2">
+                      <span className="text-sm">⭐ {c.ratings.google}</span>
+                      <span className="text-sm text-gray-400">|</span>
+                      <span className="text-sm">{c.distance} mi</span>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">{c.type}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* HEAT MAP */}
+        {activeTab === 'heatmap' && (
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-bold mb-4">🔥 Patient Heat Map</h2>
+            <div className="grid grid-cols-5 gap-3">
+              {HEATMAP_DATA.map(z => (
+                <div key={z.zip} className="p-4 rounded-lg text-center text-white" style={{ backgroundColor: z.profitIndex >= 90 ? '#22C55E' : z.profitIndex >= 80 ? '#3B82F6' : '#F59E0B' }}>
+                  <div className="text-sm">{z.zip}</div>
+                  <div className="text-2xl font-bold">{z.profitIndex}</div>
+                  <div className="text-xs">{z.patients} pts</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* MARKETING */}
+        {activeTab === 'marketing' && (
+          <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+            <div className="text-5xl mb-4">📣</div>
+            <h2 className="text-xl font-bold mb-2">Marketing Campaign Builder</h2>
+            <p className="text-gray-500 mb-4">Create targeted social media ads for your practice</p>
+            <button className="px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold">🚀 Start Campaign</button>
+          </div>
+        )}
+
+        {/* PRACTICE INTEL */}
+        {activeTab === 'practice-intel' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">🧠 Practice Intelligence</h2>
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="font-semibold mb-4">Staff Assessment</h3>
+              {STAFF_MEMBERS.map(s => (
+                <div key={s.id} className="flex items-center justify-between p-3 border-b">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl">{s.avatar}</span>
+                    <div>
+                      <h4 className="font-medium">{s.name}</h4>
+                      <p className="text-sm text-gray-500">{s.role}</p>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full">
+                    Score: {calculateStaffScore(s.id, ownerGoal)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* PRICING */}
+        {activeTab === 'pricing' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">💰 Price Transparency</h2>
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="text-left py-3 px-4">CPT Code</th>
+                    <th className="text-left py-3 px-4">Description</th>
+                    <th className="text-center py-3 px-4 text-blue-600">Commercial</th>
+                    <th className="text-center py-3 px-4 text-green-600">Medicare</th>
+                    <th className="text-center py-3 px-4 text-orange-600">Medicaid</th>
+                    <th className="text-center py-3 px-4 text-purple-600">Your Rate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {PRICE_TRANSPARENCY_DATA.map(p => (
+                    <tr key={p.cptCode} className="border-b">
+                      <td className="py-3 px-4 font-mono">{p.cptCode}</td>
+                      <td className="py-3 px-4 text-sm">{p.description}</td>
+                      <td className="py-3 px-4 text-center text-blue-600">${p.commercial.avg}</td>
+                      <td className="py-3 px-4 text-center text-green-600">${p.medicare}</td>
+                      <td className="py-3 px-4 text-center text-orange-600">${p.medicaid}</td>
+                      <td className="py-3 px-4 text-center font-medium text-purple-600">${p.yourPrice}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* NEGOTIATION */}
+        {activeTab === 'negotiation' && (
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-6">🤝 5-Step Payer Negotiation</h2>
+            <div className="flex items-center justify-between mb-8">
+              {[1,2,3,4,5].map(step => (
+                <div key={step} className="flex items-center">
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${step <= 2 ? 'bg-green-500 text-white' : step === 3 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
+                    {step <= 2 ? '✓' : step}
+                  </div>
+                  {step < 5 && <div className={`w-16 h-1 ${step < 3 ? 'bg-green-500' : 'bg-gray-200'}`}></div>}
+                  </div>
+                  {step < 5 && <div className={`w-16 h-1 ${step < 3 ? 'bg-green-500' : 'bg-gray-200'}`}></div>}
+                </div>
+              ))}
+            </div>
+            <div className="grid md:grid-cols-5 gap-4 text-center text-sm">
+              <div>Data Prep</div>
+              <div>Market Analysis</div>
+              <div className="font-bold text-blue-600">Proposal</div>
+              <div>Negotiation</div>
+              <div>Finalize</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Admin Modal (when triggered from dashboard) */}
+      {showAdminModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">🔐</span>
+                  <h2 className="text-xl font-bold">Admin Management</h2>
+                </div>
+                <button onClick={() => { setShowAdminModal(false); setSelectedRole(null); }} className="p-2 hover:bg-white/20 rounded-full">✕</button>
+              </div>
+            </div>
+            <div className="p-6">
+              {!selectedRole ? (
+                <div className="space-y-4">
+                  {[
+                    { key: 'medpact-team', icon: '🏢', title: 'MedPact Team', desc: 'Full access' },
+                    { key: 'owner', icon: '👤', title: 'Owner', desc: 'Payment & survey access' },
+                    { key: 'admin', icon: '⚙️', title: 'Administrator', desc: 'Survey access' }
+                  ].map(role => (
+                    <button key={role.key} onClick={() => handleRoleSelect(role.key)} className="w-full p-4 rounded-xl border-2 text-left hover:border-purple-500 flex items-center gap-4 transition-all"><h3 className="font-semibold mb-4">Upload Data File</h3>
+                        <span className="text-3xl">{role.icon}</span>
+                        <div>rder-gray-300 rounded-xl p-8 text-center hover:border-purple-500 transition-colors cursor-pointer">
+                          <h3 className="font-semibold">{role.title}</h3>
+                          <p className="text-sm text-gray-500">{role.desc}</p> here</p>
+                        </div>e</p>
+                      </button>
+                    ))}                </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                  <button onClick={() => setSelectedRole(null)} className="text-sm text-blue-600">← Back</button>
+                  <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()} className="w-full px-4 py-3 border rounded-xl" placeholder="Password" />
+                  {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
+                  <button onClick={handleAdminLogin} className="w-full py-3 bg-purple-600 text-white rounded-xl font-semibold">🔓 Access</button>
+                  <p className="text-xs text-gray-400 text-center">Demo: medpact2026 | owner2026 | admin2026</p>
+                </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Benchmarks;
+
+// ============================================================================
+// 6 METRIC PACKAGES - MedPact Practice Intelligence v2.1.0
+// Based on Richard Lindstrom's OSN lecture with John Pinto
+// ============================================================================
+
+// Package 1: PRIVATE PRACTICE 9 METRICS (Foundation Tier)
+// Standard RCM metrics for individual practices
+const PRACTICE_9_METRICS = [
+  { 
+    key: 'collection_rate', 
+    title: 'Net Collection Rate', 
+    description: 'Percent of allowed charges collected', 
+    calculation: 'Paid Amount / Allowed Amount × 100',
+    benchmark: 98, 
+    unit: '%', 
+    icon: '💰',
+    inputs: [
+      { key: 'allowed_amount', label: 'Allowed Amount', type: 'number', unit: 'USD' },
+      { key: 'paid_amount', label: 'Paid Amount', type: 'number', unit: 'USD' }
+    ]
+  },
+  { 
+    key: 'days_in_ar', 
+    title: 'Days in A/R', 
+    description: 'Average days to collect payment', 
+    calculation: '(Total A/R / Average Daily Charges)',
+    benchmark: 32, 
+    unit: 'days', 
+    icon: '📅',
+    inputs: [
+      { key: 'total_ar', label: 'Total A/R', type: 'number', unit: 'USD' },
+      { key: 'daily_charges', label: 'Avg Daily Charges', type: 'number', unit: 'USD' }
+    ]
+  },
+  { 
+    key: 'denial_rate', 
+    title: 'Denial Rate', 
+    description: 'Percent of claims denied', 
+    calculation: 'Denied Claims / Total Claims × 100',
+    benchmark: 5, 
+    unit: '%', 
+    icon: '❌',
+    inputs: [
+      { key: 'denied_claims', label: 'Denied Claims', type: 'number' },
+      { key: 'total_claims', label: 'Total Claims', type: 'number' }
+    ]
+  },
+  { 
+    key: 'first_pass_rate', 
+    title: 'First Pass Resolution Rate', 
+    description: 'Claims paid on first submission', 
+    calculation: 'Claims Paid First Pass / Total Claims × 100',
+    benchmark: 95, 
+    unit: '%', 
+    icon: '✅',
+    inputs: [
+      { key: 'first_pass_claims', label: 'First Pass Claims', type: 'number' },
+      { key: 'total_claims', label: 'Total Claims', type: 'number' }
+    ]
+  },
+  { 
+    key: 'charge_lag', 
+    title: 'Charge Lag', 
+    description: 'Days between service and charge entry', 
+    calculation: 'Avg(Charge Date - DOS)',
+    benchmark: 2, 
+    unit: 'days', 
+    icon: '⏱️',
+    inputs: [
+      { key: 'charge_lag_days', label: 'Average Charge Lag', type: 'number', unit: 'days' }
+    ]
+  },
+  { 
+    key: 'ar_over_90', 
+    title: 'A/R Over 90 Days', 
+    description: 'Percent of A/R aged over 90 days', 
+    calculation: 'A/R > 90 Days / Total A/R × 100',
+    benchmark: 15, 
+    unit: '%', 
+    icon: '⚠️',
+    inputs: [
+      { key: 'ar_over_90', label: 'A/R Over 90 Days', type: 'number', unit: 'USD' },
+      { key: 'total_ar', label: 'Total A/R', type: 'number', unit: 'USD' }
+    ]
+  },
+  { 
+    key: 'patient_volume', 
+    title: 'Patient Volume', 
+    description: 'Monthly patient visits', 
+    calculation: 'Count of unique patient visits',
+    benchmark: 1200, 
+    unit: 'visits/mo', 
+    icon: '👥',
+    inputs: [
+      { key: 'patient_visits', label: 'Patient Visits', type: 'number' }
+    ]
+  },
+  { 
+    key: 'revenue_per_visit', 
+    title: 'Revenue per Visit', 
+    description: 'Average revenue per patient encounter', 
+    calculation: 'Total Revenue / Patient Visits',
+    benchmark: 185, 
+    unit: 'USD', 
+    icon: '💵',
+    inputs: [
+      { key: 'total_revenue', label: 'Total Revenue', type: 'number', unit: 'USD' },
+      { key: 'visits', label: 'Patient Visits', type: 'number' }
+    ]
+  },
+  { 
+    key: 'bad_debt_rate', 
+    title: 'Bad Debt Rate', 
+    description: 'Uncollectable patient balances', 
+    calculation: 'Bad Debt Write-offs / Total Charges × 100',
+    benchmark: 3, 
+    unit: '%', 
+    icon: '📉',
+    inputs: [
+      { key: 'bad_debt', label: 'Bad Debt Write-offs', type: 'number', unit: 'USD' },
+      { key: 'total_charges', label: 'Total Charges', type: 'number', unit: 'USD' }
+    ]
+  }
+];
+
+// Package 2: PE PRACTICE 10 METRICS (Valuation Tier)
+// Private Equity investment evaluation metrics
+const PE_10_METRICS = [
+  { 
+    key: 'pe_revenue', 
+    title: 'Total Revenue', 
+    description: 'Total collected revenue', 
+    calculation: 'Sum of all payments',
+    benchmark: 2500000, 
+    unit: 'USD', 
+    icon: '💰',
+    inputs: [{ key: 'total_payments', label: 'Total Payments', type: 'number', unit: 'USD' }]
+  },
+  { 
+    key: 'pe_ebitda_margin', 
+    title: 'EBITDA Margin', 
+    description: 'Profitability measure for PE valuation', 
+    calculation: 'EBITDA / Revenue × 100',
+    benchmark: 25, 
+    unit: '%', 
+    icon: '📊',
+    inputs: [
+      { key: 'ebitda', label: 'EBITDA', type: 'number', unit: 'USD' },
+      { key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' }
+    ]
+  },
+  { 
+    key: 'pe_revenue_per_provider', 
+    title: 'Revenue per Provider', 
+    description: 'Provider productivity metric', 
+    calculation: 'Revenue / Provider Count',
+    benchmark: 625000, 
+    unit: 'USD', 
+    icon: '👨‍⚕️',
+    inputs: [
+      { key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' },
+      { key: 'providers', label: 'Provider Count', type: 'number' }
+    ]
+  },
+  { 
+    key: 'pe_patients_per_clinic_day', 
+    title: 'Patients per Clinic Day', 
+    description: 'Clinic throughput efficiency', 
+    calculation: 'Patient Visits / Clinic Days',
+    benchmark: 28, 
+    unit: 'patients', 
+    icon: '📅',
+    inputs: [
+      { key: 'visits', label: 'Total Visits', type: 'number' },
+      { key: 'clinic_days', label: 'Clinic Days', type: 'number' }
+    ]
+  },
+  { 
+    key: 'pe_procedure_conversion', 
+    title: 'Procedure Conversion Rate', 
+    description: 'Surgery pipeline efficiency', 
+    calculation: 'Procedures / Evaluations × 100',
+    benchmark: 35, 
+    unit: '%', 
+    icon: '🔬',
+    inputs: [
+      { key: 'procedures', label: 'Procedures', type: 'number' },
+      { key: 'evaluations', label: 'Evaluations', type: 'number' }
+    ]
+  },
+  { 
+    key: 'pe_net_collection_rate', 
+    title: 'Net Collection Rate', 
+    description: 'Billing efficiency', 
+    calculation: 'Collected / Allowed × 100',
+    benchmark: 98, 
+    unit: '%', 
+    icon: '💵',
+    inputs: [
+      { key: 'collected', label: 'Collected Amount', type: 'number', unit: 'USD' },
+      { key: 'allowed', label: 'Allowed Amount', type: 'number', unit: 'USD' }
+    ]
+  },
+  { 
+    key: 'pe_days_in_ar', 
+    title: 'Days in A/R', 
+    description: 'Cash flow velocity', 
+    calculation: 'Total A/R / (Annual Revenue / 365)',
+    benchmark: 32, 
+    unit: 'days', 
+    icon: '⏰',
+    inputs: [
+      { key: 'total_ar', label: 'Total A/R', type: 'number', unit: 'USD' },
+      { key: 'annual_revenue', label: 'Annual Revenue', type: 'number', unit: 'USD' }
+    ]
+  },
+  { 
+    key: 'pe_staffing_ratio', 
+    title: 'Staffing Ratio', 
+    description: 'Staff per provider efficiency', 
+    calculation: 'Staff Count / Provider Count',
+    benchmark: 4.5, 
+    unit: 'staff:1', 
+    icon: '👥',
+    inputs: [
+      { key: 'staff', label: 'Staff Count', type: 'number' },
+      { key: 'providers', label: 'Provider Count', type: 'number' }
+    ]
+  },
+  { 
+    key: 'pe_cost_per_encounter', 
+    title: 'Cost per Encounter', 
+    description: 'Operational cost efficiency', 
+    calculation: 'Total Expenses / Patient Visits',
+    benchmark: 85, 
+    unit: 'USD', 
+    icon: '📋',
+    inputs: [
+      { key: 'expenses', label: 'Total Expenses', type: 'number', unit: 'USD' },
+      { key: 'visits', label: 'Total Visits', type: 'number' }
+    ]
+  },
+  { 
+    key: 'pe_asc_utilization', 
+    title: 'ASC Utilization', 
+    description: 'Surgical center efficiency', 
+    calculation: 'Cases Performed / OR Capacity × 100',
+    benchmark: 78, 
+    unit: '%', 
+    icon: '🏥',
+    inputs: [
+      { key: 'cases', label: 'Cases Performed', type: 'number' },
+      { key: 'capacity', label: 'OR Capacity', type: 'number' }
+    ]
+  }
+];
+
+// Package 3: KPI 25 METRICS (Comprehensive Tier)
+// 25 KPIs across all practice operations
+const KPI_25_METRICS = {
+  financial: [
+    { key: 'kpi_total_revenue', title: 'Total Revenue', description: 'Sum of all revenue', benchmark: 15000000, unit: 'USD', icon: '💵', inputs: [{ key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' }] },
+    { key: 'kpi_ebitda', title: 'EBITDA', description: 'Earnings before interest, taxes, depreciation, amortization', benchmark: 3750000, unit: 'USD', icon: '📈', inputs: [{ key: 'ebitda', label: 'EBITDA', type: 'number', unit: 'USD' }] },
+    { key: 'kpi_ebitda_margin', title: 'EBITDA Margin', description: 'EBITDA / Revenue × 100', benchmark: 25, unit: '%', icon: '📊', inputs: [{ key: 'ebitda', label: 'EBITDA', type: 'number', unit: 'USD' }, { key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' }] },
+    { key: 'kpi_revenue_per_provider', title: 'Revenue per Provider', description: 'Revenue / Providers', benchmark: 750000, unit: 'USD', icon: '👨‍⚕️', inputs: [{ key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' }, { key: 'providers', label: 'Providers', type: 'number' }] },
+    { key: 'kpi_revenue_per_encounter', title: 'Revenue per Encounter', description: 'Revenue / Patient Visits', benchmark: 185, unit: 'USD', icon: '💰', inputs: [{ key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' }, { key: 'visits', label: 'Visits', type: 'number' }] },
+    { key: 'kpi_revenue_growth', title: 'Revenue Growth Rate', description: '(Current − Previous) / Previous × 100', benchmark: 12, unit: '%', icon: '🚀', inputs: [{ key: 'current_revenue', label: 'Current Revenue', type: 'number', unit: 'USD' }, { key: 'previous_revenue', label: 'Previous Revenue', type: 'number', unit: 'USD' }] }
+  ],
+  productivity: [
+    { key: 'kpi_wrvus', title: 'Work RVUs per Provider', description: 'Annual wRVUs / Providers', benchmark: 8500, unit: 'wRVUs', icon: '⚡', inputs: [{ key: 'wrvus', label: 'Total wRVUs', type: 'number' }, { key: 'providers', label: 'Providers', type: 'number' }] },
+    { key: 'kpi_patients_per_day', title: 'Patients per Provider Day', description: 'Daily patient throughput', benchmark: 28, unit: 'patients', icon: '📅', inputs: [{ key: 'patients', label: 'Patients Seen', type: 'number' }, { key: 'provider_days', label: 'Provider Days', type: 'number' }] },
+    { key: 'kpi_surgical_cases', title: 'Surgical Cases per Surgeon', description: 'Surgeries / Surgeons', benchmark: 420, unit: 'cases/yr', icon: '🔪', inputs: [{ key: 'surgeries', label: 'Surgeries', type: 'number' }, { key: 'surgeons', label: 'Surgeons', type: 'number' }] },
+    { key: 'kpi_procedure_conversion', title: 'Procedure Conversion Rate', description: 'Procedures / Evaluations × 100', benchmark: 35, unit: '%', icon: '🔬', inputs: [{ key: 'procedures', label: 'Procedures', type: 'number' }, { key: 'evaluations', label: 'Evaluations', type: 'number' }] },
+    { key: 'kpi_injection_rate', title: 'Injection Rate', description: 'Injections per retina patient', benchmark: 6.5, unit: 'per patient', icon: '💉', inputs: [{ key: 'injections', label: 'Total Injections', type: 'number' }, { key: 'retina_patients', label: 'Retina Patients', type: 'number' }] },
+    { key: 'kpi_new_patient_rate', title: 'New Patient Rate', description: 'New / Total Patients × 100', benchmark: 25, unit: '%', icon: '🆕', inputs: [{ key: 'new_patients', label: 'New Patients', type: 'number' }, { key: 'total_patients', label: 'Total Patients', type: 'number' }] }
+  ],
+  revenue_cycle: [
+    { key: 'kpi_ncr', title: 'Net Collection Rate', description: 'Collected / Allowed × 100', benchmark: 98, unit: '%', icon: '💵', inputs: [{ key: 'collected', label: 'Collected', type: 'number', unit: 'USD' }, { key: 'allowed', label: 'Allowed', type: 'number', unit: 'USD' }] },
+    { key: 'kpi_dar', title: 'Days in A/R', description: 'Average collection days', benchmark: 32, unit: 'days', icon: '📆', inputs: [{ key: 'total_ar', label: 'Total A/R', type: 'number', unit: 'USD' }, { key: 'daily_revenue', label: 'Daily Revenue', type: 'number', unit: 'USD' }] },
+    { key: 'kpi_denial_rate', title: 'Denial Rate', description: 'Denied / Submitted × 100', benchmark: 5, unit: '%', icon: '❌', inputs: [{ key: 'denied', label: 'Denied Claims', type: 'number' }, { key: 'submitted', label: 'Submitted Claims', type: 'number' }] },
+    { key: 'kpi_first_pass', title: 'First Pass Resolution', description: 'Paid first time / Total × 100', benchmark: 95, unit: '%', icon: '✅', inputs: [{ key: 'first_pass', label: 'First Pass Paid', type: 'number' }, { key: 'total', label: 'Total Claims', type: 'number' }] },
+    { key: 'kpi_charge_lag', title: 'Charge Lag', description: 'Days from service to charge entry', benchmark: 2, unit: 'days', icon: '⏱️', inputs: [{ key: 'lag', label: 'Average Lag Days', type: 'number' }] },
+    { key: 'kpi_bad_debt', title: 'Bad Debt Rate', description: 'Write-offs / Charges × 100', benchmark: 3, unit: '%', icon: '📉', inputs: [{ key: 'bad_debt', label: 'Bad Debt', type: 'number', unit: 'USD' }, { key: 'charges', label: 'Total Charges', type: 'number', unit: 'USD' }] }
+  ],
+  operations: [
+    { key: 'kpi_staffing_ratio', title: 'Staff per Provider', description: 'Staff / Providers', benchmark: 4.5, unit: 'ratio', icon: '👥', inputs: [{ key: 'staff', label: 'Staff Count', type: 'number' }, { key: 'providers', label: 'Providers', type: 'number' }] },
+    { key: 'kpi_cost_per_encounter', title: 'Cost per Encounter', description: 'Operating costs / Visits', benchmark: 85, unit: 'USD', icon: '📋', inputs: [{ key: 'costs', label: 'Operating Costs', type: 'number', unit: 'USD' }, { key: 'visits', label: 'Visits', type: 'number' }] },
+    { key: 'kpi_expense_ratio', title: 'Operating Expense Ratio', description: 'Expenses / Revenue × 100', benchmark: 65, unit: '%', icon: '⚙️', inputs: [{ key: 'expenses', label: 'Operating Expenses', type: 'number', unit: 'USD' }, { key: 'revenue', label: 'Revenue', type: 'number', unit: 'USD' }] },
+    { key: 'kpi_optical_revenue', title: 'Optical Revenue per Patient', description: 'Optical sales / Optical patients', benchmark: 285, unit: 'USD', icon: '👓', inputs: [{ key: 'optical_revenue', label: 'Optical Revenue', type: 'number', unit: 'USD' }, { key: 'optical_patients', label: 'Optical Patients', type: 'number' }] },
+    { key: 'kpi_wait_time', title: 'Average Wait Time', description: 'Avg patient wait in minutes', benchmark: 15, unit: 'min', icon: '⏰', inputs: [{ key: 'avg_wait', label: 'Average Wait', type: 'number', unit: 'minutes' }] }
+  ],
+  surgical: [
+    { key: 'kpi_asc_utilization', title: 'ASC Utilization', description: 'Cases Performed / OR Capacity × 100', benchmark: 78, unit: '%', icon: '🏥', inputs: [{ key: 'cases', label: 'Cases Performed', type: 'number' }, { key: 'capacity', label: 'OR Capacity', type: 'number' }] },
+    { key: 'kpi_revenue_per_case', title: 'Avg Revenue per Surgical Case', description: 'Surgical Revenue / Total Cases', benchmark: 2200, unit: 'USD', icon: '💎', inputs: [{ key: 'surgical_revenue', label: 'Surgical Revenue', type: 'number', unit: 'USD' }, { key: 'cases', label: 'Total Cases', type: 'number' }] }
+  ]
+};
+
+// Package 4: PRIVATE ASC 25 METRICS (Surgical Center Tier)
+// Surgical throughput, efficiency, and cost control metrics
+const ASC_25_METRICS = {
+  surgical_throughput: [

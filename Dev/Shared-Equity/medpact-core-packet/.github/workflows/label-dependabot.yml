@@ -1,0 +1,37 @@
+name: Label Dependabot PRs
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Determine version bump
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const title = pr.title || '';
+            // Try to extract old and new versions from PR title like: "Bump pkg from 1.2.3 to 1.3.0"
+            const m = title.match(/from\s+([0-9]+(?:\.[0-9]+){0,2})\s+to\s+([0-9]+(?:\.[0-9]+){0,2})/i);
+            if (!m) {
+              core.info('Could not parse versions from PR title: ' + title);
+              return;
+            }
+            const oldV = m[1].split('.').map(n => parseInt(n,10));
+            const newV = m[2].split('.').map(n => parseInt(n,10));
+            while (oldV.length < 3) oldV.push(0);
+            while (newV.length < 3) newV.push(0);
+            let bump = 'patch';
+            if (newV[0] > oldV[0]) bump = 'major';
+            else if (newV[1] > oldV[1]) bump = 'minor';
+            core.info(`Detected ${bump} bump: ${m[1]} -> ${m[2]}`);
+            if (bump === 'patch' || bump === 'minor') {
+              await github.rest.issues.addLabels({ owner: context.repo.owner, repo: context.repo.repo, issue_number: pr.number, labels: ['automerge'] });
+              core.info('Added label automerge');
+            } else {
+              core.info('Not adding automerge label for major bump');
+            }

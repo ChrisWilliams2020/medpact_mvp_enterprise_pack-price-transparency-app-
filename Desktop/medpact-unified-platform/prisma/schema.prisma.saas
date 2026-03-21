@@ -1,0 +1,389 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+} provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+} url      = env("DATABASE_URL")
+}
+model Practice {
+  id             Int           @id @default(autoincrement())
+  name           String        @id @default(cuid())
+  address        String
+  city           String
+  state          String
+  zip            String
+  lat            Float
+  lng            Float
+  tin            String?       @unique
+  websiteUrl     String?       @unique
+  ownershipModel String?       // independent / PE / health-system
+  physicians     PhysicianPractice[]dependent / PE / health-system
+  ratings        PracticeRating[]e[]
+  markets        MarketPractice[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAtow())
+  updatedAt      DateTime      @updatedAt
+  @@map("practices")
+} @@map("practices")
+}
+model Physician {
+  id                String               @id @default(cuid())
+  npi               String?              @uniquefault(cuid())
+  fullName          String?              @unique
+  credentials       String?              // MD, DO, OD
+  primarySpecialty  String?              // MD, DO, OD
+  subspecialty      String?
+  languages         String[]             @default([])
+  yearsExperience   Int?ng[]             @default([])
+  trainingRecords   TrainingRecord[]
+  services          PhysicianService[]
+  ratings           PhysicianRating[]]
+  internalScores    PhysicianInternalScore[]
+  practices         PhysicianPractice[]ore[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAtow())
+  updatedAt         DateTime             @updatedAt
+  @@map("physicians")
+} @@map("physicians")
+}
+model PhysicianPractice {
+  id          String    @id @default(cuid())
+  physician   Physician @relation(fields: [physicianId], references: [id])
+  physicianId Stringian @relation(fields: [physicianId], references: [id])
+  practice    Practice  @relation(fields: [practiceId], references: [id])
+  practiceId  Stringce  @relation(fields: [practiceId], references: [id])
+  primarySite Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAtow())
+  updatedAt   DateTime  @updatedAt
+  @@unique([physicianId, practiceId])
+  @@map("physician_practices")iceId])
+} @@map("physician_practices")
+}
+model TrainingRecord {
+  id           String       @id @default(cuid())
+  physician    Physician    @relation(fields: [physicianId], references: [id])
+  physicianId  Stringian    @relation(fields: [physicianId], references: [id])
+  type         TrainingType
+  institution  StringngType
+  location     String?
+  year         Int?ng?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAtow())
+  updatedAt    DateTime     @updatedAt
+  @@map("training_records")
+} @@map("training_records")
+}
+enum TrainingType {
+  MED_SCHOOLgType {
+  RESIDENCYL
+  FELLOWSHIP
+  OTHERWSHIP
+} OTHER
+}
+model Service {
+  id            String              @id @default(cuid())
+  canonicalName String              @uniquefault(cuid())
+  category      ServiceCategory     @unique
+  keywords      String[]            @default([])
+  physicians    PhysicianService[]  @default([])
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAtow())
+  updatedAt     DateTime            @updatedAt
+  @@map("services")
+} @@map("services")
+}
+model PhysicianService {
+  id          String    @id @default(cuid())
+  physician   Physician @relation(fields: [physicianId], references: [id])
+  physicianId Stringian @relation(fields: [physicianId], references: [id])
+  service     Service   @relation(fields: [serviceId], references: [id])
+  serviceId   Stringe   @relation(fields: [serviceId], references: [id])
+  confidence  Float     @default(0.8)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAtow())
+  updatedAt   DateTime  @updatedAt
+  @@unique([physicianId, serviceId])
+  @@map("physician_services")iceId])
+} @@map("physician_services")
+}
+enum ServiceCategory {
+  CLINICviceCategory {
+  SURGICAL
+  PREMIUML
+  DIAGNOSTIC
+} DIAGNOSTIC
+}
+model PracticeRating {
+  id          String   @id @default(cuid())
+  practice    Practice @relation(fields: [practiceId], references: [id])
+  practiceId  Stringce @relation(fields: [practiceId], references: [id])
+  source      String   // GOOGLE, HEALTHGRADES, etc.
+  stars       Floatg   // GOOGLE, HEALTHGRADES, etc.
+  reviewCount Intat
+  capturedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAtow())
+  updatedAt   DateTime @updatedAt
+  @@map("practice_ratings")
+} @@map("practice_ratings")
+}
+model PhysicianRating {
+  id          String     @id @default(cuid())
+  physician   Physician  @relation(fields: [physicianId], references: [id])
+  physicianId Stringian  @relation(fields: [physicianId], references: [id])
+  source      String
+  stars       Floatg
+  reviewCount Intat
+  capturedAt  DateTime   @default(now())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAtow())
+  updatedAt   DateTime   @updatedAt
+  @@map("physician_ratings")
+} @@map("physician_ratings")
+}
+model PhysicianInternalScore {
+  id          String     @id @default(cuid())
+  physician   Physician  @relation(fields: [physicianId], references: [id])
+  physicianId Stringian  @relation(fields: [physicianId], references: [id])
+  nps         Int?       // -100 to 100
+  osat        Float?     // 1–50 to 100
+  periodStart DateTime   // 1–5
+  periodEnd   DateTime
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAtow())
+  updatedAt   DateTime   @updatedAt
+  @@map("physician_internal_scores")
+} @@map("physician_internal_scores")
+}
+model Market {
+  id          String           @id @default(cuid())
+  ownerOrgId  String           // MedPact org/practice
+  anchorLat   Floatg           // MedPact org/practice
+  anchorLng   Float
+  radiusMiles Intat
+  name        String
+  practices   MarketPractice[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAtow())
+  updatedAt   DateTime         @updatedAt
+  @@map("markets")
+} @@map("markets")
+}
+model MarketPractice {
+  id         String   @id @default(cuid())
+  market     Market   @relation(fields: [marketId], references: [id])
+  marketId   String   @relation(fields: [marketId], references: [id])
+  practice   Practice @relation(fields: [practiceId], references: [id])
+  practiceId Stringce @relation(fields: [practiceId], references: [id])
+  distanceMi Float?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAtow())
+  updatedAt  DateTime @updatedAt
+  @@unique([marketId, practiceId])
+  @@map("market_practices")iceId])
+} @@map("market_practices")
+}
+model NegotiationPlaybook {
+  id          String   @id @default(cuid())
+  practiceId  String   @id @default(cuid())
+  payerId     String?
+  title       String?
+  summary     String
+  detailsJson Jsonng
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAtow())
+  updatedAt   DateTime @updatedAt
+  @@map("negotiation_playbooks")
+} @@map("negotiation_playbooks")
+}
+// Additional models for enhanced market intelligence
+// Additional models for enhanced market intelligence
+model PayerContract {
+  id           String    @id @default(cuid())
+  practiceId   String    @id @default(cuid())
+  payerName    String
+  contractType String
+  currentRate  Floatg
+  marketRate   Float?
+  renewalDate  DateTime
+  status       ContractStatus @default(ACTIVE)
+  createdAt    DateTime  @default(now())CTIVE)
+  updatedAt    DateTime  @updatedAtow())
+  updatedAt    DateTime  @updatedAt
+  @@map("payer_contracts")
+} @@map("payer_contracts")
+}
+enum ContractStatus {
+  ACTIVEtractStatus {
+  PENDING
+  EXPIRED
+  NEGOTIATING
+} NEGOTIATING
+}
+model CapabilityAssessment {
+  id           String              @id @default(cuid())
+  practiceId   String              @id @default(cuid())
+  category     CapabilityCategory
+  subcategory  StringlityCategory
+  score        Inting
+  maxScore     Int              @default(100)
+  percentile   Float?           @default(100)
+  benchmarkScore Int?
+  assessedAt   DateTime          @default(now())
+  assessorId   String?e          @default(now())
+  notes        String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAtow())
+  updatedAt    DateTime          @updatedAt
+  @@map("capability_assessments")
+} @@map("capability_assessments")
+}
+enum CapabilityCategory {
+  CLINICALilityCategory {
+  OPERATIONAL
+  FINANCIALAL
+  TECHNOLOGY
+  PATIENT_EXPERIENCE
+} PATIENT_EXPERIENCE
+}
+model TrainingProgram {
+  id                   String            @id @default(cuid())
+  title                String            @id @default(cuid())
+  description          String?
+  category             String?
+  level                ProgramLevel
+  format               ProgramFormat
+  duration             StringmFormat
+  cost                 Floatg
+  provider             String
+  learningObjectives   String[]          @default([])
+  competenciesAddressed String[]         @default([])
+  certificationOffered Boolean           @default(false)
+  isActive             Boolean           @default(true))
+  completions          TrainingCompletion[]efault(true)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAtow())
+  updatedAt            DateTime          @updatedAt
+  @@map("training_programs")
+} @@map("training_programs")
+}
+enum ProgramLevel {
+  BEGINNERamLevel {
+  INTERMEDIATE
+  ADVANCEDIATE
+} ADVANCED
+}
+enum ProgramFormat {
+  ONLINEgramFormat {
+  IN_PERSON
+  HYBRIDSON
+  SELF_PACED
+} SELF_PACED
+}
+model TrainingCompletion {
+  id              String          @id @default(cuid())
+  participantId   String          @id @default(cuid())
+  program         TrainingProgram @relation(fields: [programId], references: [id])
+  programId       StringngProgram @relation(fields: [programId], references: [id])
+  startDate       DateTime
+  completionDate  DateTime?
+  progress        Float           @default(0.0) // 0.0 to 1.0
+  score           Float?          @default(0.0) // 0.0 to 1.0
+  certificateEarned Boolean       @default(false)
+  feedback        String?an       @default(false)
+  effectiveness   Float?          // 1.0 to 5.0
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAtow())
+  updatedAt       DateTime        @updatedAt
+  @@map("training_completions")
+} @@map("training_completions")
+}
+model ReputationMetric {
+  id           String   @id @default(cuid())
+  practiceId   String   @id @default(cuid())
+  source       String   // GOOGLE, HEALTHGRADES, YELP, NPS_SURVEY, etc.
+  metricType   String   // RATING, NPS, REVIEW_COUNT, SENTIMENTEY, etc.
+  value        Floatg   // RATING, NPS, REVIEW_COUNT, SENTIMENT
+  maxValue     Float?
+  reviewCount  Int?t?
+  period       String?  // monthly, quarterly, annual
+  capturedAt   DateTime @default(now())rterly, annual
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAtow())
+  updatedAt    DateTime @updatedAt
+  @@map("reputation_metrics")
+} @@map("reputation_metrics")
+}
+model PatientSegment {
+  id             String     @id @default(cuid())
+  practiceId     String     @id @default(cuid())
+  name           String
+  description    String?
+  criteria       Json       // Store complex criteria as JSON
+  estimatedCount Int?       // Store complex criteria as JSON
+  actualCount    Int?
+  lastUpdated    DateTime   @default(now())
+  campaigns      Campaign[] @default(now())
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAtow())
+  updatedAt      DateTime   @updatedAt
+  @@map("patient_segments")
+} @@map("patient_segments")
+}
+model Campaign {
+  id            String           @id @default(cuid())
+  practiceId    String           @id @default(cuid())
+  name          String
+  type          CampaignType
+  status        CampaignStatus   @default(DRAFT)
+  segment       PatientSegment?  @relation(fields: [segmentId], references: [id])
+  segmentId     String?Segment?  @relation(fields: [segmentId], references: [id])
+  message       String?
+  scheduledDate DateTime?
+  sentDate      DateTime?
+  recipients    Int?Time?
+  opens         Int?
+  clicks        Int?
+  responses     Int?
+  conversions   Int?
+  cost          Float?
+  roi           Float?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAtow())
+  updatedAt     DateTime         @updatedAt
+  @@map("campaigns")
+} @@map("campaigns")
+}
+enum CampaignType {
+  SMSCampaignType {
+  EMAIL
+  PHONE
+  MAILE
+} MAIL
+}
+enum CampaignStatus {
+  DRAFTmpaignStatus {
+  SCHEDULED
+  ACTIVELED
+  COMPLETED
+  PAUSEDTED
+  CANCELLED
+} CANCELLED
+}
+model Hospital {
+  id   String @id @default(cuid())
+  name String
+  type String
+  lat  Float
+  lng  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("hospitals")
+}

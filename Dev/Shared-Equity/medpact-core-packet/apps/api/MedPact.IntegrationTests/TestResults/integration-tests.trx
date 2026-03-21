@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="5671d6e8-0837-4c02-b009-7650ce0e88c6" name="@MacBookPro 2026-02-26 06:28:11" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-26T06:28:11.9402480-05:00" queuing="2026-02-26T06:28:11.9402480-05:00" start="2026-02-26T06:28:09.2727540-05:00" finish="2026-02-26T06:28:11.9480130-05:00" />
+  <TestSettings name="default" id="aa16d720-01cb-41c2-bb72-cf8c2e82c072">
+    <Deployment runDeploymentRoot="_MacBookPro_2026-02-26_06_28_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7e7cea5e-6284-4dba-acfb-8c44b6b3cef7" testId="c30c001f-ea01-c665-b3b2-e4250d20c0d1" testName="HealthAndTenantTests.Tenants_SeededTenant_Exists" computerName="MacBookPro" duration="00:00:00.0925726" startTime="2026-02-26T06:28:11.8309720-05:00" endTime="2026-02-26T06:28:11.8309730-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e7cea5e-6284-4dba-acfb-8c44b6b3cef7" />
+    <UnitTestResult executionId="ecb033ed-3bdd-4fab-b435-7c44f4ee53ce" testId="5947f9a7-267a-f634-49e0-b32f80260a39" testName="HealthAndTenantTests.HealthEndpoint_ReturnsOk" computerName="MacBookPro" duration="00:00:01.3977305" startTime="2026-02-26T06:28:11.7369610-05:00" endTime="2026-02-26T06:28:11.7369940-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ecb033ed-3bdd-4fab-b435-7c44f4ee53ce" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="HealthAndTenantTests.Tenants_SeededTenant_Exists" storage="/users/christopherwilliams/dev/shared-equity/medpact-core-packet/apps/api/medpact.integrationtests/bin/debug/net8.0/medpact.integrationtests.dll" id="c30c001f-ea01-c665-b3b2-e4250d20c0d1">
+      <Execution id="7e7cea5e-6284-4dba-acfb-8c44b6b3cef7" />
+      <TestMethod codeBase="/Users/christopherwilliams/Dev/Shared-Equity/medpact-core-packet/apps/api/MedPact.IntegrationTests/bin/Debug/net8.0/MedPact.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="HealthAndTenantTests" name="Tenants_SeededTenant_Exists" />
+    </UnitTest>
+    <UnitTest name="HealthAndTenantTests.HealthEndpoint_ReturnsOk" storage="/users/christopherwilliams/dev/shared-equity/medpact-core-packet/apps/api/medpact.integrationtests/bin/debug/net8.0/medpact.integrationtests.dll" id="5947f9a7-267a-f634-49e0-b32f80260a39">
+      <Execution id="ecb033ed-3bdd-4fab-b435-7c44f4ee53ce" />
+      <TestMethod codeBase="/Users/christopherwilliams/Dev/Shared-Equity/medpact-core-packet/apps/api/MedPact.IntegrationTests/bin/Debug/net8.0/MedPact.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="HealthAndTenantTests" name="HealthEndpoint_ReturnsOk" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c30c001f-ea01-c665-b3b2-e4250d20c0d1" executionId="7e7cea5e-6284-4dba-acfb-8c44b6b3cef7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5947f9a7-267a-f634-49e0-b32f80260a39" executionId="ecb033ed-3bdd-4fab-b435-7c44f4ee53ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.0+6438bb880a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.14]   Discovering: MedPact.IntegrationTests
+[xUnit.net 00:00:00.18]   Discovered:  MedPact.IntegrationTests
+[xUnit.net 00:00:00.18]   Starting:    MedPact.IntegrationTests
+[06:28:11 INF] Saved 0 entities to in-memory store.
+[06:28:11 INF] Saved 0 entities to in-memory store.
+[06:28:11 INF] Saved 1 entities to in-memory store.
+[06:28:11 INF] Saved 1 entities to in-memory store.
+[06:28:11 INF] User profile is available. Using '/Users/christopherwilliams/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+[06:28:11 INF] User profile is available. Using '/Users/christopherwilliams/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+[06:28:11 INF] Request starting HTTP/1.1 GET http://localhost/api/health - null null
+[06:28:11 INF] Request starting HTTP/1.1 GET http://localhost/api/health - null null
+[06:28:11 WRN] Failed to determine the https port for redirect.
+[06:28:11 WRN] Failed to determine the https port for redirect.
+[06:28:11 INF] Executing endpoint 'MedPact.Api.Controllers.HealthController.Get (MedPact.Api)'
+[06:28:11 INF] Executing endpoint 'MedPact.Api.Controllers.HealthController.Get (MedPact.Api)'
+[06:28:11 INF] Route matched with {action = "Get", controller = "Health"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Get() on controller MedPact.Api.Controllers.HealthController (MedPact.Api).
+[06:28:11 INF] Route matched with {action = "Get", controller = "Health"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Get() on controller MedPact.Api.Controllers.HealthController (MedPact.Api).
+[06:28:11 INF] Executing OkObjectResult, writing value of type '&lt;&gt;f__AnonymousType2`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+[06:28:11 INF] Executing OkObjectResult, writing value of type '&lt;&gt;f__AnonymousType2`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+[06:28:11 INF] Executed action MedPact.Api.Controllers.HealthController.Get (MedPact.Api) in 18.2324ms
+[06:28:11 INF] Executed action MedPact.Api.Controllers.HealthController.Get (MedPact.Api) in 18.2324ms
+[06:28:11 INF] Executed endpoint 'MedPact.Api.Controllers.HealthController.Get (MedPact.Api)'
+[06:28:11 INF] Executed endpoint 'MedPact.Api.Controllers.HealthController.Get (MedPact.Api)'
+[06:28:11 INF] Request finished HTTP/1.1 GET http://localhost/api/health - 200 null application/json; charset=utf-8 101.3515ms
+[06:28:11 INF] Request finished HTTP/1.1 GET http://localhost/api/health - 200 null application/json; charset=utf-8 101.3515ms
+[06:28:11 INF] Request starting HTTP/1.1 GET http://localhost/api/tenants - null null
+[06:28:11 INF] Request starting HTTP/1.1 GET http://localhost/api/tenants - null null
+[06:28:11 INF] Executing endpoint 'MedPact.Api.Controllers.TenantsController.List (MedPact.Api)'
+[06:28:11 INF] Executing endpoint 'MedPact.Api.Controllers.TenantsController.List (MedPact.Api)'
+[06:28:11 INF] Route matched with {action = "List", controller = "Tenants"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] List() on controller MedPact.Api.Controllers.TenantsController (MedPact.Api).
+[06:28:11 INF] Route matched with {action = "List", controller = "Tenants"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] List() on controller MedPact.Api.Controllers.TenantsController (MedPact.Api).
+[06:28:11 INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MedPact.Domain.Org.Tenant, MedPact.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[06:28:11 INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MedPact.Domain.Org.Tenant, MedPact.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+[06:28:11 INF] Executed action MedPact.Api.Controllers.TenantsController.List (MedPact.Api) in 72.7326ms
+[06:28:11 INF] Executed action MedPact.Api.Controllers.TenantsController.List (MedPact.Api) in 72.7326ms
+[06:28:11 INF] Executed endpoint 'MedPact.Api.Controllers.TenantsController.List (MedPact.Api)'
+[06:28:11 INF] Executed endpoint 'MedPact.Api.Controllers.TenantsController.List (MedPact.Api)'
+[06:28:11 INF] Request finished HTTP/1.1 GET http://localhost/api/tenants - 200 null application/json; charset=utf-8 81.1575ms
+[06:28:11 INF] Request finished HTTP/1.1 GET http://localhost/api/tenants - 200 null application/json; charset=utf-8 81.1575ms
+[xUnit.net 00:00:01.75]   Finished:    MedPact.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

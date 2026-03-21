@@ -1,0 +1,79 @@
+name: Auto-merge Dependabot
+
+on:
+  pull_request_target:
+    types: [opened, labeled, synchronize]
+
+jobs:
+  automerge:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for automerge label
+        uses: actions/github-script@v7
+        id: check_label
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const labels = pr.labels.map(l => l.name);
+            core.info('PR labels: ' + labels.join(','));
+            return labels.includes('automerge');
+
+      - name: Skip if not labeled
+        if: steps.check_label.outputs.result != 'true'
+        run: |
+          echo "No automerge label present; skipping"
+          exit 0
+
+      - name: Check labels and run tests
+        run: |
+          echo "Running tests to validate Dependabot PR"
+          docker compose up -d postgres api || true
+          # Run migrator to ensure schema
+          docker compose run --rm migrator || true
+          # Wait for health
+          i=0
+          until (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) || (curl --silent --fail http://localhost:5100/api/health >/dev/null 2>&1) || [ $i -ge 60 ]; do
+            echo -n "."
+            sleep 1
+            i=$((i+1))
+          done
+          if ! (curl --silent --fail http://localhost:5100/health >/dev/null 2>&1) && ! (curl --silent --fail http://localhost:5100/api/health >/dev/null 2>&1); then
+            echo "API did not become healthy in time"
+            docker logs --tail 200 medpact_api || true
+            exit 1
+          fi
+          dotnet test apps/api/MedPact.ProviderTests/MedPact.ProviderTests.csproj -c Debug || exit 1
+
+      - name: Ensure smoke-fast passed (checks)
+        id: check_smoke
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const sha = pr.head.sha;
+            const checks = await github.checks.listForRef({ owner: context.repo.owner, repo: context.repo.repo, ref: sha });
+            const runs = checks.data.check_runs || [];
+            const smoke = runs.find(r => r.name.toLowerCase().includes('smoke-fast') || r.name.toLowerCase().includes('smoke fast') || r.name.toLowerCase().includes('smoke'));
+            if (!smoke) {
+              core.info('No smoke-fast check found yet');
+              return false;
+            }
+            core.info(`Smoke check status: ${smoke.conclusion}`);
+            return smoke.conclusion === 'success';
+
+      - name: Abort if smoke-fast did not pass
+        if: steps.check_smoke.outputs.result != 'true'
+        run: |
+          echo "Smoke-fast check not successful; skipping merge"
+          exit 0
+
+      - name: Merge PR
+        if: steps.check_label.outputs.result == 'true'
+        uses: actions-ecosystem/action-pull-request@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          merge_method: squash

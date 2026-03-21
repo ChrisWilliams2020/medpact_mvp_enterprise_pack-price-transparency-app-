@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# copy the full repo so solution references resolve
+COPY . .
+
+# restore solution using its path under apps/api
+RUN dotnet restore apps/api/MedPact.Core.sln
+
+# publish the API project
+RUN dotnet publish apps/api/MedPact.Api/MedPact.Api.csproj -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+# Install postgres client, awscli and dotnet-ef tool for running migrations inside container
+RUN apt-get update && apt-get install -y postgresql-client ca-certificates curl awscli && rm -rf /var/lib/apt/lists/*
+ENV PATH="$PATH:/root/.dotnet/tools"
+RUN dotnet tool install --global dotnet-ef --version 8.* || true
+WORKDIR /app
+COPY --from=build /app/publish .
+COPY apps/api/migrator-entrypoint.sh /usr/local/bin/migrator-entrypoint.sh
+RUN chmod +x /usr/local/bin/migrator-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/migrator-entrypoint.sh"]

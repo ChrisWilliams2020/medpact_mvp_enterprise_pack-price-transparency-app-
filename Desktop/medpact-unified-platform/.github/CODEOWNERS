@@ -1,0 +1,31 @@
+# Code Ownership and Review Requirements
+# ALL changes require approval from Christopher Williams
+
+# Default owner for everything in the repo
+* @ChrisWilliams2020
+
+# Critical security and configuration files require explicit approval
+/.env* @ChrisWilliams2020
+/.github/ @ChrisWilliams2020
+/next.config.js @ChrisWilliams2020
+/middleware.ts @ChrisWilliams2020
+/package.json @ChrisWilliams2020
+/tsconfig.json @ChrisWilliams2020
+/vercel.json @ChrisWilliams2020
+
+# Database and authentication
+/prisma/ @ChrisWilliams2020
+/lib/auth/ @ChrisWilliams2020
+/lib/db/ @ChrisWilliams2020
+
+# Security components
+/lib/ai/security-guard.ts @ChrisWilliams2020
+/LICENSE @ChrisWilliams2020
+/SECURITY.md @ChrisWilliams2020
+
+# API routes (sensitive business logic)
+/app/api/ @ChrisWilliams2020
+
+# Payment and billing
+/app/billing/ @ChrisWilliams2020
+/lib/payments/ @ChrisWilliams2020

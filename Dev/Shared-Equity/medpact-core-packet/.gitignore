@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+
+**/bin/
+**/obj/
+
+*.log
+
+.env

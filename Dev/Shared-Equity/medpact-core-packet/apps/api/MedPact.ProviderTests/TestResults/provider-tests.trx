@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="137c1bf3-8df2-43b0-908b-885354d88c25" name="@MacBookPro 2026-02-26 06:37:50" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-26T06:37:50.5045470-05:00" queuing="2026-02-26T06:37:50.5045470-05:00" start="2026-02-26T06:37:46.4072800-05:00" finish="2026-02-26T06:37:50.6682690-05:00" />
+  <TestSettings name="default" id="0679df3b-2c26-4246-86ce-7303b00cd426">
+    <Deployment runDeploymentRoot="_MacBookPro_2026-02-26_06_37_50" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="80bb92d9-2d12-466a-881d-e158af0a12e1" testId="be15119e-253e-fa87-d0e1-a2ad29b3f8b0" testName="MedPact.ProviderTests.AuthControllerTests.Login_CreatesUserAndReturnsToken" computerName="MacBookPro" duration="00:00:01.0658666" startTime="2026-02-26T06:37:50.2671900-05:00" endTime="2026-02-26T06:37:50.2671900-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="80bb92d9-2d12-466a-881d-e158af0a12e1" />
+    <UnitTestResult executionId="b3081ec4-8a6b-4be0-a0de-fedef0c813f6" testId="fd142f64-fbd7-a5f2-9f9b-b52ece0fd85f" testName="MedPact.ProviderTests.PactVerifierTests.VerifyPacts" computerName="MacBookPro" duration="00:00:00.3963163" startTime="2026-02-26T06:37:49.6016610-05:00" endTime="2026-02-26T06:37:49.6017220-05:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3081ec4-8a6b-4be0-a0de-fedef0c813f6" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="MedPact.ProviderTests.PactVerifierTests.VerifyPacts" storage="/users/christopherwilliams/dev/shared-equity/medpact-core-packet/apps/api/medpact.providertests/bin/debug/net8.0/medpact.providertests.dll" id="fd142f64-fbd7-a5f2-9f9b-b52ece0fd85f">
+      <Execution id="b3081ec4-8a6b-4be0-a0de-fedef0c813f6" />
+      <TestMethod codeBase="/Users/christopherwilliams/Dev/Shared-Equity/medpact-core-packet/apps/api/MedPact.ProviderTests/bin/Debug/net8.0/MedPact.ProviderTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="MedPact.ProviderTests.PactVerifierTests" name="VerifyPacts" />
+    </UnitTest>
+    <UnitTest name="MedPact.ProviderTests.AuthControllerTests.Login_CreatesUserAndReturnsToken" storage="/users/christopherwilliams/dev/shared-equity/medpact-core-packet/apps/api/medpact.providertests/bin/debug/net8.0/medpact.providertests.dll" id="be15119e-253e-fa87-d0e1-a2ad29b3f8b0">
+      <Execution id="80bb92d9-2d12-466a-881d-e158af0a12e1" />
+      <TestMethod codeBase="/Users/christopherwilliams/Dev/Shared-Equity/medpact-core-packet/apps/api/MedPact.ProviderTests/bin/Debug/net8.0/MedPact.ProviderTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="MedPact.ProviderTests.AuthControllerTests" name="Login_CreatesUserAndReturnsToken" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="be15119e-253e-fa87-d0e1-a2ad29b3f8b0" executionId="80bb92d9-2d12-466a-881d-e158af0a12e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fd142f64-fbd7-a5f2-9f9b-b52ece0fd85f" executionId="b3081ec4-8a6b-4be0-a0de-fedef0c813f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.0+6438bb880a (64-bit .NET 8.0.24)
+[xUnit.net 00:00:00.10]   Discovering: MedPact.ProviderTests
+[xUnit.net 00:00:00.14]   Discovered:  MedPact.ProviderTests
+[xUnit.net 00:00:00.14]   Starting:    MedPact.ProviderTests
+[xUnit.net 00:00:01.26]   Finished:    MedPact.ProviderTests
+</StdOut>
+    </Output>
+    <CollectorDataEntries>
+      <Collector agentName="MacBookPro" uri="datacollector://microsoft/CoverletCodeCoverage/1.0" collectorDisplayName="XPlat code coverage">
+        <UriAttachments>
+          <UriAttachment>
+            <A href="MacBookPro/coverage.cobertura.xml"></A>
+          </UriAttachment>
+        </UriAttachments>
+      </Collector>
+    </CollectorDataEntries>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: medpact_ci
+      POSTGRES_USER: medpact
+      POSTGRES_PASSWORD: medpact_ci_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - medpact_pgdata_ci:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/MedPact.Api/Dockerfile
+    ports:
+      - "5100:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=postgres;Port=5432;Database=medpact_ci;Username=medpact;Password=medpact_ci_password
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  medpact_pgdata_ci:

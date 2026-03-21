@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# wait-for <url> <max-seconds>
+set -euo pipefail
+url=${1:-}
+max=${2:-30}
+if [ -z "$url" ]; then
+  echo "Usage: wait-for <url> [max-seconds]"
+  exit 2
+fi
+i=0
+while true; do
+  if curl --silent --fail "$url" >/dev/null 2>&1; then
+    echo "OK: $url"
+    exit 0
+  fi
+  if [ "$i" -ge "$max" ]; then
+    echo "Timed out waiting for $url"
+    exit 1
+  fi
+  i=$((i+1))
+  echo -n "."
+  sleep 1
+done

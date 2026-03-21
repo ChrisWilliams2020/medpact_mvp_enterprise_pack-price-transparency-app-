@@ -1,0 +1,376 @@
+// lib/pdf-export.ts
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
+export interface PDFExportOptions {
+  title: string;
+  subtitle?: string;
+  orientation?: 'portrait' | 'landscape';
+  format?: 'a4' | 'letter';
+  includeHeader?: boolean;
+  includeFooter?: boolean;
+  brandLogo?: boolean;
+}
+
+export interface MarketIntelligenceReport {
+  practiceData: any[];
+  marketMetrics: {
+    totalPractices: number;
+    totalPhysicians: number;
+    averageRating: number;
+    marketDensity: string;
+  };
+  competitiveAnalysis: {
+    independentCount: number;
+    peCount: number;
+    hospitalOwnedCount: number;
+  };
+  recommendations: string[];
+  generatedDate: string;
+}
+
+export class MedPactPDFExporter {
+  private doc: jsPDF;
+  private pageWidth: number;
+  private pageHeight: number;
+  private margin: number = 20;
+  private currentY: number = 20;
+
+  constructor(options: PDFExportOptions = { title: 'MedPact Report' }) {
+    this.doc = new jsPDF({
+      orientation: options.orientation || 'portrait',
+      unit: 'mm',
+      format: options.format || 'a4'
+    });
+    
+    this.pageWidth = this.doc.internal.pageSize.getWidth();
+    this.pageHeight = this.doc.internal.pageSize.getHeight();
+  }
+
+  // Generate Market Intelligence Report
+  async generateMarketIntelligenceReport(reportData: MarketIntelligenceReport): Promise<Blob> {
+    this.addMedPactHeader();
+    this.addReportTitle('Market Intelligence Report');
+    this.addExecutiveSummary(reportData);
+    this.addMarketMetrics(reportData.marketMetrics);
+    this.addCompetitiveAnalysis(reportData.competitiveAnalysis);
+    this.addPracticeTable(reportData.practiceData);
+    this.addRecommendations(reportData.recommendations);
+    this.addMedPactFooter();
+    
+    return this.doc.output('blob');
+  }
+
+  // Generate Negotiation Playbook
+  async generateNegotiationPlaybook(
+    payerName: string, 
+    practiceData: any, 
+    marketData: any,
+    strategies: string[]
+  ): Promise<Blob> {
+    this.addMedPactHeader();
+    this.addReportTitle(`Negotiation Playbook: ${payerName}`);
+    this.addPracticeOverview(practiceData);
+    this.addMarketPosition(marketData);
+    this.addNegotiationStrategies(strategies);
+    this.addContractTermsGuidance();
+    this.addMedPactFooter();
+    
+    return this.doc.output('blob');
+  }
+
+  // Generate Practice Dashboard Export
+  async generatePracticeDashboard(
+    practiceName: string,
+    dashboardData: any
+  ): Promise<Blob> {
+    this.addMedPactHeader();
+    this.addReportTitle(`Practice Dashboard: ${practiceName}`);
+    this.addKPISection(dashboardData.kpis);
+    this.addPhysicianMetrics(dashboardData.physicians);
+    this.addFinancialSummary(dashboardData.financial);
+    this.addPerformanceTrends(dashboardData.trends);
+    this.addMedPactFooter();
+    
+    return this.doc.output('blob');
+  }
+
+  private addMedPactHeader(): void {
+    // MedPact Logo and Branding
+    this.doc.setFillColor(37, 99, 235); // Blue header
+    this.doc.rect(0, 0, this.pageWidth, 25, 'F');
+    
+    // Logo placeholder and company name
+    this.doc.setTextColor(255, 255, 255);
+    this.doc.setFontSize(18);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text('🏥 MedPact', this.margin, 15);
+    
+    this.doc.setFontSize(10);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text('Healthcare Market Intelligence Platform', this.margin, 21);
+    
+    // Date
+    const today = new Date().toLocaleDateString();
+    this.doc.text(`Generated: ${today}`, this.pageWidth - 50, 15);
+    
+    this.currentY = 35;
+    this.doc.setTextColor(0, 0, 0); // Reset text color
+  }
+
+  private addReportTitle(title: string): void {
+    this.doc.setFontSize(24);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.text(title, this.margin, this.currentY);
+    
+    // Underline
+    this.doc.setDrawColor(37, 99, 235);
+    this.doc.setLineWidth(1);
+    this.doc.line(this.margin, this.currentY + 3, this.pageWidth - this.margin, this.currentY + 3);
+    
+    this.currentY += 20;
+  }
+
+  private addExecutiveSummary(reportData: MarketIntelligenceReport): void {
+    this.addSectionHeader('Executive Summary');
+    
+    const summary = `This report analyzes ${reportData.marketMetrics.totalPractices} healthcare practices across the market area, representing ${reportData.marketMetrics.totalPhysicians} total physicians. The market shows ${reportData.marketMetrics.marketDensity} competitive density with an average practice rating of ${reportData.marketMetrics.averageRating} stars.`;
+    
+    this.addParagraph(summary);
+    this.currentY += 10;
+  }
+
+  private addMarketMetrics(metrics: any): void {
+    this.addSectionHeader('Market Metrics');
+    
+    // Create metrics table
+    const metricsData = [
+      ['Total Practices', metrics.totalPractices.toString()],
+      ['Total Physicians', metrics.totalPhysicians.toString()],
+      ['Average Rating', `${metrics.averageRating} ⭐`],
+      ['Market Density', metrics.marketDensity]
+    ];
+    
+    this.addTable(['Metric', 'Value'], metricsData);
+    this.currentY += 10;
+  }
+
+  private addCompetitiveAnalysis(analysis: any): void {
+    this.addSectionHeader('Competitive Landscape');
+    
+    const competitiveData = [
+      ['Independent Practices', analysis.independentCount.toString()],
+      ['Private Equity Owned', analysis.peCount.toString()],
+      ['Hospital Owned', analysis.hospitalOwnedCount.toString()]
+    ];
+    
+    this.addTable(['Ownership Model', 'Count'], competitiveData);
+    this.currentY += 10;
+  }
+
+  private addPracticeTable(practices: any[]): void {
+    this.addSectionHeader('Practice Directory');
+    
+    const practiceRows = practices.slice(0, 10).map(practice => [
+      practice.name || 'N/A',
+      practice.city || 'N/A',
+      practice.physicianCount?.toString() || '0',
+      practice.avgRating?.toString() || '0',
+      practice.ownershipModel || 'Unknown'
+    ]);
+    
+    this.addTable(
+      ['Practice Name', 'City', 'Physicians', 'Rating', 'Ownership'],
+      practiceRows,
+      true // Small font for table
+    );
+    this.currentY += 10;
+  }
+
+  private addRecommendations(recommendations: string[]): void {
+    this.addSectionHeader('Strategic Recommendations');
+    
+    recommendations.forEach((rec, index) => {
+      this.doc.setFont('helvetica', 'normal');
+      this.doc.setFontSize(11);
+      const text = `${index + 1}. ${rec}`;
+      const lines = this.doc.splitTextToSize(text, this.pageWidth - 2 * this.margin);
+      this.doc.text(lines, this.margin, this.currentY);
+      this.currentY += lines.length * 5 + 3;
+    });
+  }
+
+  private addPracticeOverview(practiceData: any): void {
+    this.addSectionHeader('Practice Overview');
+    
+    const overviewData = [
+      ['Practice Name', practiceData.name || 'N/A'],
+      ['Location', `${practiceData.city}, ${practiceData.state}` || 'N/A'],
+      ['Physician Count', practiceData.physicianCount?.toString() || '0'],
+      ['Subspecialties', practiceData.subspecialties?.join(', ') || 'N/A'],
+      ['Ownership Model', practiceData.ownershipModel || 'Unknown']
+    ];
+    
+    this.addTable(['Attribute', 'Value'], overviewData);
+    this.currentY += 10;
+  }
+
+  private addNegotiationStrategies(strategies: string[]): void {
+    this.addSectionHeader('Negotiation Strategies');
+    
+    strategies.forEach((strategy, index) => {
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.setFontSize(12);
+      this.doc.text(`Strategy ${index + 1}:`, this.margin, this.currentY);
+      
+      this.doc.setFont('helvetica', 'normal');
+      this.doc.setFontSize(11);
+      const lines = this.doc.splitTextToSize(strategy, this.pageWidth - 2 * this.margin);
+      this.doc.text(lines, this.margin, this.currentY + 5);
+      this.currentY += lines.length * 5 + 8;
+    });
+  }
+
+  private addContractTermsGuidance(): void {
+    this.addSectionHeader('Contract Terms Guidance');
+    
+    const guidance = [
+      'Focus on volume-based incentives for high-performing subspecialties',
+      'Negotiate favorable capitation rates based on market benchmarks',
+      'Include quality bonus structures tied to patient satisfaction scores',
+      'Secure favorable termination clauses with adequate notice periods'
+    ];
+    
+    guidance.forEach((item, index) => {
+      this.addBulletPoint(item);
+    });
+  }
+
+  private addKPISection(kpis: any): void {
+    this.addSectionHeader('Key Performance Indicators');
+    
+    const kpiData = [
+      ['Patient Volume', kpis.patientVolume || 'N/A'],
+      ['Revenue Growth', kpis.revenueGrowth || 'N/A'],
+      ['Patient Satisfaction', kpis.patientSatisfaction || 'N/A'],
+      ['Physician Productivity', kpis.physicianProductivity || 'N/A']
+    ];
+    
+    this.addTable(['KPI', 'Value'], kpiData);
+    this.currentY += 10;
+  }
+
+  private addSectionHeader(title: string): void {
+    this.doc.setFontSize(16);
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.setTextColor(37, 99, 235);
+    this.doc.text(title, this.margin, this.currentY);
+    this.doc.setTextColor(0, 0, 0);
+    this.currentY += 12;
+  }
+
+  private addParagraph(text: string): void {
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setFontSize(11);
+    const lines = this.doc.splitTextToSize(text, this.pageWidth - 2 * this.margin);
+    this.doc.text(lines, this.margin, this.currentY);
+    this.currentY += lines.length * 5;
+  }
+
+  private addTable(headers: string[], rows: string[][], smallFont: boolean = false): void {
+    const fontSize = smallFont ? 9 : 11;
+    const rowHeight = smallFont ? 8 : 10;
+    
+    // Headers
+    this.doc.setFont('helvetica', 'bold');
+    this.doc.setFontSize(fontSize);
+    this.doc.setFillColor(240, 240, 240);
+    
+    const colWidth = (this.pageWidth - 2 * this.margin) / headers.length;
+    
+    headers.forEach((header, i) => {
+      this.doc.rect(this.margin + i * colWidth, this.currentY - 5, colWidth, rowHeight, 'F');
+      this.doc.text(header, this.margin + i * colWidth + 2, this.currentY);
+    });
+    
+    this.currentY += rowHeight;
+    
+    // Rows
+    this.doc.setFont('helvetica', 'normal');
+    rows.forEach((row, rowIndex) => {
+      if (rowIndex % 2 === 0) {
+        this.doc.setFillColor(250, 250, 250);
+        this.doc.rect(this.margin, this.currentY - 5, this.pageWidth - 2 * this.margin, rowHeight, 'F');
+      }
+      
+      row.forEach((cell, i) => {
+        const cellText = this.doc.splitTextToSize(cell, colWidth - 4);
+        this.doc.text(cellText[0] || '', this.margin + i * colWidth + 2, this.currentY);
+      });
+      
+      this.currentY += rowHeight;
+    });
+  }
+
+  private addBulletPoint(text: string): void {
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setFontSize(11);
+    this.doc.text('•', this.margin, this.currentY);
+    const lines = this.doc.splitTextToSize(text, this.pageWidth - 2 * this.margin - 10);
+    this.doc.text(lines, this.margin + 5, this.currentY);
+    this.currentY += lines.length * 5 + 3;
+  }
+
+  private addMedPactFooter(): void {
+    const footerY = this.pageHeight - 15;
+    
+    this.doc.setFontSize(8);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.setTextColor(128, 128, 128);
+    
+    this.doc.text('Confidential - MedPact Healthcare Intelligence', this.margin, footerY);
+    this.doc.text(`Page ${this.doc.getNumberOfPages()}`, this.pageWidth - 30, footerY);
+    
+    // Add footer line
+    this.doc.setDrawColor(200, 200, 200);
+    this.doc.setLineWidth(0.5);
+    this.doc.line(this.margin, footerY - 5, this.pageWidth - this.margin, footerY - 5);
+  }
+}
+
+// Export utility functions
+export async function exportMarketIntelligenceReport(reportData: MarketIntelligenceReport): Promise<void> {
+  const exporter = new MedPactPDFExporter({
+    title: 'Market Intelligence Report',
+    orientation: 'portrait'
+  });
+  
+  const pdfBlob = await exporter.generateMarketIntelligenceReport(reportData);
+  downloadPDF(pdfBlob, 'market-intelligence-report.pdf');
+}
+
+export async function exportNegotiationPlaybook(
+  payerName: string,
+  practiceData: any,
+  marketData: any,
+  strategies: string[]
+): Promise<void> {
+  const exporter = new MedPactPDFExporter({
+    title: 'Negotiation Playbook',
+    orientation: 'portrait'
+  });
+  
+  const pdfBlob = await exporter.generateNegotiationPlaybook(payerName, practiceData, marketData, strategies);
+  downloadPDF(pdfBlob, `negotiation-playbook-${payerName.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+}
+
+function downloadPDF(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

@@ -1,0 +1,10 @@
+{
+  "name": "MedPact Devcontainer",
+  "image": "mcr.microsoft.com/vscode/devcontainers/dotnet:8.0",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:1": {}
+  },
+  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  "forwardPorts": [5000, 5100],
+  "remoteUser": "vscode"
+}

@@ -1,0 +1,6 @@
+// Your clean layout implementation:
+- Flex-based responsive design
+- Clean header with Market Intelligence title
+- Horizontal navigation tabs with hover states
+- Full-height layout with scrollable content area
+- Tailwind CSS utility classes for consistent styling

@@ -1,0 +1,37 @@
+[
+  {
+    "key": "gross_charges",
+    "name": "Gross Charges",
+    "unit": "$",
+    "version": 1,
+    "calculator": "Charges.Sum"
+  },
+  {
+    "key": "net_collections",
+    "name": "Net Collections",
+    "unit": "$",
+    "version": 1,
+    "calculator": "Payments.Sum"
+  },
+  {
+    "key": "denial_rate",
+    "name": "Denial Rate",
+    "unit": "%",
+    "version": 1,
+    "calculator": "Claims.DenialsRate"
+  },
+  {
+    "key": "days_in_ar",
+    "name": "Days in A/R",
+    "unit": "days",
+    "version": 1,
+    "calculator": "AR.DaysInAR"
+  },
+  {
+    "key": "collection_rate",
+    "name": "Collection Rate",
+    "unit": "%",
+    "version": 1,
+    "calculator": "RCM.CollectionRate"
+  }
+]

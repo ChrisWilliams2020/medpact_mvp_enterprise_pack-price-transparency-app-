@@ -1,0 +1,149 @@
+// lib/google-maps.ts
+import { Loader } from '@googlemaps/js-api-loader';
+
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+export async function initializeGoogleMaps(): Promise<typeof google.maps> {
+  const loader = new Loader({
+    apiKey: GOOGLE_MAPS_API_KEY!,
+    version: 'weekly',
+    libraries: ['places', 'geometry'],
+  });
+
+  return await loader.load();
+}
+
+export interface PracticeMapData {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  lat: number;
+  lng: number;
+  physicianCount: number;
+  avgRating: number;
+  subspecialties: string[];
+  ownershipModel: string;
+}
+
+export async function createPracticeMap(
+  container: HTMLElement,
+  practices: PracticeMapData[]
+): Promise<google.maps.Map> {
+  const google = await initializeGoogleMaps();
+
+  // Calculate center point of all practices
+  const center = calculateMapCenter(practices);
+
+  const map = new google.maps.Map(container, {
+    zoom: 10,
+    center,
+    styles: [
+      // Custom healthcare-themed map styling
+      {
+        featureType: 'poi.medical',
+        elementType: 'geometry',
+        stylers: [{ color: '#ffeaa7' }],
+      },
+      {
+        featureType: 'poi.medical',
+        elementType: 'labels.text.fill',
+        stylers: [{ color: '#dc2626' }],
+      },
+    ],
+  });
+
+  // Add practice markers
+  practices.forEach(practice => {
+    createPracticeMarker(google, map, practice);
+  });
+
+  return map;
+}
+
+function calculateMapCenter(practices: PracticeMapData[]): google.maps.LatLngLiteral {
+  const avgLat = practices.reduce((sum, p) => sum + p.lat, 0) / practices.length;
+  const avgLng = practices.reduce((sum, p) => sum + p.lng, 0) / practices.length;
+  return { lat: avgLat, lng: avgLng };
+}
+
+function createPracticeMarker(
+  google: typeof google.maps,
+  map: google.maps.Map,
+  practice: PracticeMapData
+) {
+  // Custom marker based on practice characteristics
+  const markerIcon = {
+    url: getMarkerIcon(practice),
+    scaledSize: new google.maps.Size(40, 40),
+  };
+
+  const marker = new google.maps.Marker({
+    position: { lat: practice.lat, lng: practice.lng },
+    map,
+    title: practice.name,
+    icon: markerIcon,
+  });
+
+  // Create info window with practice details
+  const infoWindow = new google.maps.InfoWindow({
+    content: createInfoWindowContent(practice),
+  });
+
+  marker.addListener('click', () => {
+    infoWindow.open(map, marker);
+  });
+
+  return marker;
+}
+
+function getMarkerIcon(practice: PracticeMapData): string {
+  // Different icons based on ownership model
+  switch (practice.ownershipModel) {
+    case 'PE':
+      return '/icons/practice-pe.png';
+    case 'hospital_owned':
+      return '/icons/practice-hospital.png';
+    case 'independent':
+      return '/icons/practice-independent.png';
+    default:
+      return '/icons/practice-default.png';
+  }
+}
+
+function createInfoWindowContent(practice: PracticeMapData): string {
+  return `
+    <div style="max-width: 300px; padding: 12px;">
+      <h3 style="margin: 0 0 8px 0; color: #111827; font-size: 16px; font-weight: 600;">
+        ${practice.name}
+      </h3>
+      <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 14px;">
+        📍 ${practice.address}, ${practice.city}, ${practice.state}
+      </p>
+      <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+        <span style="color: #374151; font-size: 14px;">
+          👨‍⚕️ ${practice.physicianCount} Physicians
+        </span>
+        <span style="color: #374151; font-size: 14px;">
+          ⭐ ${practice.avgRating} Rating
+        </span>
+      </div>
+      <div style="margin: 8px 0;">
+        <strong style="color: #111827; font-size: 14px;">Subspecialties:</strong>
+        <div style="margin-top: 4px;">
+          ${practice.subspecialties.map(sub => 
+            `<span style="background: #eff6ff; color: #2563eb; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 4px; display: inline-block; margin-top: 2px;">${sub}</span>`
+          ).join('')}
+        </div>
+      </div>
+      <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+        <span style="color: #6b7280; font-size: 12px;">
+          ${practice.ownershipModel === 'PE' ? '🏢 Private Equity' : 
+            practice.ownershipModel === 'hospital_owned' ? '🏥 Hospital Owned' : 
+            '🩺 Independent Practice'}
+        </span>
+      </div>
+    </div>
+  `;
+}

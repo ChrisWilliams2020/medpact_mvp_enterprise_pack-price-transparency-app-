@@ -1,0 +1,7 @@
+{
+  "name": "medpact-scripts",
+  "private": true,
+  "devDependencies": {
+    "newman": "^5.0.0"
+  }
+}

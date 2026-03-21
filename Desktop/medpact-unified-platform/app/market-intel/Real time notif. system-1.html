@@ -1,0 +1,296 @@
+// lib/notification-service.ts
+export interface NotificationData {
+  id: string;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error' | 'market_alert' | 'competitive' | 'financial';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  timestamp: Date;
+  read: boolean;
+  actions?: NotificationAction[];
+  metadata?: any;
+  category: 'market' | 'competitive' | 'operational' | 'system' | 'alert';
+}
+
+export interface NotificationAction {
+  id: string;
+  label: string;
+  type: 'button' | 'link';
+  url?: string;
+  action?: string;
+}
+
+export interface NotificationPreferences {
+  email: boolean;
+  inApp: boolean;
+  categories: {
+    market: boolean;
+    competitive: boolean;
+    operational: boolean;
+    system: boolean;
+    alert: boolean;
+  };
+  frequency: 'immediate' | 'hourly' | 'daily' | 'weekly';
+  quietHours: {
+    enabled: boolean;
+    start: string;
+    end: string;
+  };
+}
+
+class NotificationService {
+  private notifications: NotificationData[] = [];
+  private listeners: Set<(notifications: NotificationData[]) => void> = new Set();
+  private preferences: NotificationPreferences = {
+    email: true,
+    inApp: true,
+    categories: {
+      market: true,
+      competitive: true,
+      operational: true,
+      system: true,
+      alert: true
+    },
+    frequency: 'immediate',
+    quietHours: {
+      enabled: false,
+      start: '22:00',
+      end: '08:00'
+    }
+  };
+
+  constructor() {
+    this.initializeSampleNotifications();
+    this.startRealTimeUpdates();
+  }
+
+  private initializeSampleNotifications() {
+    const sampleNotifications: NotificationData[] = [
+      {
+        id: '1',
+        title: 'Market Share Alert',
+        message: 'Competitor "Bay Area Vision Partners" increased market share by 3.2% this month',
+        type: 'competitive',
+        priority: 'high',
+        timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 mins ago
+        read: false,
+        category: 'competitive',
+        actions: [
+          { id: 'view_analysis', label: 'View Analysis', type: 'link', url: '/analytics?tab=competitive' },
+          { id: 'dismiss', label: 'Dismiss', type: 'button', action: 'dismiss' }
+        ],
+        metadata: {
+          competitor: 'Bay Area Vision Partners',
+          change: 3.2,
+          period: 'month'
+        }
+      },
+      {
+        id: '2',
+        title: 'New Practice Detected',
+        message: 'A new ophthalmology practice "Valley Eye Center" has been identified in your market area',
+        type: 'market_alert',
+        priority: 'medium',
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+        read: false,
+        category: 'market',
+        actions: [
+          { id: 'add_to_tracking', label: 'Add to Tracking', type: 'button', action: 'track_practice' },
+          { id: 'view_details', label: 'View Details', type: 'link', url: '/market-intel' }
+        ],
+        metadata: {
+          practice: 'Valley Eye Center',
+          location: 'San Jose, CA',
+          physicianCount: 4
+        }
+      },
+      {
+        id: '3',
+        title: 'Reimbursement Rate Change',
+        message: 'Medicare reimbursement rates for cataract surgery increased by 2.8% effective next month',
+        type: 'financial',
+        priority: 'high',
+        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+        read: true,
+        category: 'market',
+        metadata: {
+          procedure: 'cataract_surgery',
+          change: 2.8,
+          effectiveDate: '2024-01-01'
+        }
+      },
+      {
+        id: '4',
+        title: 'Report Export Complete',
+        message: 'Your market analysis PDF report has been generated and is ready for download',
+        type: 'success',
+        priority: 'low',
+        timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 mins ago
+        read: false,
+        category: 'system',
+        actions: [
+          { id: 'download', label: 'Download Report', type: 'button', action: 'download_report' }
+        ]
+      },
+      {
+        id: '5',
+        title: 'Critical Alert: Data Sync Issue',
+        message: 'Practice data synchronization failed. Some metrics may be outdated.',
+        type: 'error',
+        priority: 'critical',
+        timestamp: new Date(Date.now() - 10 * 60 * 1000), // 10 mins ago
+        read: false,
+        category: 'system',
+        actions: [
+          { id: 'retry_sync', label: 'Retry Sync', type: 'button', action: 'retry_sync' },
+          { id: 'contact_support', label: 'Contact Support', type: 'link', url: '/support' }
+        ]
+      }
+    ];
+
+    this.notifications = sampleNotifications;
+    this.notifyListeners();
+  }
+
+  private startRealTimeUpdates() {
+    // Simulate real-time notifications
+    setInterval(() => {
+      if (Math.random() < 0.1) { // 10% chance every interval
+        this.generateRandomNotification();
+      }
+    }, 30000); // Every 30 seconds
+  }
+
+  private generateRandomNotification() {
+    const randomNotifications = [
+      {
+        title: 'Patient Volume Spike',
+        message: 'Unusual increase in patient appointments detected for next week',
+        type: 'info' as const,
+        priority: 'medium' as const,
+        category: 'operational' as const
+      },
+      {
+        title: 'Competitor Rating Drop',
+        message: 'Silicon Valley Ophthalmology rating decreased to 4.7 stars',
+        type: 'competitive' as const,
+        priority: 'low' as const,
+        category: 'competitive' as const
+      },
+      {
+        title: 'Market Trend Alert',
+        message: 'Telemedicine adoption increased by 15% in your market',
+        type: 'market_alert' as const,
+        priority: 'medium' as const,
+        category: 'market' as const
+      }
+    ];
+
+    const notification = randomNotifications[Math.floor(Math.random() * randomNotifications.length)];
+    
+    this.addNotification({
+      ...notification,
+      id: Date.now().toString(),
+      timestamp: new Date(),
+      read: false,
+      metadata: {}
+    });
+  }
+
+  subscribe(callback: (notifications: NotificationData[]) => void) {
+    this.listeners.add(callback);
+    callback(this.notifications);
+    
+    return () => {
+      this.listeners.delete(callback);
+    };
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach(listener => listener([...this.notifications]));
+  }
+
+  addNotification(notification: Omit<NotificationData, 'id'>) {
+    const newNotification: NotificationData = {
+      ...notification,
+      id: notification.id || Date.now().toString(),
+    };
+    
+    this.notifications.unshift(newNotification);
+    
+    // Keep only last 50 notifications
+    if (this.notifications.length > 50) {
+      this.notifications = this.notifications.slice(0, 50);
+    }
+    
+    this.notifyListeners();
+  }
+
+  markAsRead(notificationId: string) {
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (notification) {
+      notification.read = true;
+      this.notifyListeners();
+    }
+  }
+
+  markAllAsRead() {
+    this.notifications.forEach(n => n.read = true);
+    this.notifyListeners();
+  }
+
+  deleteNotification(notificationId: string) {
+    this.notifications = this.notifications.filter(n => n.id !== notificationId);
+    this.notifyListeners();
+  }
+
+  getUnreadCount(): number {
+    return this.notifications.filter(n => !n.read).length;
+  }
+
+  getNotificationsByCategory(category: string): NotificationData[] {
+    return this.notifications.filter(n => n.category === category);
+  }
+
+  updatePreferences(preferences: Partial<NotificationPreferences>) {
+    this.preferences = { ...this.preferences, ...preferences };
+    // In a real app, this would save to backend/localStorage
+  }
+
+  getPreferences(): NotificationPreferences {
+    return { ...this.preferences };
+  }
+
+  executeAction(notificationId: string, actionId: string) {
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (!notification) return;
+
+    const action = notification.actions?.find(a => a.id === actionId);
+    if (!action) return;
+
+    switch (action.action) {
+      case 'dismiss':
+        this.deleteNotification(notificationId);
+        break;
+      case 'track_practice':
+        // Handle adding practice to tracking
+        console.log('Adding practice to tracking:', notification.metadata);
+        this.markAsRead(notificationId);
+        break;
+      case 'download_report':
+        // Handle report download
+        console.log('Downloading report');
+        this.markAsRead(notificationId);
+        break;
+      case 'retry_sync':
+        // Handle retry sync
+        console.log('Retrying data sync');
+        this.markAsRead(notificationId);
+        break;
+      default:
+        this.markAsRead(notificationId);
+    }
+  }
+}
+
+export const notificationService = new NotificationService();

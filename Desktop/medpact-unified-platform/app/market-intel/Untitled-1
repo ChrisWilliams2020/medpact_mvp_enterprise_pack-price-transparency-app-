@@ -1,0 +1,5 @@
+// Market analysis endpoint:
+- Uses getMarketSnapshot() function
+- Org-level market data retrieval
+- Prisma database integration
+- Market intelligence data delivery

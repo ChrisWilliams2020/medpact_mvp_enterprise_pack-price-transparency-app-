@@ -1,0 +1,3 @@
+COMMAND   PID                USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ControlCe 422 christopherwilliams   10u  IPv4 0xff10596130131db8      0t0  TCP *:5000 (LISTEN)
+ControlCe 422 christopherwilliams   11u  IPv6 0x85ce74b6b1927004      0t0  TCP *:5000 (LISTEN)

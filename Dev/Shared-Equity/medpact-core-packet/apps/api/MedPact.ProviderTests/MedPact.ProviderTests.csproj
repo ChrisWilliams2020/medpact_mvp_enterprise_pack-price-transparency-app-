@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="xunit" Version="2.6.2" />
+  <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0" />
+  <PackageReference Include="coverlet.collector" Version="3.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../MedPact.Infrastructure/MedPact.Infrastructure.csproj" />
+    <ProjectReference Include="../MedPact.Api/MedPact.Api.csproj" />
+    <ProjectReference Include="../MedPact.Application/MedPact.Application.csproj" />
+    <ProjectReference Include="../MedPact.Domain/MedPact.Domain.csproj" />
+  </ItemGroup>
+
+  <!-- Copy consumer pact files into test output so runtime discovery works when tests run from bin/ -->
+  <ItemGroup>
+    <!-- Copy pacts into output/pacts so tests that look in a relative 'pacts' folder will find them -->
+    <Content Include="..\pacts\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>pacts\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,16 @@
+name: Blank CI Trigger
+
+on:
+  push: {}
+  workflow_dispatch: {}
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: No-op
+        run: |
+          echo "This is a blank noop workflow used to trigger CI runs."
