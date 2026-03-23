@@ -1,15 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-// ============================================================================
-// MedPact Practice Intelligence v2.8.0
-// Features: 6 Metric Packages, AI Registration, OnPacePlus, KCN Chat, CSV Hub
-// ============================================================================
-
-// ============================================================================
-// 6 METRIC PACKAGES - Based on Richard Lindstrom's OSN lecture with John Pinto
-// ============================================================================
-
-// Package 1: PRIVATE PRACTICE 9 METRICS
+// MedPact Practice Intelligence v3.0.0 - Enhanced with Competitive Intelligence
 const PRACTICE_9_METRICS = [
   { key: 'collection_rate', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💰' },
   { key: 'days_in_ar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📅' },
@@ -22,7 +13,6 @@ const PRACTICE_9_METRICS = [
   { key: 'bad_debt_rate', title: 'Bad Debt Rate', benchmark: 3, unit: '%', icon: '📉' }
 ];
 
-// Package 2: PE PRACTICE 10 METRICS
 const PE_10_METRICS = [
   { key: 'pe_revenue', title: 'Total Revenue', benchmark: 2500000, unit: 'USD', icon: '💰' },
   { key: 'pe_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊' },
@@ -31,633 +21,692 @@ const PE_10_METRICS = [
   { key: 'pe_procedure_conversion', title: 'Procedure Conversion Rate', benchmark: 35, unit: '%', icon: '🔬' },
   { key: 'pe_net_collection_rate', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵' },
   { key: 'pe_days_in_ar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '⏰' },
-  { key: 'pe_staffing_ratio', title: 'Staffing Ratio', benchmark: 4.5, unit: 'staff:1', icon: '��' },
+  { key: 'pe_staffing_ratio', title: 'Staffing Ratio', benchmark: 4.5, unit: 'staff:1', icon: '👥' },
   { key: 'pe_cost_per_encounter', title: 'Cost per Encounter', benchmark: 85, unit: 'USD', icon: '📋' },
   { key: 'pe_asc_utilization', title: 'ASC Utilization', benchmark: 78, unit: '%', icon: '🏥' }
 ];
 
-// Package 3: KPI 25 METRICS
 const KPI_25_METRICS = [
-  { key: 'kpi_total_revenue', title: 'Total Revenue', benchmark: 15000000, unit: 'USD', icon: '💵', category: 'financial' },
-  { key: 'kpi_ebitda', title: 'EBITDA', benchmark: 3750000, unit: 'USD', icon: '📈', category: 'financial' },
-  { key: 'kpi_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊', category: 'financial' },
-  { key: 'kpi_revenue_per_provider', title: 'Revenue per Provider', benchmark: 750000, unit: 'USD', icon: '👨‍⚕️', category: 'financial' },
-  { key: 'kpi_revenue_per_encounter', title: 'Revenue per Encounter', benchmark: 185, unit: 'USD', icon: '💰', category: 'financial' },
-  { key: 'kpi_revenue_growth', title: 'Revenue Growth Rate', benchmark: 12, unit: '%', icon: '🚀', category: 'financial' },
-  { key: 'kpi_wrvus', title: 'Work RVUs per Provider', benchmark: 8500, unit: 'wRVUs', icon: '⚡', category: 'productivity' },
-  { key: 'kpi_patients_per_day', title: 'Patients per Provider Day', benchmark: 28, unit: 'patients', icon: '📅', category: 'productivity' },
-  { key: 'kpi_surgical_cases', title: 'Surgical Cases per Surgeon', benchmark: 420, unit: 'cases/yr', icon: '🔪', category: 'productivity' },
-  { key: 'kpi_procedure_conversion', title: 'Procedure Conversion Rate', benchmark: 35, unit: '%', icon: '🔬', category: 'productivity' },
-  { key: 'kpi_injection_rate', title: 'Injection Rate', benchmark: 6.5, unit: 'per patient', icon: '💉', category: 'productivity' },
-  { key: 'kpi_new_patient_rate', title: 'New Patient Rate', benchmark: 25, unit: '%', icon: '🆕', category: 'productivity' },
-  { key: 'kpi_ncr', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵', category: 'rcm' },
-  { key: 'kpi_dar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📆', category: 'rcm' },
-  { key: 'kpi_denial_rate', title: 'Denial Rate', benchmark: 5, unit: '%', icon: '❌', category: 'rcm' },
-  { key: 'kpi_first_pass', title: 'First Pass Resolution', benchmark: 95, unit: '%', icon: '✅', category: 'rcm' },
-  { key: 'kpi_charge_lag', title: 'Charge Lag', benchmark: 2, unit: 'days', icon: '⏱️', category: 'rcm' },
-  { key: 'kpi_bad_debt', title: 'Bad Debt Rate', benchmark: 3, unit: '%', icon: '📉', category: 'rcm' },
-  { key: 'kpi_staffing_ratio', title: 'Staff per Provider', benchmark: 4.5, unit: 'ratio', icon: '👥', category: 'operations' },
-  { key: 'kpi_cost_per_encounter', title: 'Cost per Encounter', benchmark: 85, unit: 'USD', icon: '📋', category: 'operations' },
-  { key: 'kpi_expense_ratio', title: 'Operating Expense Ratio', benchmark: 65, unit: '%', icon: '⚙️', category: 'operations' },
-  { key: 'kpi_optical_revenue', title: 'Optical Revenue per Patient', benchmark: 285, unit: 'USD', icon: '👓', category: 'operations' },
-  { key: 'kpi_wait_time', title: 'Average Wait Time', benchmark: 15, unit: 'min', icon: '⏰', category: 'operations' },
-  { key: 'kpi_asc_utilization', title: 'ASC Utilization', benchmark: 78, unit: '%', icon: '🏥', category: 'surgical' },
-  { key: 'kpi_revenue_per_case', title: 'Avg Revenue per Surgical Case', benchmark: 2200, unit: 'USD', icon: '💎', category: 'surgical' }
+  { key: 'kpi_total_revenue', title: 'Total Revenue', benchmark: 15000000, unit: 'USD', icon: '💵' },
+  { key: 'kpi_ebitda', title: 'EBITDA', benchmark: 3750000, unit: 'USD', icon: '📈' },
+  { key: 'kpi_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊' },
+  { key: 'kpi_revenue_per_provider', title: 'Revenue per Provider', benchmark: 750000, unit: 'USD', icon: '👨‍⚕️' },
+  { key: 'kpi_ncr', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵' },
+  { key: 'kpi_dar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📆' },
+  { key: 'kpi_denial_rate', title: 'Denial Rate', benchmark: 5, unit: '%', icon: '❌' }
 ];
 
-// Package 4: PRIVATE ASC 25 METRICS
 const ASC_25_METRICS = [
-  { key: 'asc_cases_per_or', title: 'Cases per OR per Day', benchmark: 8, unit: 'cases', icon: '🔪', category: 'throughput' },
-  { key: 'asc_turnover_time', title: 'Room Turnover Time', benchmark: 12, unit: 'min', icon: '⏱️', category: 'throughput' },
-  { key: 'asc_first_case_ontime', title: 'First Case On-Time Start', benchmark: 90, unit: '%', icon: '🕐', category: 'throughput' },
-  { key: 'asc_block_utilization', title: 'Block Utilization', benchmark: 85, unit: '%', icon: '📊', category: 'throughput' },
-  { key: 'asc_cancellation_rate', title: 'Same-Day Cancellation Rate', benchmark: 3, unit: '%', icon: '❌' },
-  { key: 'asc_cost_per_case', title: 'Total Cost per Case', benchmark: 850, unit: 'USD', icon: '💰', category: 'cost' },
-  { key: 'asc_supply_cost', title: 'Supply Cost per Case', benchmark: 285, unit: 'USD', icon: '📦', category: 'cost' },
-  { key: 'asc_labor_cost', title: 'Labor Cost per Case', benchmark: 425, unit: 'USD', icon: '👥', category: 'cost' },
-  { key: 'asc_implant_cost', title: 'Implant/IOL Cost per Case', benchmark: 225, unit: 'USD', icon: '👁️', category: 'cost' },
-  { key: 'asc_cataract_supply', title: 'Cataract Supply Cost', benchmark: 385, unit: 'USD', icon: '👁️', category: 'cost' },
-  { key: 'asc_drug_cost', title: 'Drug Cost per Case', benchmark: 45, unit: 'USD', icon: '💊', category: 'cost' },
-  { key: 'asc_disposable_cost', title: 'Disposable Instrument Cost', benchmark: 65, unit: 'USD', icon: '🔧', category: 'cost' },
-  { key: 'asc_revenue_per_case', title: 'Revenue per Case', benchmark: 1650, unit: 'USD', icon: '💵', category: 'revenue' },
-  { key: 'asc_contribution_margin', title: 'Contribution Margin', benchmark: 800, unit: 'USD', icon: '📈', category: 'revenue' },
-  { key: 'asc_premium_iol_rate', title: 'Premium IOL Penetration', benchmark: 35, unit: '%', icon: '💎', category: 'revenue' },
-  { key: 'asc_net_collection', title: 'Net Collection Rate', benchmark: 97, unit: '%', icon: '💰', category: 'revenue' },
-  { key: 'asc_infection_rate', title: 'Surgical Site Infection Rate', benchmark: 0.5, unit: 'per 1000', icon: '🦠', category: 'quality' },
-  { key: 'asc_endophthalmitis', title: 'Endophthalmitis Rate', benchmark: 0.05, unit: 'per 1000', icon: '🦠', category: 'quality' },
-  { key: 'asc_unplanned_return', title: 'Unplanned Return to OR', benchmark: 0.5, unit: '%', icon: '🔄', category: 'quality' },
-  { key: 'asc_patient_satisfaction', title: 'Patient Satisfaction', benchmark: 95, unit: '%', icon: '⭐', category: 'quality' },
-  { key: 'asc_visual_outcome', title: 'Visual Outcome Achievement', benchmark: 98, unit: '%', icon: '👁️', category: 'quality' },
-  { key: 'asc_cases_per_fte', title: 'Cases per Clinical FTE', benchmark: 450, unit: 'cases/FTE', icon: '👥', category: 'staff' },
-  { key: 'asc_staff_cost_ratio', title: 'Staff Cost to Revenue', benchmark: 28, unit: '%', icon: '📊', category: 'staff' },
-  { key: 'asc_overtime_rate', title: 'Overtime Percentage', benchmark: 5, unit: '%', icon: '⏰', category: 'staff' }
+  { key: 'asc_cases_per_or', title: 'Cases per OR per Day', benchmark: 8, unit: 'cases', icon: '🔪' },
+  { key: 'asc_turnover_time', title: 'Room Turnover Time', benchmark: 12, unit: 'min', icon: '⏱️' },
+  { key: 'asc_cost_per_case', title: 'Total Cost per Case', benchmark: 850, unit: 'USD', icon: '💰' },
+  { key: 'asc_revenue_per_case', title: 'Revenue per Case', benchmark: 1650, unit: 'USD', icon: '💵' },
+  { key: 'asc_premium_iol_rate', title: 'Premium IOL Rate', benchmark: 35, unit: '%', icon: '💎' }
 ];
 
-// Package 5: PE ASC 21 METRICS
 const PE_ASC_METRICS = [
-  { key: 'pe_asc_ebitda_margin', title: 'EBITDA Margin', benchmark: 32, unit: '%', icon: '📊', category: 'financial' },
-  { key: 'pe_asc_ebitda_per_or', title: 'EBITDA per OR', benchmark: 850000, unit: 'USD', icon: '💰', category: 'financial' },
-  { key: 'pe_asc_ebitda_per_case', title: 'EBITDA per Case', benchmark: 425, unit: 'USD', icon: '💵', category: 'financial' },
-  { key: 'pe_asc_revenue_per_case', title: 'Revenue per Case', benchmark: 1850, unit: 'USD', icon: '💰', category: 'financial' },
-  { key: 'pe_asc_net_margin', title: 'Net Operating Margin', benchmark: 18, unit: '%', icon: '📈', category: 'financial' },
-  { key: 'pe_asc_volume_growth', title: 'Case Volume Growth', benchmark: 8, unit: '%', icon: '📈', category: 'growth' },
-  { key: 'pe_asc_cataract_growth', title: 'Cataract Surgery Growth', benchmark: 6, unit: '%', icon: '👁️', category: 'growth' },
-  { key: 'pe_asc_premium_iol', title: 'Premium IOL Penetration', benchmark: 35, unit: '%', icon: '💎', category: 'growth' },
-  { key: 'pe_asc_market_share', title: 'Regional Market Share', benchmark: 25, unit: '%', icon: '🎯', category: 'growth' },
-  { key: 'pe_asc_or_utilization', title: 'OR Utilization Rate', benchmark: 82, unit: '%', icon: '🏥', category: 'operations' },
-  { key: 'pe_asc_revenue_per_or', title: 'Revenue per OR', benchmark: 2500000, unit: 'USD', icon: '💰', category: 'operations' },
-  { key: 'pe_asc_cases_per_or', title: 'Annual Cases per OR', benchmark: 1200, unit: 'cases', icon: '🔪', category: 'operations' },
-  { key: 'pe_asc_medicare_mix', title: 'Medicare vs Commercial', benchmark: 35, unit: '% commercial', icon: '📋', category: 'payer' },
-  { key: 'pe_asc_avg_reimbursement', title: 'Avg Reimbursement', benchmark: 1650, unit: 'USD', icon: '💵', category: 'payer' },
-  { key: 'pe_asc_oop_revenue', title: 'Out-of-Pocket Revenue', benchmark: 425, unit: 'USD', icon: '💳', category: 'payer' },
-  { key: 'pe_asc_roic', title: 'Return on Invested Capital', benchmark: 22, unit: '%', icon: '📊', category: 'investment' },
-  { key: 'pe_asc_physician_retention', title: 'Physician Retention', benchmark: 95, unit: '%', icon: '👨‍⚕️', category: 'investment' },
-  { key: 'pe_asc_capex_ratio', title: 'CapEx to Revenue', benchmark: 5, unit: '%', icon: '🔧', category: 'investment' },
-  { key: 'pe_asc_debt_ebitda', title: 'Debt to EBITDA', benchmark: 3.5, unit: 'x', icon: '📉', category: 'investment' },
-  { key: 'pe_asc_pcr_rate', title: 'PCR Rate', benchmark: 1.5, unit: 'per 1000', icon: '⚠️', category: 'quality' },
-  { key: 'pe_asc_endophthalmitis', title: 'Endophthalmitis Rate', benchmark: 0.4, unit: 'per 10000', icon: '🦠', category: 'quality' }
+  { key: 'pe_asc_ebitda_margin', title: 'EBITDA Margin', benchmark: 32, unit: '%', icon: '📊' },
+  { key: 'pe_asc_ebitda_per_or', title: 'EBITDA per OR', benchmark: 850000, unit: 'USD', icon: '💰' },
+  { key: 'pe_asc_revenue_per_case', title: 'Revenue per Case', benchmark: 1850, unit: 'USD', icon: '💰' },
+  { key: 'pe_asc_or_utilization', title: 'OR Utilization Rate', benchmark: 82, unit: '%', icon: '🏥' }
 ];
 
-// Package 6: PRICE TRANSPARENCY DATA
-const PRICE_TRANSPARENCY_DATA = [
-  { cptCode: '99213', description: 'Office Visit - Est (Level 3)', commercial: 125, medicare: 79.17, medicaid: 55.42, volume: 450 },
-  { cptCode: '99214', description: 'Office Visit - Est (Level 4)', commercial: 175, medicare: 117.46, medicaid: 82.22, volume: 380 },
-  { cptCode: '92014', description: 'Eye Exam - Established', commercial: 135, medicare: 85.42, medicaid: 59.79, volume: 520 },
-  { cptCode: '92134', description: 'OCT Retina', commercial: 75, medicare: 42.15, medicaid: 29.51, volume: 680 },
-  { cptCode: '92250', description: 'Fundus Photography', commercial: 65, medicare: 38.24, medicaid: 26.77, volume: 420 },
-  { cptCode: '92083', description: 'Visual Field Exam', commercial: 95, medicare: 55.18, medicaid: 38.63, volume: 310 },
-  { cptCode: '65855', description: 'Laser Trabeculoplasty (SLT)', commercial: 850, medicare: 512.34, medicaid: 358.64, volume: 45 },
-  { cptCode: '66821', description: 'YAG Capsulotomy', commercial: 650, medicare: 385.72, medicaid: 270.00, volume: 65 },
-  { cptCode: '66984', description: 'Cataract Surgery with IOL', commercial: 3500, medicare: 2156.00, medicaid: 1509.20, volume: 85 },
-  { cptCode: '67028', description: 'Intravitreal Injection', commercial: 285, medicare: 165.42, medicaid: 115.79, volume: 320 }
+const RETINA_12_METRICS = [
+  { key: 'retina_injection_volume', title: 'Monthly Injection Volume', benchmark: 450, unit: 'injections/mo', icon: '💉' },
+  { key: 'retina_drug_cost', title: 'Avg Drug Cost per Injection', benchmark: 1850, unit: 'USD', icon: '💊' },
+  { key: 'retina_revenue_per_injection', title: 'Revenue per Injection', benchmark: 285, unit: 'USD', icon: '💵' },
+  { key: 'retina_retention_rate', title: 'Patient Retention Rate', benchmark: 85, unit: '%', icon: '🔄' }
 ];
 
-// Metric Package Definitions
-const METRIC_PACKAGES = [
-  { id: 'practice9', name: 'Private Practice 9', icon: '🏥', metrics: PRACTICE_9_METRICS, description: 'Standard RCM metrics for individual practices' },
-  { id: 'pe10', name: 'PE Practice 10', icon: '📊', metrics: PE_10_METRICS, description: 'Private Equity investment evaluation' },
-  { id: 'kpi25', name: 'KPI 25', icon: '📈', metrics: KPI_25_METRICS, description: 'Comprehensive practice operations' },
-  { id: 'asc25', name: 'Private ASC 25', icon: '🔬', metrics: ASC_25_METRICS, description: 'Surgical center throughput & efficiency' },
-  { id: 'peasc21', name: 'PE ASC 21', icon: '💼', metrics: PE_ASC_METRICS, description: 'PE ASC valuation metrics' },
-  { id: 'pricing', name: 'Price Transparency', icon: '💰', metrics: PRICE_TRANSPARENCY_DATA, description: 'Reimbursement analysis by payer' }
-];
-
-// Admin Roles
-const ADMIN_ROLES = {
-  medpact_team: { id: 'medpact_team', name: 'MedPact Team', icon: '��', password: 'medpact2026', access: ['all'], description: 'Full platform access' },
-  owner: { id: 'owner', name: 'Owner', icon: '👔', password: 'owner2026', access: ['payment', 'renewal', 'survey', 'metrics'], description: 'Payment & metrics access' },
-  administrator: { id: 'administrator', name: 'Administrator', icon: '⚙️', password: 'admin2026', access: ['survey', 'metrics'], description: 'Survey & metrics access' }
+const METRIC_PACKAGES = {
+  practice_9: { name: 'Private Practice 9', metrics: PRACTICE_9_METRICS, color: '#3B82F6' },
+  pe_10: { name: 'PE Practice 10', metrics: PE_10_METRICS, color: '#8B5CF6' },
+  kpi_25: { name: 'KPI 25', metrics: KPI_25_METRICS, color: '#10B981' },
+  asc_25: { name: 'Private ASC 25', metrics: ASC_25_METRICS, color: '#F59E0B' },
+  pe_asc_21: { name: 'PE ASC 21', metrics: PE_ASC_METRICS, color: '#EF4444' },
+  retina_12: { name: 'Retina 12', metrics: RETINA_12_METRICS, color: '#EC4899' }
 };
 
-// CSV Templates
-const CSV_TEMPLATES = [
-  { id: 'practice_registration', name: 'Practice Registration', icon: '🏥', fields: ['practice_name', 'npi', 'tax_id', 'address', 'city', 'state', 'zip', 'phone', 'email', 'specialty', 'provider_count'] },
-  { id: 'claims_data', name: 'Claims Data', icon: '📋', fields: ['claim_id', 'patient_id', 'date_of_service', 'cpt_code', 'icd10_primary', 'provider_npi', 'payer_name', 'billed_amount', 'allowed_amount', 'paid_amount', 'claim_status'] },
-  { id: 'charges_data', name: 'Charges Data', icon: '💰', fields: ['charge_id', 'patient_id', 'date_of_service', 'cpt_code', 'modifier', 'units', 'charge_amount', 'provider_npi', 'department'] },
-  { id: 'payments_data', name: 'Payments Data', icon: '💳', fields: ['payment_id', 'claim_id', 'payment_date', 'payer_name', 'check_number', 'paid_amount', 'adjustment_amount', 'payment_method'] },
-  { id: 'ar_aging_data', name: 'A/R Aging Data', icon: '📊', fields: ['account_id', 'patient_name', 'payer_name', 'total_balance', 'current_0_30', 'aging_31_60', 'aging_61_90', 'aging_over_90'] },
-  { id: 'patient_demographics', name: 'Patient Demographics', icon: '👥', fields: ['patient_id', 'date_of_birth', 'gender', 'zip_code', 'primary_insurance', 'insurance_type', 'patient_status'] },
-  { id: 'doctor_roster', name: 'Doctor Roster', icon: '👨‍⚕️', fields: ['provider_id', 'first_name', 'last_name', 'npi', 'specialty', 'license_number', 'dea_number', 'status'] },
-  { id: 'employee_roster', name: 'Employee Roster', icon: '👥', fields: ['employee_id', 'first_name', 'last_name', 'role', 'department', 'hire_date', 'employment_type', 'status'] },
-  { id: 'payer_contracts', name: 'Payer Contracts', icon: '📑', fields: ['contract_id', 'payer_name', 'contract_type', 'effective_date', 'termination_date', 'fee_schedule_type', 'percent_of_medicare'] }
+const CPT_CODES = [
+  { code: '66984', description: 'Cataract Surgery (Standard)', medicareRate: 535.42, category: 'Cataract', wRVU: 10.36 },
+  { code: '66982', description: 'Cataract Surgery (Complex)', medicareRate: 652.18, category: 'Cataract', wRVU: 12.62 },
+  { code: '67028', description: 'Intravitreal Injection', medicareRate: 95.67, category: 'Retina', wRVU: 1.80 },
+  { code: '67210', description: 'Retinal Laser (PRP)', medicareRate: 285.45, category: 'Retina', wRVU: 5.52 },
+  { code: '67040', description: 'Vitrectomy (Posterior)', medicareRate: 1245.80, category: 'Retina', wRVU: 24.10 },
+  { code: '65855', description: 'Trabeculoplasty (SLT/ALT)', medicareRate: 245.67, category: 'Glaucoma', wRVU: 4.75 },
+  { code: '66170', description: 'Trabeculectomy', medicareRate: 985.45, category: 'Glaucoma', wRVU: 19.07 },
+  { code: '66711', description: 'iStent Insert', medicareRate: 425.80, category: 'Glaucoma', wRVU: 8.24 },
+  { code: '92014', description: 'Comprehensive Exam (Est)', medicareRate: 125.45, category: 'E&M', wRVU: 2.43 },
+  { code: '92134', description: 'OCT Retina', medicareRate: 35.80, category: 'Diagnostic', wRVU: 0.69 }
 ];
 
-// Innovation Phases for OnPacePlus
-const INNOVATION_PHASES = [
-  { id: 'discovery', name: 'Discovery', icon: '🔍', color: '#6366F1' },
-  { id: 'ideation', name: 'Ideation', icon: '💡', color: '#8B5CF6' },
-  { id: 'planning', name: 'Planning', icon: '📋', color: '#EC4899' },
-  { id: 'development', name: 'Development', icon: '🛠️', color: '#F59E0B' },
-  { id: 'implementation', name: 'Implementation', icon: '🚀', color: '#10B981' },
-  { id: 'optimization', name: 'Optimization', icon: '📈', color: '#06B6D4' }
+const INNOVATIONS = [
+  { id: '1', category: 'Cataract', name: 'Light Adjustable Lens (LAL)', manufacturer: 'RxSight', status: 'FDA Approved', year: 2017, adoptionRate: 15, clinicalImpact: 'High' },
+  { id: '2', category: 'Retina', name: 'Faricimab (Vabysmo)', manufacturer: 'Genentech', status: 'FDA Approved', year: 2022, adoptionRate: 45, clinicalImpact: 'High' },
+  { id: '3', category: 'Glaucoma', name: 'iStent Infinite', manufacturer: 'Glaukos', status: 'FDA Approved', year: 2022, adoptionRate: 25, clinicalImpact: 'High' },
+  { id: '4', category: 'Diagnostics', name: 'OCT Angiography', manufacturer: 'Multiple', status: 'FDA Approved', year: 2016, adoptionRate: 65, clinicalImpact: 'High' }
 ];
 
-// Core Dashboard Metrics
-const CORE_METRICS = [
-  { id: 'revenue', name: 'Total Revenue', value: '$2,450,000', trend: '+5.2%', trendUp: true, percentile: 72, icon: '💰' },
-  { id: 'patient-volume', name: 'Patient Volume', value: '1,250', trend: '+3.1%', trendUp: true, percentile: 68, icon: '👥' },
-  { id: 'collections', name: 'Collections Rate', value: '94.5%', trend: '+1.8%', trendUp: true, percentile: 82, icon: '📊' },
-  { id: 'wait-time', name: 'Avg Wait Time', value: '12 min', trend: '-8.5%', trendUp: true, percentile: 75, icon: '⏱️' },
-  { id: 'no-show', name: 'No-Show Rate', value: '8.2%', trend: '-12.3%', trendUp: true, percentile: 78, icon: '📅' },
-  { id: 'productivity', name: 'Provider Productivity', value: '32 pts/day', trend: '+4.2%', trendUp: true, percentile: 71, icon: '⚡' }
+// NEW: Competitor Practices Data
+const COMPETITOR_PRACTICES = [
+  {
+    id: 'comp1',
+    name: 'Vision Excellence Center',
+    type: 'ophthalmology',
+    address: '123 Market St, San Francisco, CA 94102',
+    lat: 37.7849,
+    lng: -122.4094,
+    ratings: { google: 4.8, yelp: 4.5, healthgrades: 4.9 },
+    reviewCount: 342,
+    website: 'visionexcellence.com',
+    intel: {
+      providers: ['Dr. Sarah Chen - Harvard Medical School', 'Dr. Michael Park - Stanford Ophthalmology'],
+      equipment: ['Zeiss OPMI Lumera', 'Alcon LenSx Femtosecond', 'Topcon Maestro OCT'],
+      services: ['Cataract Surgery', 'LASIK', 'Glaucoma Treatment', 'Retina Care', 'Oculoplastics'],
+      staff: 24,
+      languages: ['English', 'Spanish', 'Mandarin'],
+      telehealth: true,
+      avgWaitTime: '12 min'
+    }
+  },
+  {
+    id: 'comp2',
+    name: 'Bay Area Eye Associates',
+    type: 'optometry',
+    address: '456 Powell St, San Francisco, CA 94108',
+    lat: 37.7879,
+    lng: -122.4075,
+    ratings: { google: 4.6, yelp: 4.3, healthgrades: 4.7 },
+    reviewCount: 218,
+    website: 'bayareaeye.com',
+    intel: {
+      providers: ['Dr. Jennifer Lee - UC Berkeley Optometry', 'Dr. David Wong - Pacific University'],
+      equipment: ['Optos Daytona', 'Humphrey Visual Field', 'iCare Tonometer'],
+      services: ['Comprehensive Eye Exams', 'Contact Lens Fitting', 'Dry Eye Treatment', 'Myopia Control'],
+      staff: 12,
+      languages: ['English', 'Cantonese', 'Vietnamese'],
+      telehealth: true,
+      avgWaitTime: '8 min'
+    }
+  },
+  {
+    id: 'comp3',
+    name: 'Pacific Vision Institute',
+    type: 'ophthalmology',
+    address: '789 Geary St, San Francisco, CA 94109',
+    lat: 37.7865,
+    lng: -122.4145,
+    ratings: { google: 4.9, yelp: 4.7, healthgrades: 4.8 },
+    reviewCount: 567,
+    website: 'pacificvision.com',
+    intel: {
+      providers: ['Dr. Robert Kim - Johns Hopkins', 'Dr. Lisa Zhang - Mayo Clinic Fellowship', 'Dr. James Miller - Wills Eye'],
+      equipment: ['Zeiss VisuMax', 'Alcon Constellation', 'Heidelberg Spectralis', 'Lenstar LS 900'],
+      services: ['LASIK', 'PRK', 'ICL', 'Cataract Surgery', 'Cornea Transplant', 'Keratoconus Treatment'],
+      staff: 35,
+      languages: ['English', 'Spanish', 'Korean', 'Tagalog'],
+      telehealth: true,
+      avgWaitTime: '15 min'
+    }
+  },
+  {
+    id: 'comp4',
+    name: 'Golden Gate Ophthalmology',
+    type: 'ophthalmology',
+    address: '321 Sutter St, San Francisco, CA 94108',
+    lat: 37.7895,
+    lng: -122.4055,
+    ratings: { google: 4.5, yelp: 4.2, healthgrades: 4.6 },
+    reviewCount: 189,
+    website: 'goldengateophth.com',
+    intel: {
+      providers: ['Dr. William Brown - UCSF Ophthalmology', 'Dr. Emily Davis - Duke Eye Center'],
+      equipment: ['Zeiss IOLMaster 700', 'Alcon Centurion', 'Optovue Avanti'],
+      services: ['Cataract Surgery', 'Glaucoma Surgery', 'Macular Degeneration', 'Diabetic Eye Care'],
+      staff: 18,
+      languages: ['English', 'Spanish', 'Russian'],
+      telehealth: false,
+      avgWaitTime: '20 min'
+    }
+  },
+  {
+    id: 'comp5',
+    name: 'Silicon Valley Eye Center',
+    type: 'ophthalmology',
+    address: '555 Castro St, Mountain View, CA 94041',
+    lat: 37.3894,
+    lng: -122.0819,
+    ratings: { google: 4.7, yelp: 4.4, healthgrades: 4.8 },
+    reviewCount: 423,
+    website: 'sveye.com',
+    intel: {
+      providers: ['Dr. Andrew Thompson - Stanford', 'Dr. Michelle Garcia - Bascom Palmer'],
+      equipment: ['CATALYS Laser', 'Zeiss Cirrus OCT', 'Nidek Excimer Laser'],
+      services: ['Premium Cataract Surgery', 'LASIK', 'Glaucoma', 'Pediatric Ophthalmology'],
+      staff: 28,
+      languages: ['English', 'Spanish', 'Hindi', 'Mandarin'],
+      telehealth: true,
+      avgWaitTime: '10 min'
+    }
+  },
+  {
+    id: 'comp6',
+    name: 'Peninsula Eye Care',
+    type: 'optometry',
+    address: '888 El Camino Real, Palo Alto, CA 94301',
+    lat: 37.4419,
+    lng: -122.1430,
+    ratings: { google: 4.4, yelp: 4.1, healthgrades: 4.5 },
+    reviewCount: 156,
+    website: 'peninsulaeyecare.com',
+    intel: {
+      providers: ['Dr. Nancy White - SCCO', 'Dr. Tom Richards - New England College of Optometry'],
+      equipment: ['Topcon CT-1', 'Marco TRS-5100', 'Oculus Keratograph'],
+      services: ['Eye Exams', 'Contact Lenses', 'Vision Therapy', 'Sports Vision'],
+      staff: 8,
+      languages: ['English', 'Spanish'],
+      telehealth: true,
+      avgWaitTime: '5 min'
+    }
+  },
+  {
+    id: 'comp7',
+    name: 'South Bay Retina',
+    type: 'ophthalmology',
+    address: '1200 Scott Blvd, Santa Clara, CA 95050',
+    lat: 37.3541,
+    lng: -121.9552,
+    ratings: { google: 4.8, yelp: 4.6, healthgrades: 4.9 },
+    reviewCount: 287,
+    website: 'southbayretina.com',
+    intel: {
+      providers: ['Dr. Richard Nguyen - Wilmer Eye Institute', 'Dr. Karen Patel - UCLA Jules Stein'],
+      equipment: ['Zeiss PLEX Elite', 'Alcon Constellation', 'Optos California'],
+      services: ['Retinal Detachment', 'Macular Degeneration', 'Diabetic Retinopathy', 'Vitrectomy', 'Injections'],
+      staff: 22,
+      languages: ['English', 'Spanish', 'Vietnamese', 'Hindi'],
+      telehealth: true,
+      avgWaitTime: '18 min'
+    }
+  },
+  {
+    id: 'comp8',
+    name: 'East Bay Vision Center',
+    type: 'general',
+    address: '2400 Shattuck Ave, Berkeley, CA 94704',
+    lat: 37.8660,
+    lng: -122.2590,
+    ratings: { google: 4.3, yelp: 4.0, healthgrades: 4.4 },
+    reviewCount: 134,
+    website: 'eastbayvision.com',
+    intel: {
+      providers: ['Dr. Laura Martinez - UC Berkeley', 'Dr. Chris Anderson - Illinois College of Optometry'],
+      equipment: ['Nidek OPD-Scan III', 'Topcon 3D OCT', 'Reichert Tono-Pen'],
+      services: ['Family Eye Care', 'Pediatric Exams', 'Geriatric Vision', 'Low Vision Aids'],
+      staff: 10,
+      languages: ['English', 'Spanish', 'Japanese'],
+      telehealth: false,
+      avgWaitTime: '15 min'
+    }
+  }
 ];
 
-// Main Component
-const Benchmarks = () => {
-  const [currentScreen, setCurrentScreen] = useState('home');
-  const [activeTab, setActiveTab] = useState('overview');
-  const [selectedMetricPackage, setSelectedMetricPackage] = useState(null);
+// NEW: Patient Heat Map ZIP Code Data
+const PATIENT_HEATMAP_DATA = [
+  { zip: '94102', name: 'Tenderloin/Civic Center', patients: 245, profitIndex: 72, lat: 37.7815, lng: -122.4117 },
+  { zip: '94103', name: 'South of Market', patients: 312, profitIndex: 85, lat: 37.7726, lng: -122.4110 },
+  { zip: '94104', name: 'Financial District', patients: 89, profitIndex: 99, lat: 37.7914, lng: -122.4020 },
+  { zip: '94105', name: 'Rincon Hill', patients: 156, profitIndex: 94, lat: 37.7898, lng: -122.3925 },
+  { zip: '94107', name: 'Potrero Hill', patients: 287, profitIndex: 88, lat: 37.7621, lng: -122.3971 },
+  { zip: '94108', name: 'Chinatown', patients: 198, profitIndex: 76, lat: 37.7925, lng: -122.4074 },
+  { zip: '94109', name: 'Russian Hill/Nob Hill', patients: 423, profitIndex: 96, lat: 37.7935, lng: -122.4213 },
+  { zip: '94110', name: 'Mission District', patients: 534, profitIndex: 79, lat: 37.7485, lng: -122.4156 },
+  { zip: '94111', name: 'Embarcadero', patients: 67, profitIndex: 98, lat: 37.7990, lng: -122.3985 },
+  { zip: '94112', name: 'Ingleside', patients: 612, profitIndex: 74, lat: 37.7198, lng: -122.4426 },
+  { zip: '94114', name: 'Castro', patients: 356, profitIndex: 91, lat: 37.7609, lng: -122.4350 },
+  { zip: '94115', name: 'Pacific Heights', patients: 289, profitIndex: 97, lat: 37.7869, lng: -122.4377 },
+  { zip: '94116', name: 'Sunset', patients: 478, profitIndex: 82, lat: 37.7439, lng: -122.4855 },
+  { zip: '94117', name: 'Haight-Ashbury', patients: 267, profitIndex: 84, lat: 37.7699, lng: -122.4469 },
+  { zip: '94118', name: 'Inner Richmond', patients: 345, profitIndex: 89, lat: 37.7825, lng: -122.4619 },
+  { zip: '94121', name: 'Outer Richmond', patients: 398, profitIndex: 81, lat: 37.7785, lng: -122.4930 },
+  { zip: '94122', name: 'Outer Sunset', patients: 567, profitIndex: 78, lat: 37.7588, lng: -122.4845 },
+  { zip: '94123', name: 'Marina', patients: 234, profitIndex: 95, lat: 37.8005, lng: -122.4360 },
+  { zip: '94124', name: 'Bayview', patients: 389, profitIndex: 68, lat: 37.7308, lng: -122.3883 },
+  { zip: '94127', name: 'St. Francis Wood', patients: 178, profitIndex: 93, lat: 37.7352, lng: -122.4575 }
+];
+
+const REGISTRATION_STEPS = [
+  { id: 'name', question: "What is your practice name?", type: 'text', placeholder: 'Enter practice name' },
+  { id: 'type', question: "What type of practice?", type: 'select', options: ['Solo Practice', 'Small Group', 'Large Group', 'PE-Backed'] },
+  { id: 'package', question: "Which metric package?", type: 'select', options: ['Private Practice 9', 'PE Practice 10', 'KPI 25', 'Private ASC 25', 'PE ASC 21', 'Retina 12'] }
+];
+
+const styles = {
+  container: { fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif', backgroundColor: '#0a0a0f', minHeight: '100vh', color: '#e0e0e0' },
+  header: { background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', padding: '16px 32px', borderBottom: '1px solid rgba(99, 102, 241, 0.3)' },
+  headerContent: { maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' },
+  logo: { display: 'flex', alignItems: 'center', gap: '12px' },
+  logoIcon: { width: '40px', height: '40px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' },
+  logoText: { fontSize: '22px', fontWeight: '700', background: 'linear-gradient(135deg, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  version: { fontSize: '11px', color: '#6366f1', padding: '2px 8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '10px' },
+  nav: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+  navBtn: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '500', transition: 'all 0.2s' },
+  navBtnActive: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white' },
+  navBtnInactive: { background: 'rgba(99, 102, 241, 0.1)', color: '#a0a0a0', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.2)' },
+  main: { maxWidth: '1400px', margin: '0 auto', padding: '24px 32px' },
+  pageTitle: { fontSize: '28px', fontWeight: '700', marginBottom: '8px', color: '#fff' },
+  pageSubtitle: { color: '#888', fontSize: '14px', marginBottom: '24px' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' },
+  card: { background: 'linear-gradient(180deg, rgba(30, 30, 50, 0.9) 0%, rgba(20, 20, 35, 0.95) 100%)', borderRadius: '16px', padding: '24px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.2)' },
+  cardTitle: { fontSize: '16px', fontWeight: '600', color: '#fff', marginBottom: '16px' },
+  input: { width: '100%', padding: '12px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.3)', backgroundColor: 'rgba(20, 20, 40, 0.8)', color: '#fff', fontSize: '14px', outline: 'none', boxSizing: 'border-box' },
+  select: { width: '100%', padding: '12px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.3)', backgroundColor: 'rgba(20, 20, 40, 0.8)', color: '#fff', fontSize: '14px' },
+  button: { padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: '600', transition: 'all 0.2s' },
+  primaryBtn: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white' },
+  secondaryBtn: { background: 'rgba(99, 102, 241, 0.2)', color: '#a0a0ff', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.3)' },
+  metricCard: { background: 'rgba(20, 20, 40, 0.6)', borderRadius: '12px', padding: '16px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.15)', marginBottom: '12px' },
+  badge: { display: 'inline-block', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '500' },
+  table: { width: '100%', borderCollapse: 'collapse' },
+  th: { textAlign: 'left', padding: '12px', borderBottom: '1px solid rgba(99, 102, 241, 0.2)', color: '#a0a0a0', fontSize: '11px', textTransform: 'uppercase' },
+  td: { padding: '12px', borderBottom: '1px solid rgba(99, 102, 241, 0.1)', fontSize: '13px' },
+  chatContainer: { height: '400px', overflowY: 'auto', padding: '16px', background: 'rgba(10, 10, 20, 0.5)', borderRadius: '12px', marginBottom: '16px' },
+  chatMessage: { marginBottom: '12px', padding: '12px 16px', borderRadius: '12px', maxWidth: '85%' },
+  userMessage: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', marginLeft: 'auto', color: 'white' },
+  botMessage: { background: 'rgba(40, 40, 60, 0.8)', color: '#e0e0e0' },
+  progressBar: { height: '8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '4px', overflow: 'hidden' },
+  progressFill: { height: '100%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' },
+  filterBtn: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '500', marginRight: '8px', marginBottom: '8px', transition: 'all 0.2s' },
+  competitorCard: { background: 'rgba(20, 20, 40, 0.6)', borderRadius: '12px', padding: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.15)', marginBottom: '16px' },
+  ratingBar: { height: '8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '4px', overflow: 'hidden', flex: 1 },
+  heatmapCell: { padding: '12px', borderRadius: '8px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }
+};
+
+const formatCurrency = (v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : v >= 1000 ? `$${(v/1000).toFixed(0)}K` : `$${v}`;
+const formatValue = (v, u) => u === 'USD' ? formatCurrency(v) : u === '%' ? `${v}%` : `${v} ${u}`;
+const getScoreColor = (s) => s >= 90 ? '#10b981' : s >= 70 ? '#f59e0b' : '#ef4444';
+const calculateScore = (v, b) => v && b ? Math.min(100, Math.round((v/b)*100)) : null;
+const getProfitColor = (index) => index >= 90 ? '#10b981' : index >= 80 ? '#3b82f6' : index >= 70 ? '#f59e0b' : '#ef4444';
+const getTypeIcon = (type) => type === 'ophthalmology' ? '🔬' : type === 'optometry' ? '👓' : '🏥';
+const getTypeColor = (type) => type === 'ophthalmology' ? '#8b5cf6' : type === 'optometry' ? '#3b82f6' : '#10b981';
+
+export default function Benchmarks() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [practiceProfile, setPracticeProfile] = useState(() => { try { const s = localStorage.getItem('medpact_profile'); return s ? JSON.parse(s) : null; } catch { return null; } });
+  const [regStep, setRegStep] = useState(0);
+  const [regAnswers, setRegAnswers] = useState({});
+  const [showRegistration, setShowRegistration] = useState(!practiceProfile);
+  const [selectedPackage, setSelectedPackage] = useState('practice_9');
+  const [metricValues, setMetricValues] = useState(() => { try { const s = localStorage.getItem('medpact_metrics'); return s ? JSON.parse(s) : {}; } catch { return {}; } });
+  const [chatMessages, setChatMessages] = useState([{ role: 'assistant', content: "Welcome! Ask about metrics, CPT codes, competitors, or innovations." }]);
+  const [chatInput, setChatInput] = useState('');
+  const chatEndRef = useRef(null);
+  const [cptFilter, setCptFilter] = useState('all');
+  const [innovationFilter, setInnovationFilter] = useState('all');
   
-  // Admin State
-  const [showAdminModal, setShowAdminModal] = useState(false);
-  const [selectedRole, setSelectedRole] = useState(null);
-  const [passwordInput, setPasswordInput] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentAdminRole, setCurrentAdminRole] = useState(null);
-  const [adminPanelTab, setAdminPanelTab] = useState('metrics');
+  // NEW: Competitor Intelligence State
+  const [practiceTypeFilter, setPracticeTypeFilter] = useState('all');
+  const [compareList, setCompareList] = useState([]);
+  const [selectedCompetitor, setSelectedCompetitor] = useState(null);
+  const [showIntelModal, setShowIntelModal] = useState(false);
 
-  // KCN Chat State
-  const [kcnMessages, setKcnMessages] = useState([
-    { id: 1, user: 'Dr. Sarah Chen', avatar: '👩‍⚕️', message: 'Has anyone implemented the new OCT billing codes?', timestamp: '10:30 AM', channel: 'billing' },
-    { id: 2, user: 'James Wilson', avatar: '👨‍💼', message: 'Yes! 15% increase in collections after the update.', timestamp: '10:32 AM', channel: 'billing' }
-  ]);
-  const [kcnInput, setKcnInput] = useState('');
-  const [kcnChannel, setKcnChannel] = useState('general');
+  useEffect(() => { if (practiceProfile) localStorage.setItem('medpact_profile', JSON.stringify(practiceProfile)); }, [practiceProfile]);
+  useEffect(() => { localStorage.setItem('medpact_metrics', JSON.stringify(metricValues)); }, [metricValues]);
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [chatMessages]);
 
-  const hasAccess = (feature) => {
-    if (!currentAdminRole) return false;
-    return currentAdminRole.access.includes('all') || currentAdminRole.access.includes(feature);
-  };
-
-  const handleAdminLogin = () => {
-    const role = ADMIN_ROLES[selectedRole];
-    if (role && passwordInput === role.password) {
-      setIsAuthenticated(true);
-      setCurrentAdminRole(role);
-      setPasswordError('');
-      setPasswordInput('');
-      setShowAdminModal(false);
-    } else {
-      setPasswordError('Invalid password');
+  const handleRegNext = () => {
+    if (regStep < REGISTRATION_STEPS.length - 1) { setRegStep(regStep + 1); }
+    else {
+      const profile = { ...regAnswers, createdAt: new Date().toISOString() };
+      setPracticeProfile(profile);
+      setShowRegistration(false);
+      const pkgMap = { 'Private Practice 9': 'practice_9', 'PE Practice 10': 'pe_10', 'KPI 25': 'kpi_25', 'Private ASC 25': 'asc_25', 'PE ASC 21': 'pe_asc_21', 'Retina 12': 'retina_12' };
+      if (regAnswers.package && pkgMap[regAnswers.package]) setSelectedPackage(pkgMap[regAnswers.package]);
     }
   };
 
-  const handleSendKcnMessage = () => {
-    if (!kcnInput.trim()) return;
-    setKcnMessages(prev => [...prev, {
-      id: Date.now(),
-      user: 'You',
-      avatar: '👤',
-      message: kcnInput,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      channel: kcnChannel
-    }]);
-    setKcnInput('');
+  const handleChat = () => {
+    if (!chatInput.trim()) return;
+    const msg = chatInput.toLowerCase();
+    setChatMessages(p => [...p, { role: 'user', content: chatInput }]);
+    setChatInput('');
+    let resp = "Try asking about 'net collection rate', 'cataract CPT', 'competitors', or 'heat map'.";
+    if (msg.includes('collection')) resp = "Net Collection Rate: Benchmark 98%+. Below 95% indicates billing issues.";
+    else if (msg.includes('cataract')) resp = "Cataract CPT: 66984 (Standard) = $535.42, 66982 (Complex) = $652.18";
+    else if (msg.includes('injection')) resp = "Intravitreal Injection CPT 67028: $95.67 Medicare rate.";
+    else if (msg.includes('competitor')) resp = `You have ${COMPETITOR_PRACTICES.length} competitors mapped. Top rated: ${COMPETITOR_PRACTICES.sort((a,b) => b.ratings.google - a.ratings.google)[0].name} with ${COMPETITOR_PRACTICES.sort((a,b) => b.ratings.google - a.ratings.google)[0].ratings.google}⭐`;
+    else if (msg.includes('heat') || msg.includes('zip')) resp = `Highest profit ZIP: 94104 (Financial District) with 99 profit index. Lowest: 94124 (Bayview) with 68 profit index.`;
+    setTimeout(() => setChatMessages(p => [...p, { role: 'assistant', content: resp }]), 300);
   };
 
-  // HOME SCREEN
-  if (currentScreen === 'home') {
+  const toggleCompare = (competitor) => {
+    if (compareList.find(c => c.id === competitor.id)) {
+      setCompareList(compareList.filter(c => c.id !== competitor.id));
+    } else if (compareList.length < 4) {
+      setCompareList([...compareList, competitor]);
+    }
+  };
+
+  const filteredCompetitors = practiceTypeFilter === 'all' 
+    ? COMPETITOR_PRACTICES 
+    : COMPETITOR_PRACTICES.filter(c => c.type === practiceTypeFilter);
+
+  const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { id: 'competitors', label: 'Competitors', icon: '🎯' },
+    { id: 'heatmap', label: 'Heat Map', icon: '🗺️' },
+    { id: 'cpt', label: 'CPT Codes', icon: '💰' },
+    { id: 'innovations', label: 'OnPacePlus', icon: '🚀' },
+    { id: 'chat', label: 'KCN Chat', icon: '💬' },
+    { id: 'profile', label: 'Profile', icon: '👤' }
+  ];
+
+  if (showRegistration) {
+    const step = REGISTRATION_STEPS[regStep];
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
-        <nav className="px-8 py-6">
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="text-4xl">🏥</span>
-              <div>
-                <h1 className="text-2xl font-bold text-white">MedPact</h1>
-                <p className="text-xs text-blue-300">Practice Intelligence v2.8.0</p>
-              </div>
+      <div style={styles.container}>
+        <header style={styles.header}><div style={styles.headerContent}><div style={styles.logo}><div style={styles.logoIcon}>👁️</div><span style={styles.logoText}>MedPact</span><span style={styles.version}>v3.0</span></div></div></header>
+        <div style={{ ...styles.main, maxWidth: '600px' }}>
+          <div style={styles.card}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}><div style={{ fontSize: '48px', marginBottom: '16px' }}>🏥</div><h2 style={{ fontSize: '24px', fontWeight: '700' }}>Welcome to MedPact</h2></div>
+            <div style={styles.progressBar}><div style={{ ...styles.progressFill, width: `${((regStep+1)/REGISTRATION_STEPS.length)*100}%` }} /></div>
+            <p style={{ fontSize: '12px', color: '#888', margin: '8px 0 24px' }}>Step {regStep + 1} of {REGISTRATION_STEPS.length}</p>
+            <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>{step.question}</h3>
+            {step.type === 'text' && <input type="text" style={styles.input} placeholder={step.placeholder} value={regAnswers[step.id] || ''} onChange={e => setRegAnswers(p => ({...p, [step.id]: e.target.value}))} />}
+            {step.type === 'select' && <select style={styles.select} value={regAnswers[step.id] || ''} onChange={e => setRegAnswers(p => ({...p, [step.id]: e.target.value}))}><option value="">Select...</option>{step.options.map(o => <option key={o} value={o}>{o}</option>)}</select>}
+            <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+              {regStep > 0 && <button onClick={() => setRegStep(regStep-1)} style={{...styles.button, ...styles.secondaryBtn, flex: 1}}>Back</button>}
+              <button onClick={handleRegNext} style={{...styles.button, ...styles.primaryBtn, flex: 1}}>{regStep === REGISTRATION_STEPS.length - 1 ? 'Complete' : 'Continue'}</button>
             </div>
-            <div className="flex items-center gap-4">
-              <button onClick={() => setShowAdminModal(true)} className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-semibold">
-                🔐 Admin
-              </button>
-              <button onClick={() => setCurrentScreen('app')} className="px-6 py-2 bg-white text-indigo-900 rounded-full font-semibold">
-                Launch Dashboard →
-              </button>
-            </div>
+            <button onClick={() => { setShowRegistration(false); setPracticeProfile({ name: 'Demo Practice', type: 'Demo' }); }} style={{ width: '100%', marginTop: '16px', background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>Skip (Demo)</button>
           </div>
-        </nav>
-
-        <div className="max-w-7xl mx-auto px-8 py-16 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Practice Intelligence <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Reimagined</span>
-          </h1>
-          <p className="text-xl text-blue-200 max-w-2xl mx-auto mb-8">
-            6 Metric Packages based on Richard Lindstrom & John Pinto's OSN methodology
-          </p>
-
-          <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4 mt-12">
-            {METRIC_PACKAGES.map(pkg => (
-              <div key={pkg.id} onClick={() => { setSelectedMetricPackage(pkg); setShowAdminModal(true); }} className="p-4 rounded-xl bg-white/10 backdrop-blur cursor-pointer hover:bg-white/20 transition-all">
-                <div className="text-3xl mb-2">{pkg.icon}</div>
-                <h3 className="text-sm font-bold text-white">{pkg.name}</h3>
-                <p className="text-xs text-blue-200 mt-1">{pkg.metrics.length} metrics</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid md:grid-cols-4 gap-4 mt-12">
-            {[
-              { icon: '🤖', title: 'AI Registration', color: 'from-cyan-500 to-cyan-700' },
-              { icon: '📊', title: 'OnPacePlus', color: 'from-emerald-500 to-emerald-700' },
-              { icon: '💬', title: 'KCN Chat', color: 'from-violet-500 to-violet-700' },
-              { icon: '📄', title: 'CSV Hub', color: 'from-orange-500 to-orange-700' }
-            ].map((feature, idx) => (
-              <div key={idx} onClick={() => setShowAdminModal(true)} className={`p-6 rounded-2xl bg-gradient-to-br ${feature.color} cursor-pointer hover:scale-105 transition-all`}>
-                <div className="text-4xl mb-3">{feature.icon}</div>
-                <h3 className="text-lg font-bold text-white">{feature.title}</h3>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Admin Modal */}
-        {showAdminModal && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden">
-              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white flex justify-between">
-                <h2 className="text-xl font-bold">🔐 Admin Access</h2>
-                <button onClick={() => { setShowAdminModal(false); setSelectedRole(null); setPasswordError(''); }} className="hover:bg-white/20 rounded-full p-2">✕</button>
-              </div>
-              <div className="p-6">
-                {!selectedRole ? (
-                  <div className="space-y-3">
-                    {Object.values(ADMIN_ROLES).map(role => (
-                      <button key={role.id} onClick={() => setSelectedRole(role.id)} className="w-full p-4 rounded-xl border-2 text-left hover:border-purple-500 flex items-center gap-4">
-                        <span className="text-3xl">{role.icon}</span>
-                        <div>
-                          <h3 className="font-semibold">{role.name}</h3>
-                          <p className="text-sm text-gray-500">{role.description}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <button onClick={() => setSelectedRole(null)} className="text-blue-600 text-sm">← Back</button>
-                    <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()} className="w-full p-3 border-2 rounded-xl" placeholder="Password" />
-                    {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
-                    <button onClick={handleAdminLogin} className="w-full py-3 bg-purple-600 text-white rounded-xl font-semibold">Login</button>
-                    <p className="text-xs text-gray-400 text-center">Demo: medpact2026 | owner2026 | admin2026</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // ADMIN PANEL
-  if (isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gray-100">
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <span className="text-2xl">{currentAdminRole?.icon}</span>
-              <div>
-                <h1 className="text-xl font-bold">Admin Panel - {currentAdminRole?.name}</h1>
-                <p className="text-sm opacity-80">MedPact v2.8.0</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <button onClick={() => setCurrentScreen('app')} className="px-4 py-2 bg-white/20 rounded-lg">📊 Dashboard</button>
-              <button onClick={() => { setIsAuthenticated(false); setCurrentAdminRole(null); }} className="px-4 py-2 bg-red-500 rounded-lg">Logout</button>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white border-b">
-          <div className="max-w-7xl mx-auto px-4 flex gap-2 py-2 overflow-x-auto">
-            {[
-              { id: 'metrics', label: '📊 6 Metric Packages', access: 'metrics' },
-              { id: 'kcn', label: '💬 KCN Chat', access: 'all' },
-              { id: 'csv', label: '📄 CSV Hub', access: 'all' },
-              { id: 'survey', label: '🤖 AI Surveys', access: 'survey' },
-              { id: 'payment', label: '💳 Payment', access: 'payment' }
-            ].filter(tab => hasAccess(tab.access)).map(tab => (
-              <button key={tab.id} onClick={() => setAdminPanelTab(tab.id)} className={`px-4 py-2 rounded-lg whitespace-nowrap ${adminPanelTab === tab.id ? 'bg-purple-100 text-purple-700 font-medium' : 'hover:bg-gray-100'}`}>
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto p-6">
-          {/* 6 METRIC PACKAGES */}
-          {adminPanelTab === 'metrics' && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">📊 6 Metric Packages</h2>
-              <p className="text-gray-500">Based on Richard Lindstrom & John Pinto's OSN lecture</p>
-              
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {METRIC_PACKAGES.map(pkg => (
-                  <div key={pkg.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-4 text-white">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl">{pkg.icon}</span>
-                        <div>
-                          <h3 className="font-bold">{pkg.name}</h3>
-                          <p className="text-sm opacity-80">{pkg.metrics.length} metrics</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4 max-h-64 overflow-y-auto">
-                      {pkg.id === 'pricing' ? (
-                        <table className="w-full text-xs">
-                          <thead>
-                            <tr className="border-b">
-                              <th className="text-left py-1">CPT</th>
-                              <th className="text-right">Comm</th>
-                              <th className="text-right">MCR</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {pkg.metrics.slice(0, 6).map(m => (
-                              <tr key={m.cptCode} className="border-b">
-                                <td className="py-1 font-mono">{m.cptCode}</td>
-                                <td className="text-right text-blue-600">${m.commercial}</td>
-                                <td className="text-right text-green-600">${m.medicare}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <div className="space-y-2">
-                          {pkg.metrics.slice(0, 6).map(m => (
-                            <div key={m.key} className="flex items-center justify-between text-sm border-b pb-2">
-                              <div className="flex items-center gap-2">
-                                <span>{m.icon}</span>
-                                <span>{m.title}</span>
-                              </div>
-                              <span className="font-semibold text-purple-600">{m.benchmark} {m.unit}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4 border-t bg-gray-50">
-                      <button className="w-full py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">View All Metrics</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* KCN CHAT */}
-          {adminPanelTab === 'kcn' && (
-            <div className="grid lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-xl shadow-lg p-4">
-                <h3 className="font-semibold mb-3">💬 Channels</h3>
-                {['general', 'billing', 'clinical', 'technology'].map(ch => (
-                  <button key={ch} onClick={() => setKcnChannel(ch)} className={`w-full p-2 rounded-lg text-left mb-1 ${kcnChannel === ch ? 'bg-purple-100 text-purple-700' : 'hover:bg-gray-100'}`}>
-                    # {ch}
-                  </button>
-                ))}
-              </div>
-              <div className="lg:col-span-3 bg-white rounded-xl shadow-lg overflow-hidden flex flex-col" style={{ height: '500px' }}>
-                <div className="bg-gradient-to-r from-violet-600 to-purple-600 p-4 text-white">
-                  <h2 className="font-bold">Knowledge & Communication Network</h2>
-                  <p className="text-sm opacity-80"># {kcnChannel}</p>
-                </div>
-                <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                  {kcnMessages.filter(m => m.channel === kcnChannel).map(msg => (
-                    <div key={msg.id} className={`flex gap-3 ${msg.user === 'You' ? 'justify-end' : ''}`}>
-                      {msg.user !== 'You' && <span className="text-2xl">{msg.avatar}</span>}
-                      <div className={`max-w-[70%] p-3 rounded-2xl ${msg.user === 'You' ? 'bg-purple-600 text-white' : 'bg-gray-100'}`}>
-                        {msg.user !== 'You' && <p className="text-sm font-semibold mb-1">{msg.user}</p>}
-                        <p className="text-sm">{msg.message}</p>
-                        <p className={`text-xs mt-1 ${msg.user === 'You' ? 'text-purple-200' : 'text-gray-400'}`}>{msg.timestamp}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="border-t p-4 flex gap-2">
-                  <input type="text" value={kcnInput} onChange={(e) => setKcnInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSendKcnMessage()} className="flex-1 p-3 border rounded-xl" placeholder={`Message #${kcnChannel}...`} />
-                  <button onClick={handleSendKcnMessage} className="px-6 py-3 bg-purple-600 text-white rounded-xl">Send</button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* CSV HUB */}
-          {adminPanelTab === 'csv' && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">📄 CSV Conversion Hub</h2>
-              <div className="grid md:grid-cols-3 gap-4">
-                {CSV_TEMPLATES.map(template => (
-                  <div key={template.id} className="bg-white rounded-xl shadow-lg p-4 hover:shadow-xl transition-shadow cursor-pointer">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="text-3xl">{template.icon}</span>
-                      <h3 className="font-semibold">{template.name}</h3>
-                    </div>
-                    <p className="text-sm text-gray-500 mb-3">{template.fields.length} fields</p>
-                    <button className="w-full py-2 bg-purple-100 text-purple-700 rounded-lg text-sm font-medium">📥 Download Template</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* AI SURVEYS */}
-          {adminPanelTab === 'survey' && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-4">🤖 AI Survey Generation</h2>
-              <div className="grid md:grid-cols-3 gap-4">
-                {['Staff Satisfaction', 'Patient Experience', 'Efficiency Assessment'].map(type => (
-                  <button key={type} className="p-6 border-2 rounded-xl hover:border-purple-500 text-center">
-                    <span className="text-4xl block mb-3">{type === 'Staff Satisfaction' ? '👥' : type === 'Patient Experience' ? '🏥' : '⚡'}</span>
-                    <h3 className="font-semibold">{type}</h3>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* PAYMENT */}
-          {adminPanelTab === 'payment' && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-6">💳 Payment & Billing</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="border-2 rounded-xl p-6 text-center">
-                  <span className="text-4xl block mb-2">🏆</span>
-                  <h3 className="text-xl font-bold text-purple-600">Professional</h3>
-                  <p className="text-3xl font-bold mt-2">$299<span className="text-sm text-gray-500">/mo</span></p>
-                </div>
-                <div className="border-2 rounded-xl p-6">
-                  <h4 className="font-semibold mb-4">Payment Method</h4>
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <p className="font-medium">•••• •••• •••• 4242</p>
-                    <p className="text-sm text-gray-500">Expires 12/27</p>
-                  </div>
-                </div>
-                <div className="border-2 rounded-xl p-6">
-                  <h4 className="font-semibold mb-4">Billing History</h4>
-                  {['Mar 21', 'Feb 21', 'Jan 21'].map(date => (
-                    <div key={date} className="flex justify-between py-2 border-b text-sm">
-                      <span>{date}, 2026</span>
-                      <span className="text-green-600">Paid</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     );
   }
 
-  // MAIN DASHBOARD
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <button onClick={() => setCurrentScreen('home')} className="p-2 hover:bg-gray-100 rounded-lg">🏠</button>
-            <div>
-              <h1 className="text-2xl font-bold">🏥 MedPact Practice Intelligence</h1>
-              <p className="text-sm text-gray-500">v2.8.0 | Bay Area Eye Care</p>
+    <div style={styles.container}>
+      <header style={styles.header}>
+        <div style={styles.headerContent}>
+          <div style={styles.logo}><div style={styles.logoIcon}>👁️</div><span style={styles.logoText}>MedPact</span><span style={styles.version}>v3.0</span></div>
+          <nav style={styles.nav}>{tabs.map(t => <button key={t.id} onClick={() => setActiveTab(t.id)} style={{...styles.navBtn, ...(activeTab === t.id ? styles.navBtnActive : styles.navBtnInactive)}}><span style={{marginRight:'6px'}}>{t.icon}</span>{t.label}</button>)}</nav>
+        </div>
+      </header>
+
+      {/* Intel Modal */}
+      {showIntelModal && selectedCompetitor && (
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.8)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'20px'}} onClick={() => setShowIntelModal(false)}>
+          <div style={{...styles.card,maxWidth:'800px',maxHeight:'90vh',overflow:'auto',width:'100%'}} onClick={e => e.stopPropagation()}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'24px'}}>
+              <h2 style={{fontSize:'24px',fontWeight:'700'}}><span style={{marginRight:'12px'}}>{getTypeIcon(selectedCompetitor.type)}</span>{selectedCompetitor.name}</h2>
+              <button onClick={() => setShowIntelModal(false)} style={{background:'none',border:'none',color:'#888',fontSize:'24px',cursor:'pointer'}}>×</button>
             </div>
-          </div>
-          <button onClick={() => setShowAdminModal(true)} className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg font-medium">�� Admin</button>
-        </div>
-      </div>
-
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-6 flex gap-1 py-2 overflow-x-auto">
-          {[
-            { id: 'overview', label: '📊 Overview' },
-            { id: 'metrics', label: '📈 Metrics' },
-            { id: 'pricing', label: '💰 Pricing' }
-          ].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-4 py-3 font-medium border-b-2 whitespace-nowrap ${activeTab === tab.id ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600'}`}>
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {activeTab === 'overview' && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {CORE_METRICS.map(m => (
-              <div key={m.id} className="bg-white rounded-xl shadow p-4 border-l-4 border-blue-500">
-                <div className="text-2xl">{m.icon}</div>
-                <div className="text-xs text-gray-500">{m.name}</div>
-                <div className="text-lg font-bold">{m.value}</div>
-                <div className={`text-sm ${m.trendUp ? 'text-green-600' : 'text-red-600'}`}>{m.trend}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'metrics' && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {METRIC_PACKAGES.map(pkg => (
-              <div key={pkg.id} className="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl" onClick={() => setShowAdminModal(true)}>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="text-4xl">{pkg.icon}</span>
-                  <div>
-                    <h3 className="font-bold">{pkg.name}</h3>
-                    <p className="text-sm text-gray-500">{pkg.metrics.length} metrics</p>
-                  </div>
-                </div>
-                <p className="text-gray-600 text-sm">{pkg.description}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'pricing' && (
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="text-left py-3 px-4">CPT Code</th>
-                  <th className="text-left py-3 px-4">Description</th>
-                  <th className="text-center py-3 px-4 text-blue-600">Commercial</th>
-                  <th className="text-center py-3 px-4 text-green-600">Medicare</th>
-                  <th className="text-center py-3 px-4 text-orange-600">Medicaid</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PRICE_TRANSPARENCY_DATA.map(p => (
-                  <tr key={p.cptCode} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4 font-mono">{p.cptCode}</td>
-                    <td className="py-3 px-4 text-sm">{p.description}</td>
-                    <td className="py-3 px-4 text-center text-blue-600 font-medium">${p.commercial}</td>
-                    <td className="py-3 px-4 text-center text-green-600">${p.medicare}</td>
-                    <td className="py-3 px-4 text-center text-orange-600">${p.medicaid}</td>
-                  </tr>
+            
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
+              {/* Provider Training */}
+              <div style={{...styles.metricCard}}>
+                <h4 style={{color:'#6366f1',marginBottom:'12px'}}>👨‍⚕️ Provider Training</h4>
+                {selectedCompetitor.intel.providers.map((p, i) => (
+                  <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{p}</div>
                 ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              </div>
 
-      {showAdminModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white flex justify-between">
-              <h2 className="text-xl font-bold">🔐 Admin Access</h2>
-              <button onClick={() => { setShowAdminModal(false); setSelectedRole(null); }} className="hover:bg-white/20 rounded-full p-2">✕</button>
-            </div>
-            <div className="p-6">
-              {!selectedRole ? (
-                <div className="space-y-3">
-                  {Object.values(ADMIN_ROLES).map(role => (
-                    <button key={role.id} onClick={() => setSelectedRole(role.id)} className="w-full p-4 rounded-xl border-2 text-left hover:border-purple-500 flex items-center gap-4">
-                      <span className="text-3xl">{role.icon}</span>
-                      <div>
-                        <h3 className="font-semibold">{role.name}</h3>
-                        <p className="text-sm text-gray-500">{role.description}</p>
-                      </div>
-                    </button>
+              {/* Equipment */}
+              <div style={{...styles.metricCard}}>
+                <h4 style={{color:'#10b981',marginBottom:'12px'}}>🔧 Equipment & Technology</h4>
+                {selectedCompetitor.intel.equipment.map((e, i) => (
+                  <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{e}</div>
+                ))}
+              </div>
+
+              {/* Services */}
+              <div style={{...styles.metricCard}}>
+                <h4 style={{color:'#f59e0b',marginBottom:'12px'}}>🩺 Services Offered</h4>
+                <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+                  {selectedCompetitor.intel.services.map((s, i) => (
+                    <span key={i} style={{...styles.badge,background:'rgba(245,158,11,0.2)',color:'#f59e0b'}}>{s}</span>
                   ))}
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <button onClick={() => setSelectedRole(null)} className="text-blue-600 text-sm">← Back</button>
-                  <input type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()} className="w-full p-3 border-2 rounded-xl" placeholder="Password" />
-                  {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
-                  <button onClick={handleAdminLogin} className="w-full py-3 bg-purple-600 text-white rounded-xl font-semibold">Login</button>
-                  <p className="text-xs text-gray-400 text-center">Demo: medpact2026 | owner2026 | admin2026</p>
+              </div>
+
+              {/* Practice Details */}
+              <div style={{...styles.metricCard}}>
+                <h4 style={{color:'#ec4899',marginBottom:'12px'}}>📋 Practice Details</h4>
+                <div style={{display:'grid',gap:'8px'}}>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Staff Size:</span><span>{selectedCompetitor.intel.staff}</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Languages:</span><span>{selectedCompetitor.intel.languages.join(', ')}</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Telehealth:</span><span>{selectedCompetitor.intel.telehealth ? '✅ Yes' : '❌ No'}</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Avg Wait Time:</span><span>{selectedCompetitor.intel.avgWaitTime}</span></div>
                 </div>
-              )}
+              </div>
             </div>
+
+            <button style={{...styles.button,...styles.primaryBtn,width:'100%',marginTop:'24px'}}>🔄 Rescan Website for Latest Data</button>
           </div>
         </div>
       )}
+
+      <main style={styles.main}>
+        {activeTab === 'dashboard' && <>
+          <h1 style={styles.pageTitle}>Practice Intelligence Dashboard</h1>
+          <p style={styles.pageSubtitle}>{practiceProfile?.name || 'Demo'} • {METRIC_PACKAGES[selectedPackage].name}</p>
+          <div style={{...styles.card, marginBottom: '24px'}}>
+            <div style={styles.cardTitle}>📦 Select Package</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>{Object.entries(METRIC_PACKAGES).map(([k,v]) => <button key={k} onClick={() => setSelectedPackage(k)} style={{...styles.button, ...(selectedPackage===k ? styles.primaryBtn : styles.secondaryBtn), borderLeftWidth: '3px', borderLeftStyle: 'solid', borderLeftColor: v.color}}>{v.name}</button>)}</div>
+          </div>
+          <div style={styles.grid}>{METRIC_PACKAGES[selectedPackage].metrics.map(m => {
+            const val = metricValues[m.key], score = calculateScore(val, m.benchmark);
+            return <div key={m.key} style={styles.metricCard}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}><div><span style={{fontSize:'20px',marginRight:'8px'}}>{m.icon}</span><span style={{fontWeight:'600'}}>{m.title}</span></div>{score && <span style={{...styles.badge, background:`${getScoreColor(score)}22`, color:getScoreColor(score)}}>{score}%</span>}</div>
+              <div style={{display:'flex',gap:'12px',alignItems:'center'}}><input type="number" placeholder="Value" value={val||''} onChange={e => setMetricValues(p => ({...p,[m.key]:parseFloat(e.target.value)||''}))} style={{...styles.input,flex:1}} /><div style={{textAlign:'right',minWidth:'80px'}}><div style={{fontSize:'12px',color:'#888'}}>Benchmark</div><div style={{fontWeight:'600',color:'#6366f1'}}>{formatValue(m.benchmark,m.unit)}</div></div></div>
+            </div>;
+          })}</div>
+        </>}
+
+        {activeTab === 'competitors' && <>
+          <h1 style={styles.pageTitle}>Competitive Intelligence</h1>
+          <p style={styles.pageSubtitle}>Monitor and analyze competitor practices</p>
+          
+          {/* Practice Type Filter */}
+          <div style={{...styles.card, marginBottom: '24px'}}>
+            <div style={styles.cardTitle}>🔍 Filter by Practice Type</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+              {[
+                { key: 'all', label: 'All Practices', icon: '📍' },
+                { key: 'ophthalmology', label: 'Ophthalmology', icon: '🔬' },
+                { key: 'optometry', label: 'Optometry', icon: '👓' },
+                { key: 'general', label: 'General Eye Care', icon: '🏥' }
+              ].map(f => (
+                <button key={f.key} onClick={() => setPracticeTypeFilter(f.key)} style={{...styles.filterBtn, background: practiceTypeFilter === f.key ? getTypeColor(f.key) : 'rgba(99,102,241,0.1)', color: practiceTypeFilter === f.key ? 'white' : '#a0a0a0'}}>
+                  {f.icon} {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Comparison Panel */}
+          {compareList.length > 0 && (
+            <div style={{...styles.card, marginBottom: '24px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>
+                <div style={styles.cardTitle}>📊 Side-by-Side Comparison ({compareList.length}/4)</div>
+                <button onClick={() => setCompareList([])} style={{...styles.button,...styles.secondaryBtn,padding:'6px 12px',fontSize:'12px'}}>Clear All</button>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:`repeat(${Math.min(compareList.length + 1, 5)}, 1fr)`,gap:'16px'}}>
+                {/* Your Practice */}
+                <div style={{...styles.metricCard,background:'rgba(99,102,241,0.1)'}}>
+                  <h4 style={{fontWeight:'600',marginBottom:'12px',color:'#6366f1'}}>📍 Your Practice</h4>
+                  <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Google</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'92%'}}/></div><span style={{fontWeight:'600'}}>4.6</span></div></div>
+                  <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Yelp</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'86%'}}/></div><span style={{fontWeight:'600'}}>4.3</span></div></div>
+                  <div><span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'94%'}}/></div><span style={{fontWeight:'600'}}>4.7</span></div></div>
+                </div>
+                {/* Compared Practices */}
+                {compareList.map(comp => (
+                  <div key={comp.id} style={styles.metricCard}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'12px'}}>
+                      <h4 style={{fontWeight:'600',fontSize:'14px'}}>{comp.name}</h4>
+                      <button onClick={() => toggleCompare(comp)} style={{background:'none',border:'none',color:'#ef4444',cursor:'pointer',fontSize:'16px'}}>×</button>
+                    </div>
+                    <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Google</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.google*20}%`,background: comp.ratings.google > 4.6 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.google}</span></div></div>
+                    <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Yelp</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.yelp*20}%`,background: comp.ratings.yelp > 4.3 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.yelp}</span></div></div>
+                    <div><span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.healthgrades*20}%`,background: comp.ratings.healthgrades > 4.7 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.healthgrades}</span></div></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Competitor Cards */}
+          <div style={styles.grid}>
+            {filteredCompetitors.map(comp => (
+              <div key={comp.id} style={styles.competitorCard}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'16px'}}>
+                  <div>
+                    <span style={{...styles.badge, background:`${getTypeColor(comp.type)}22`, color: getTypeColor(comp.type), marginBottom:'8px', display:'inline-block'}}>{getTypeIcon(comp.type)} {comp.type}</span>
+                    <h3 style={{fontSize:'18px',fontWeight:'600'}}>{comp.name}</h3>
+                    <p style={{color:'#888',fontSize:'12px',marginTop:'4px'}}>{comp.address}</p>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div style={{fontSize:'24px',fontWeight:'700',color:'#f59e0b'}}>{comp.ratings.google}⭐</div>
+                    <div style={{color:'#888',fontSize:'11px'}}>{comp.reviewCount} reviews</div>
+                  </div>
+                </div>
+                
+                <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px',marginBottom:'16px'}}>
+                  <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
+                    <div style={{fontSize:'11px',color:'#888'}}>Google</div>
+                    <div style={{fontWeight:'600',color:'#f59e0b'}}>{comp.ratings.google}</div>
+                  </div>
+                  <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
+                    <div style={{fontSize:'11px',color:'#888'}}>Yelp</div>
+                    <div style={{fontWeight:'600',color:'#ef4444'}}>{comp.ratings.yelp}</div>
+                  </div>
+                  <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
+                    <div style={{fontSize:'11px',color:'#888'}}>Healthgrades</div>
+                    <div style={{fontWeight:'600',color:'#3b82f6'}}>{comp.ratings.healthgrades}</div>
+                  </div>
+                </div>
+
+                <div style={{display:'flex',gap:'8px'}}>
+                  <button onClick={() => toggleCompare(comp)} style={{...styles.button, ...(compareList.find(c => c.id === comp.id) ? {background:'#ef4444',color:'white'} : styles.secondaryBtn), flex:1, padding:'10px', fontSize:'13px'}}>
+                    {compareList.find(c => c.id === comp.id) ? '✓ Comparing' : '+ Compare'}
+                  </button>
+                  <button onClick={() => {setSelectedCompetitor(comp); setShowIntelModal(true);}} style={{...styles.button,...styles.primaryBtn,flex:1,padding:'10px',fontSize:'13px'}}>
+                    🔍 Website Intel
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>}
+
+        {activeTab === 'heatmap' && <>
+          <h1 style={styles.pageTitle}>Patient Location Heat Map</h1>
+          <p style={styles.pageSubtitle}>Identify high-profit patient areas by ZIP code</p>
+          
+          {/* Legend */}
+          <div style={{...styles.card, marginBottom: '24px'}}>
+            <div style={styles.cardTitle}>📊 Profit Index Legend</div>
+            <div style={{display:'flex',gap:'16px',flexWrap:'wrap'}}>
+              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#10b981'}}/><span style={{fontSize:'13px'}}>High (90-100)</span></div>
+              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#3b82f6'}}/><span style={{fontSize:'13px'}}>Good (80-89)</span></div>
+              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#f59e0b'}}/><span style={{fontSize:'13px'}}>Medium (70-79)</span></div>
+              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#ef4444'}}/><span style={{fontSize:'13px'}}>Low (&lt;70)</span></div>
+            </div>
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'24px'}}>
+            {/* Heat Map Grid */}
+            <div style={styles.card}>
+              <div style={styles.cardTitle}>🗺️ ZIP Code Profit Map</div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(4, 1fr)',gap:'8px'}}>
+                {PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).map(zip => (
+                  <div key={zip.zip} style={{...styles.heatmapCell, background: `${getProfitColor(zip.profitIndex)}22`, borderWidth: '1px', borderStyle: 'solid', borderColor: getProfitColor(zip.profitIndex)}}>
+                    <div style={{fontWeight:'700',color:getProfitColor(zip.profitIndex),fontSize:'16px'}}>{zip.zip}</div>
+                    <div style={{fontSize:'11px',color:'#888',marginTop:'4px'}}>{zip.name}</div>
+                    <div style={{display:'flex',justifyContent:'space-between',marginTop:'8px',fontSize:'11px'}}>
+                      <span>👥 {zip.patients}</span>
+                      <span style={{fontWeight:'600',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top 10 Table */}
+            <div style={styles.card}>
+              <div style={styles.cardTitle}>🏆 Top 10 High-Profit ZIPs</div>
+              <table style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.th}>ZIP</th>
+                    <th style={styles.th}>Area</th>
+                    <th style={styles.th}>Index</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).slice(0, 10).map((zip, i) => (
+                    <tr key={zip.zip}>
+                      <td style={{...styles.td,fontFamily:'monospace',fontWeight:'600'}}>{zip.zip}</td>
+                      <td style={{...styles.td,fontSize:'12px'}}>{zip.name}</td>
+                      <td style={{...styles.td,fontWeight:'700',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Summary Stats */}
+          <div style={{...styles.card, marginTop: '24px'}}>
+            <div style={styles.cardTitle}>📈 Patient Distribution Summary</div>
+            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px'}}>
+              <div style={{textAlign:'center',padding:'16px',background:'rgba(16,185,129,0.1)',borderRadius:'12px'}}>
+                <div style={{fontSize:'28px',fontWeight:'700',color:'#10b981'}}>{PATIENT_HEATMAP_DATA.filter(z => z.profitIndex >= 90).length}</div>
+                <div style={{color:'#888',fontSize:'12px'}}>High Profit Areas</div>
+              </div>
+              <div style={{textAlign:'center',padding:'16px',background:'rgba(59,130,246,0.1)',borderRadius:'12px'}}>
+                <div style={{fontSize:'28px',fontWeight:'700',color:'#3b82f6'}}>{PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.patients, 0).toLocaleString()}</div>
+                <div style={{color:'#888',fontSize:'12px'}}>Total Patients Mapped</div>
+              </div>
+              <div style={{textAlign:'center',padding:'16px',background:'rgba(245,158,11,0.1)',borderRadius:'12px'}}>
+                <div style={{fontSize:'28px',fontWeight:'700',color:'#f59e0b'}}>{Math.round(PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.profitIndex, 0) / PATIENT_HEATMAP_DATA.length)}</div>
+                <div style={{color:'#888',fontSize:'12px'}}>Avg Profit Index</div>
+              </div>
+              <div style={{textAlign:'center',padding:'16px',background:'rgba(139,92,246,0.1)',borderRadius:'12px'}}>
+                <div style={{fontSize:'28px',fontWeight:'700',color:'#8b5cf6'}}>{PATIENT_HEATMAP_DATA.length}</div>
+                <div style={{color:'#888',fontSize:'12px'}}>ZIP Codes Covered</div>
+              </div>
+            </div>
+          </div>
+        </>}
+
+        {activeTab === 'cpt' && <>
+          <h1 style={styles.pageTitle}>Price Transparency</h1>
+          <p style={styles.pageSubtitle}>2025 Medicare Rates</p>
+          <div style={{...styles.card,marginBottom:'24px'}}><div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>{['all',...new Set(CPT_CODES.map(c=>c.category))].map(c => <button key={c} onClick={() => setCptFilter(c)} style={{...styles.button, ...(cptFilter===c ? styles.primaryBtn : styles.secondaryBtn), padding:'8px 16px', fontSize:'13px'}}>{c==='all'?'All':c}</button>)}</div></div>
+          <div style={styles.card}><table style={styles.table}><thead><tr><th style={styles.th}>CPT</th><th style={styles.th}>Description</th><th style={styles.th}>Category</th><th style={styles.th}>Medicare</th><th style={styles.th}>wRVU</th></tr></thead><tbody>{(cptFilter==='all'?CPT_CODES:CPT_CODES.filter(c=>c.category===cptFilter)).map(c=><tr key={c.code}><td style={{...styles.td,fontFamily:'monospace',fontWeight:'600',color:'#6366f1'}}>{c.code}</td><td style={styles.td}>{c.description}</td><td style={styles.td}><span style={{...styles.badge,background:'rgba(99,102,241,0.2)',color:'#a0a0ff'}}>{c.category}</span></td><td style={{...styles.td,fontWeight:'600',color:'#10b981'}}>${c.medicareRate.toFixed(2)}</td><td style={styles.td}>{c.wRVU}</td></tr>)}</tbody></table></div>
+        </>}
+
+        {activeTab === 'innovations' && <>
+          <h1 style={styles.pageTitle}>OnPacePlus Innovation Tracker</h1>
+          <p style={styles.pageSubtitle}>Emerging technologies</p>
+          <div style={{...styles.card,marginBottom:'24px'}}><div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>{['all',...new Set(INNOVATIONS.map(i=>i.category))].map(c => <button key={c} onClick={() => setInnovationFilter(c)} style={{...styles.button, ...(innovationFilter===c ? styles.primaryBtn : styles.secondaryBtn), padding:'8px 16px', fontSize:'13px'}}>{c==='all'?'All':c}</button>)}</div></div>
+          <div style={styles.grid}>{(innovationFilter==='all'?INNOVATIONS:INNOVATIONS.filter(i=>i.category===innovationFilter)).map(i=><div key={i.id} style={styles.card}><div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}><span style={{...styles.badge,background:'rgba(16,185,129,0.2)',color:'#10b981'}}>{i.status}</span><span style={{color:'#888',fontSize:'12px'}}>{i.year}</span></div><h3 style={{fontSize:'16px',fontWeight:'600',marginBottom:'8px'}}>{i.name}</h3><p style={{fontSize:'13px',color:'#888',marginBottom:'16px'}}>{i.manufacturer}</p><div style={{display:'flex',justifyContent:'space-between'}}><div><div style={{fontSize:'11px',color:'#888'}}>Adoption</div><div style={{fontWeight:'600',color:'#6366f1'}}>{i.adoptionRate}%</div></div><div><div style={{fontSize:'11px',color:'#888'}}>Impact</div><div style={{fontWeight:'600',color:'#10b981'}}>{i.clinicalImpact}</div></div></div></div>)}</div>
+        </>}
+
+        {activeTab === 'chat' && <>
+          <h1 style={styles.pageTitle}>KCN Intelligence Chat</h1>
+          <p style={styles.pageSubtitle}>Ask about metrics, CPT codes, competitors, innovations</p>
+          <div style={{...styles.card,maxWidth:'800px'}}><div style={styles.chatContainer}>{chatMessages.map((m,i) => <div key={i} style={{...styles.chatMessage,...(m.role==='user'?styles.userMessage:styles.botMessage)}}>{m.content}</div>)}<div ref={chatEndRef}/></div><div style={{display:'flex',gap:'12px'}}><input type="text" style={{...styles.input,flex:1}} placeholder="Ask about metrics, competitors, heat map..." value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleChat()}/><button onClick={handleChat} style={{...styles.button,...styles.primaryBtn}}>Send</button></div></div>
+        </>}
+
+        {activeTab === 'profile' && <>
+          <h1 style={styles.pageTitle}>Practice Profile</h1>
+          <p style={styles.pageSubtitle}>Your settings</p>
+          <div style={{...styles.card,maxWidth:'600px'}}><div style={{fontSize:'48px',textAlign:'center',marginBottom:'16px'}}>🏥</div><h2 style={{fontSize:'24px',fontWeight:'700',textAlign:'center',marginBottom:'24px'}}>{practiceProfile?.name||'Demo'}</h2>{practiceProfile&&Object.entries(practiceProfile).filter(([k])=>k!=='createdAt').map(([k,v])=><div key={k} style={{display:'flex',justifyContent:'space-between',padding:'12px',background:'rgba(20,20,40,0.5)',borderRadius:'8px',marginBottom:'8px'}}><span style={{color:'#888',textTransform:'capitalize'}}>{k}</span><span style={{fontWeight:'500'}}>{Array.isArray(v)?v.join(', '):v}</span></div>)}<button onClick={()=>{setShowRegistration(true);setRegStep(0);setRegAnswers({});}} style={{...styles.button,...styles.secondaryBtn,width:'100%',marginTop:'16px'}}>Edit Profile</button><button onClick={()=>{localStorage.clear();setPracticeProfile(null);setMetricValues({});setShowRegistration(true);setRegStep(0);}} style={{width:'100%',marginTop:'12px',background:'none',border:'none',color:'#ef4444',cursor:'pointer'}}>Reset All</button></div>
+        </>}
+      </main>
+      <footer style={{textAlign:'center',padding:'24px',color:'#666',fontSize:'12px',borderTop:'1px solid rgba(99,102,241,0.1)'}}><p>MedPact Practice Intelligence v3.0.0</p></footer>
     </div>
   );
-};
-
-export default Benchmarks;
-
+}
