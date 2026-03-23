@@ -1,0 +1,1054 @@
+import React, { useState, useRef, useEffect } from 'react';
+
+// ============================================================================
+// MedPact Practice Intelligence v3.1.0 - COMPLETE BUILD
+// ============================================================================
+
+// ============================================================================
+// METRIC PACKAGES - ALL 102 METRICS
+// ============================================================================
+
+const PRACTICE_9_METRICS = [
+  { key: 'collection_rate', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💰', description: 'Percentage of expected reimbursement collected' },
+  { key: 'days_in_ar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📅', description: 'Average days to collect payment' },
+  { key: 'denial_rate', title: 'Denial Rate', benchmark: 5, unit: '%', icon: '❌', description: 'Percentage of claims denied' },
+  { key: 'first_pass_rate', title: 'First Pass Resolution', benchmark: 95, unit: '%', icon: '✅', description: 'Claims paid on first submission' },
+  { key: 'charge_lag', title: 'Charge Lag', benchmark: 2, unit: 'days', icon: '⏱️', description: 'Days between service and charge entry' },
+  { key: 'ar_over_90', title: 'A/R Over 90 Days', benchmark: 15, unit: '%', icon: '⚠️', description: 'Percentage of A/R over 90 days' },
+  { key: 'patient_volume', title: 'Patient Volume', benchmark: 1200, unit: 'visits/mo', icon: '👥', description: 'Monthly patient visits' },
+  { key: 'revenue_per_visit', title: 'Revenue per Visit', benchmark: 185, unit: 'USD', icon: '💵', description: 'Average revenue per patient encounter' },
+  { key: 'bad_debt_rate', title: 'Bad Debt Rate', benchmark: 3, unit: '%', icon: '📉', description: 'Uncollectable patient balances' }
+];
+
+const PE_10_METRICS = [
+  { key: 'pe_revenue', title: 'Total Revenue', benchmark: 2500000, unit: 'USD', icon: '💰', description: 'Annual practice revenue' },
+  { key: 'pe_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊', description: 'Earnings before interest, taxes, depreciation' },
+  { key: 'pe_revenue_per_provider', title: 'Revenue per Provider', benchmark: 625000, unit: 'USD', icon: '👨‍⚕️', description: 'Annual revenue per FTE provider' },
+  { key: 'pe_patients_per_clinic_day', title: 'Patients per Clinic Day', benchmark: 28, unit: 'patients', icon: '📅', description: 'Average daily patient volume' },
+  { key: 'pe_procedure_conversion', title: 'Procedure Conversion Rate', benchmark: 35, unit: '%', icon: '🔬', description: 'Exams converting to procedures' },
+  { key: 'pe_net_collection_rate', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵', description: 'Collected vs expected revenue' },
+  { key: 'pe_days_in_ar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '⏰', description: 'Average collection time' },
+  { key: 'pe_staffing_ratio', title: 'Staffing Ratio', benchmark: 4.5, unit: 'staff:provider', icon: '👥', description: 'Support staff per provider' },
+  { key: 'pe_cost_per_encounter', title: 'Cost per Encounter', benchmark: 85, unit: 'USD', icon: '📋', description: 'Direct cost per patient visit' },
+  { key: 'pe_asc_utilization', title: 'ASC Utilization', benchmark: 78, unit: '%', icon: '🏥', description: 'Surgery center capacity used' }
+];
+
+const KPI_25_METRICS = [
+  { key: 'kpi_total_revenue', title: 'Total Revenue', benchmark: 15000000, unit: 'USD', icon: '💵', description: 'Annual gross revenue' },
+  { key: 'kpi_ebitda', title: 'EBITDA', benchmark: 3750000, unit: 'USD', icon: '📈', description: 'Earnings before interest, taxes, depreciation, amortization' },
+  { key: 'kpi_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊', description: 'EBITDA as percentage of revenue' },
+  { key: 'kpi_revenue_per_provider', title: 'Revenue per Provider', benchmark: 750000, unit: 'USD', icon: '👨‍⚕️', description: 'Revenue per FTE physician' },
+  { key: 'kpi_ncr', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵', description: 'Collected vs allowed amount' },
+  { key: 'kpi_dar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📆', description: 'Average days to payment' },
+  { key: 'kpi_denial_rate', title: 'Denial Rate', benchmark: 5, unit: '%', icon: '❌', description: 'Initial claim denial rate' },
+  { key: 'kpi_first_pass', title: 'First Pass Rate', benchmark: 95, unit: '%', icon: '✅', description: 'Claims paid first submission' },
+  { key: 'kpi_charge_lag', title: 'Charge Lag Days', benchmark: 2, unit: 'days', icon: '⏱️', description: 'Service to charge entry time' },
+  { key: 'kpi_ar_over_90', title: 'A/R Over 90 Days', benchmark: 15, unit: '%', icon: '⚠️', description: 'Aged receivables percentage' },
+  { key: 'kpi_ar_over_120', title: 'A/R Over 120 Days', benchmark: 8, unit: '%', icon: '🚨', description: 'Severely aged receivables' },
+  { key: 'kpi_patient_volume', title: 'Monthly Patient Volume', benchmark: 4500, unit: 'visits', icon: '👥', description: 'Total monthly encounters' },
+  { key: 'kpi_new_patient_rate', title: 'New Patient Rate', benchmark: 25, unit: '%', icon: '🆕', description: 'New vs established patients' },
+  { key: 'kpi_no_show_rate', title: 'No-Show Rate', benchmark: 5, unit: '%', icon: '🚫', description: 'Missed appointments' },
+  { key: 'kpi_cancellation_rate', title: 'Cancellation Rate', benchmark: 8, unit: '%', icon: '❎', description: 'Same-day cancellations' },
+  { key: 'kpi_wait_time', title: 'Average Wait Time', benchmark: 15, unit: 'min', icon: '⏳', description: 'Patient wait in clinic' },
+  { key: 'kpi_cycle_time', title: 'Cycle Time', benchmark: 45, unit: 'min', icon: '🔄', description: 'Check-in to check-out' },
+  { key: 'kpi_referral_conversion', title: 'Referral Conversion', benchmark: 75, unit: '%', icon: '📞', description: 'Referrals becoming patients' },
+  { key: 'kpi_procedure_conversion', title: 'Procedure Conversion', benchmark: 35, unit: '%', icon: '🔬', description: 'Exams to procedures' },
+  { key: 'kpi_premium_iol_rate', title: 'Premium IOL Rate', benchmark: 30, unit: '%', icon: '💎', description: 'Premium lens selection' },
+  { key: 'kpi_optical_capture', title: 'Optical Capture Rate', benchmark: 45, unit: '%', icon: '👓', description: 'Patients buying glasses' },
+  { key: 'kpi_staff_turnover', title: 'Staff Turnover Rate', benchmark: 15, unit: '%', icon: '🔁', description: 'Annual staff turnover' },
+  { key: 'kpi_provider_productivity', title: 'Provider Productivity', benchmark: 28, unit: 'patients/day', icon: '📈', description: 'Daily patient volume per provider' },
+  { key: 'kpi_cost_per_encounter', title: 'Cost per Encounter', benchmark: 95, unit: 'USD', icon: '💰', description: 'Total cost per visit' },
+  { key: 'kpi_patient_satisfaction', title: 'Patient Satisfaction', benchmark: 92, unit: '%', icon: '😊', description: 'Patient satisfaction score' }
+];
+
+const ASC_25_METRICS = [
+  { key: 'asc_cases_per_or', title: 'Cases per OR per Day', benchmark: 8, unit: 'cases', icon: '🔪', description: 'Surgical volume per room' },
+  { key: 'asc_turnover_time', title: 'Room Turnover Time', benchmark: 12, unit: 'min', icon: '⏱️', description: 'Between-case preparation' },
+  { key: 'asc_first_case_ontime', title: 'First Case On-Time Start', benchmark: 92, unit: '%', icon: '🎯', description: 'First surgery starting on time' },
+  { key: 'asc_block_utilization', title: 'Block Utilization', benchmark: 85, unit: '%', icon: '📊', description: 'Scheduled block time used' },
+  { key: 'asc_cancellation_rate', title: 'Day-of Cancellation Rate', benchmark: 3, unit: '%', icon: '❌', description: 'Same-day surgery cancellations' },
+  { key: 'asc_cost_per_case', title: 'Total Cost per Case', benchmark: 850, unit: 'USD', icon: '💰', description: 'All-in cost per surgery' },
+  { key: 'asc_supply_cost', title: 'Supply Cost per Case', benchmark: 285, unit: 'USD', icon: '📦', description: 'Consumables per surgery' },
+  { key: 'asc_implant_cost', title: 'Implant Cost per Case', benchmark: 425, unit: 'USD', icon: '🔩', description: 'IOL/implant costs' },
+  { key: 'asc_labor_cost', title: 'Labor Cost per Case', benchmark: 195, unit: 'USD', icon: '👥', description: 'Staff cost per surgery' },
+  { key: 'asc_revenue_per_case', title: 'Revenue per Case', benchmark: 1650, unit: 'USD', icon: '💵', description: 'Average case revenue' },
+  { key: 'asc_contribution_margin', title: 'Contribution Margin', benchmark: 48, unit: '%', icon: '📈', description: 'Revenue minus variable costs' },
+  { key: 'asc_premium_iol_rate', title: 'Premium IOL Rate', benchmark: 35, unit: '%', icon: '💎', description: 'Premium lens adoption' },
+  { key: 'asc_toric_rate', title: 'Toric IOL Rate', benchmark: 25, unit: '%', icon: '🎯', description: 'Astigmatism-correcting IOL use' },
+  { key: 'asc_multifocal_rate', title: 'Multifocal IOL Rate', benchmark: 15, unit: '%', icon: '👁️', description: 'Presbyopia-correcting IOL use' },
+  { key: 'asc_femto_rate', title: 'Femto Laser Rate', benchmark: 40, unit: '%', icon: '🔬', description: 'Femtosecond laser-assisted cataract' },
+  { key: 'asc_infection_rate', title: 'Infection Rate', benchmark: 0.04, unit: '%', icon: '🦠', description: 'Endophthalmitis rate' },
+  { key: 'asc_complication_rate', title: 'Complication Rate', benchmark: 1.5, unit: '%', icon: '⚠️', description: 'Surgical complications' },
+  { key: 'asc_or_utilization', title: 'OR Utilization Rate', benchmark: 78, unit: '%', icon: '🏥', description: 'Operating room capacity used' },
+  { key: 'asc_staff_ratio', title: 'Staff to OR Ratio', benchmark: 4.5, unit: 'staff:OR', icon: '👥', description: 'Staffing per operating room' },
+  { key: 'asc_monthly_volume', title: 'Monthly Case Volume', benchmark: 350, unit: 'cases', icon: '📊', description: 'Total monthly surgeries' },
+  { key: 'asc_pacu_time', title: 'PACU Time', benchmark: 35, unit: 'min', icon: '🛏️', description: 'Post-anesthesia recovery time' },
+  { key: 'asc_total_encounter_time', title: 'Total Encounter Time', benchmark: 90, unit: 'min', icon: '⏰', description: 'Arrival to discharge' },
+  { key: 'asc_patient_satisfaction', title: 'Patient Satisfaction', benchmark: 95, unit: '%', icon: '😊', description: 'Post-surgery satisfaction' },
+  { key: 'asc_net_revenue', title: 'Net Revenue per Month', benchmark: 575000, unit: 'USD', icon: '💰', description: 'Monthly collected revenue' },
+  { key: 'asc_ebitda_margin', title: 'EBITDA Margin', benchmark: 28, unit: '%', icon: '📈', description: 'ASC profitability' }
+];
+
+const PE_ASC_21_METRICS = [
+  { key: 'pe_asc_ebitda_margin', title: 'EBITDA Margin', benchmark: 32, unit: '%', icon: '📊', description: 'PE target profitability' },
+  { key: 'pe_asc_ebitda_per_or', title: 'EBITDA per OR', benchmark: 850000, unit: 'USD', icon: '💰', description: 'Annual EBITDA per operating room' },
+  { key: 'pe_asc_revenue_per_case', title: 'Revenue per Case', benchmark: 1850, unit: 'USD', icon: '💵', description: 'Average surgical revenue' },
+  { key: 'pe_asc_cases_per_or', title: 'Cases per OR per Day', benchmark: 10, unit: 'cases', icon: '🔪', description: 'PE efficiency target' },
+  { key: 'pe_asc_or_utilization', title: 'OR Utilization Rate', benchmark: 82, unit: '%', icon: '🏥', description: 'Capacity utilization target' },
+  { key: 'pe_asc_turnover_time', title: 'Turnover Time', benchmark: 10, unit: 'min', icon: '⏱️', description: 'PE efficiency benchmark' },
+  { key: 'pe_asc_first_case', title: 'First Case On-Time', benchmark: 95, unit: '%', icon: '🎯', description: 'Punctuality target' },
+  { key: 'pe_asc_block_util', title: 'Block Utilization', benchmark: 88, unit: '%', icon: '📊', description: 'Scheduled time used' },
+  { key: 'pe_asc_cost_per_case', title: 'Cost per Case', benchmark: 750, unit: 'USD', icon: '💰', description: 'PE cost target' },
+  { key: 'pe_asc_supply_cost', title: 'Supply Cost %', benchmark: 18, unit: '%', icon: '📦', description: 'Supplies as % of revenue' },
+  { key: 'pe_asc_labor_cost', title: 'Labor Cost %', benchmark: 22, unit: '%', icon: '👥', description: 'Labor as % of revenue' },
+  { key: 'pe_asc_premium_rate', title: 'Premium IOL Rate', benchmark: 45, unit: '%', icon: '💎', description: 'PE premium adoption target' },
+  { key: 'pe_asc_femto_rate', title: 'Femto Laser Rate', benchmark: 55, unit: '%', icon: '🔬', description: 'PE technology adoption' },
+  { key: 'pe_asc_volume_growth', title: 'Volume Growth YoY', benchmark: 15, unit: '%', icon: '📈', description: 'Year-over-year case growth' },
+  { key: 'pe_asc_revenue_growth', title: 'Revenue Growth YoY', benchmark: 20, unit: '%', icon: '💵', description: 'Year-over-year revenue growth' },
+  { key: 'pe_asc_market_share', title: 'Market Share', benchmark: 35, unit: '%', icon: '🥧', description: 'Local market penetration' },
+  { key: 'pe_asc_nps', title: 'Net Promoter Score', benchmark: 75, unit: 'score', icon: '📊', description: 'Patient loyalty metric' },
+  { key: 'pe_asc_staff_retention', title: 'Staff Retention', benchmark: 90, unit: '%', icon: '👥', description: 'Annual staff retention' },
+  { key: 'pe_asc_surgeon_satisfaction', title: 'Surgeon Satisfaction', benchmark: 92, unit: '%', icon: '👨‍⚕️', description: 'Surgeon experience score' },
+  { key: 'pe_asc_quality_score', title: 'Quality Score', benchmark: 95, unit: '%', icon: '⭐', description: 'Composite quality metric' },
+  { key: 'pe_asc_compliance', title: 'Compliance Score', benchmark: 98, unit: '%', icon: '✅', description: 'Regulatory compliance' }
+];
+
+const RETINA_12_METRICS = [
+  { key: 'retina_injection_volume', title: 'Monthly Injection Volume', benchmark: 450, unit: 'injections', icon: '💉', description: 'Monthly intravitreal injections' },
+  { key: 'retina_drug_cost', title: 'Avg Drug Cost per Injection', benchmark: 1850, unit: 'USD', icon: '💊', description: 'Average anti-VEGF drug cost' },
+  { key: 'retina_revenue_per_injection', title: 'Revenue per Injection', benchmark: 285, unit: 'USD', icon: '💵', description: 'Professional fee per injection' },
+  { key: 'retina_retention_rate', title: 'Patient Retention Rate', benchmark: 85, unit: '%', icon: '🔄', description: 'Patients continuing treatment' },
+  { key: 'retina_avg_injections', title: 'Avg Injections per Patient/Year', benchmark: 8.5, unit: 'injections', icon: '📊', description: 'Annual treatment frequency' },
+  { key: 'retina_amd_volume', title: 'AMD Patient Volume', benchmark: 180, unit: 'patients', icon: '👁️', description: 'Wet AMD patients in treatment' },
+  { key: 'retina_dme_volume', title: 'DME Patient Volume', benchmark: 120, unit: 'patients', icon: '🩺', description: 'Diabetic macular edema patients' },
+  { key: 'retina_rvo_volume', title: 'RVO Patient Volume', benchmark: 65, unit: 'patients', icon: '🔴', description: 'Retinal vein occlusion patients' },
+  { key: 'retina_switch_rate', title: 'Drug Switch Rate', benchmark: 12, unit: '%', icon: '🔀', description: 'Patients switching anti-VEGF' },
+  { key: 'retina_surgery_volume', title: 'Monthly Surgery Volume', benchmark: 35, unit: 'surgeries', icon: '🔪', description: 'Vitreoretinal surgeries' },
+  { key: 'retina_oct_volume', title: 'Monthly OCT Volume', benchmark: 650, unit: 'scans', icon: '📷', description: 'OCT imaging volume' },
+  { key: 'retina_fa_volume', title: 'Monthly FA/ICG Volume', benchmark: 45, unit: 'studies', icon: '📸', description: 'Fluorescein angiography volume' }
+];
+
+const METRIC_PACKAGES = {
+  practice_9: { name: 'Private Practice 9', metrics: PRACTICE_9_METRICS, color: '#3B82F6', description: 'Essential metrics for private ophthalmology practices' },
+  pe_10: { name: 'PE Practice 10', metrics: PE_10_METRICS, color: '#8B5CF6', description: 'Private equity performance metrics' },
+  kpi_25: { name: 'KPI 25', metrics: KPI_25_METRICS, color: '#10B981', description: 'Comprehensive practice KPIs' },
+  asc_25: { name: 'Private ASC 25', metrics: ASC_25_METRICS, color: '#F59E0B', description: 'Ambulatory surgery center metrics' },
+  pe_asc_21: { name: 'PE ASC 21', metrics: PE_ASC_21_METRICS, color: '#EF4444', description: 'PE-backed ASC performance targets' },
+  retina_12: { name: 'Retina 12', metrics: RETINA_12_METRICS, color: '#EC4899', description: 'Retina subspecialty metrics' }
+};
+
+// ============================================================================: 4.9, yelp: 4.7, healthgrades: 4.8 },
+// CPT CODES - ALL 24 WITH 2025 MEDICARE RATES
+// ============================================================================ 'pacificvision.com',
+
+const CPT_CODES = [ames Miller - Wills Eye'],
+  // Cataract
+  { code: '66984', description: 'Cataract Surgery (Standard)', medicareRate: 535.42, category: 'Cataract', wRVU: 10.36, globalPeriod: 90 },['LASIK', 'PRK', 'ICL', 'Cataract Surgery', 'Cornea Transplant', 'Keratoconus Treatment'],
+  { code: '66982', description: 'Cataract Surgery (Complex)', medicareRate: 652.18, category: 'Cataract', wRVU: 12.62, globalPeriod: 90 },
+  { code: '66991', description: 'Complex Cataract Device Insertion', medicareRate: 125.45, category: 'Cataract', wRVU: 2.43, globalPeriod: 0 },ish', 'Spanish', 'Korean', 'Tagalog'],
+  
+  // Retina avgWaitTime: '15 min'
+  { code: '67028', description: 'Intravitreal Injection', medicareRate: 95.67, category: 'Retina', wRVU: 1.80, globalPeriod: 0 },}
+  { code: '67210', description: 'Retinal Laser (PRP)', medicareRate: 285.45, category: 'Retina', wRVU: 5.52, globalPeriod: 10 },,
+  { code: '67228', description: 'Extensive Retinal Laser', medicareRate: 425.80, category: 'Retina', wRVU: 8.24, globalPeriod: 10 },
+  { code: '67040', description: 'Vitrectomy (Posterior)', medicareRate: 1245.80, category: 'Retina', wRVU: 24.10, globalPeriod: 90 },
+  { code: '67041', description: 'Vitrectomy for Retinal Detachment', medicareRate: 1385.25, category: 'Retina', wRVU: 26.80, globalPeriod: 90 },thalmology',
+  { code: '67108', description: 'Scleral Buckle', medicareRate: 1125.60, category: 'Retina', wRVU: 21.78, globalPeriod: 90 },
+  { code: '67145', description: 'Prophylactic Retinal Laser', medicareRate: 245.90, category: 'Retina', wRVU: 4.76, globalPeriod: 10 }, Sutter St, San Francisco, CA 94108',
+  
+  // Glaucoma
+  { code: '65855', description: 'Trabeculoplasty (SLT/ALT)', medicareRate: 245.67, category: 'Glaucoma', wRVU: 4.75, globalPeriod: 10 },: 4.5, yelp: 4.2, healthgrades: 4.6 },
+  { code: '66170', description: 'Trabeculectomy', medicareRate: 985.45, category: 'Glaucoma', wRVU: 19.07, globalPeriod: 90 },
+  { code: '66711', description: 'iStent Insert (with cataract)', medicareRate: 425.80, category: 'Glaucoma', wRVU: 8.24, globalPeriod: 0 }, 'goldengateophth.com',
+  { code: '66183', description: 'Aqueous Shunt (Tube)', medicareRate: 1085.25, category: 'Glaucoma', wRVU: 21.00, globalPeriod: 90 },
+  { code: '0671T', description: 'Endocyclophotocoagulation (ECP)', medicareRate: 385.45, category: 'Glaucoma', wRVU: 7.46, globalPeriod: 10 }, Duke Eye Center'],
+  { code: '0253T', description: 'XEN Gel Stent', medicareRate: 545.80, category: 'Glaucoma', wRVU: 10.56, globalPeriod: 90 },
+  ['Cataract Surgery', 'Glaucoma Surgery', 'Macular Degeneration', 'Diabetic Eye Care'],
+  // Cornea/Refractive
+  { code: '65756', description: 'DSAEK/DMEK', medicareRate: 1425.80, category: 'Cornea', wRVU: 27.60, globalPeriod: 90 },sh', 'Spanish', 'Russian'],
+  { code: '65710', description: 'PKP (Corneal Transplant)', medicareRate: 1285.45, category: 'Cornea', wRVU: 24.88, globalPeriod: 90 },
+  { code: '65760', description: 'PTK (Phototherapeutic)', medicareRate: 485.25, category: 'Cornea', wRVU: 9.39, globalPeriod: 90 }, avgWaitTime: '20 min'
+  }
+  // E&M / Diagnostic,
+  { code: '92014', description: 'Comprehensive Exam (Est)', medicareRate: 125.45, category: 'E&M', wRVU: 2.43, globalPeriod: 0 },
+  { code: '92004', description: 'Comprehensive Exam (New)', medicareRate: 185.80, category: 'E&M', wRVU: 3.60, globalPeriod: 0 },
+  { code: '92134', description: 'OCT Retina', medicareRate: 35.80, category: 'Diagnostic', wRVU: 0.69, globalPeriod: 0 },Eye Center',
+  { code: '92133', description: 'OCT Optic Nerve', medicareRate: 35.80, category: 'Diagnostic', wRVU: 0.69, globalPeriod: 0 },
+  { code: '92250', description: 'Fundus Photography', medicareRate: 28.45, category: 'Diagnostic', wRVU: 0.55, globalPeriod: 0 } Castro St, Mountain View, CA 94041',
+];
+
+// ============================================================================: 4.7, yelp: 4.4, healthgrades: 4.8 },
+// ONPACEPLUS INNOVATIONS - 15 INNOVATIONS
+// ============================================================================ 'sveye.com',
+
+const INNOVATIONS = [com Palmer'],
+  // Cataract/IOL
+  { id: '1', category: 'Cataract', name: 'Light Adjustable Lens (LAL)', manufacturer: 'RxSight', status: 'FDA Approved', year: 2017, adoptionRate: 15, clinicalImpact: 'High', description: 'Post-operative UV adjustment of IOL power' },['Premium Cataract Surgery', 'LASIK', 'Glaucoma', 'Pediatric Ophthalmology'],
+  { id: '2', category: 'Cataract', name: 'Vivity IOL', manufacturer: 'Alcon', status: 'FDA Approved', year: 2020, adoptionRate: 35, clinicalImpact: 'High', description: 'Non-diffractive extended depth of focus' },
+  { id: '3', category: 'Cataract', name: 'PanOptix Trifocal', manufacturer: 'Alcon', status: 'FDA Approved', year: 2019, adoptionRate: 45, clinicalImpact: 'High', description: 'First FDA-approved trifocal IOL' },ish', 'Spanish', 'Hindi', 'Mandarin'],
+  { id: '4', category: 'Cataract', name: 'Synergy IOL', manufacturer: 'J&J Vision', status: 'FDA Approved', year: 2021, adoptionRate: 28, clinicalImpact: 'High', description: 'Continuous range of vision IOL' },
+   avgWaitTime: '10 min'
+  // Retina}
+  { id: '5', category: 'Retina', name: 'Faricimab (Vabysmo)', manufacturer: 'Genentech', status: 'FDA Approved', year: 2022, adoptionRate: 45, clinicalImpact: 'High', description: 'Bispecific antibody for AMD/DME' },,
+  { id: '6', category: 'Retina', name: 'Port Delivery System', manufacturer: 'Genentech', status: 'FDA Approved', year: 2021, adoptionRate: 8, clinicalImpact: 'High', description: 'Implantable ranibizumab reservoir' },
+  { id: '7', category: 'Retina', name: 'Susvimo (Ranibizumab Implant)', manufacturer: 'Genentech', status: 'FDA Approved', year: 2021, adoptionRate: 5, clinicalImpact: 'High', description: 'Sustained release anti-VEGF' },
+  { id: '8', category: 'Retina', name: 'Gene Therapy (Luxturna)', manufacturer: 'Spark', status: 'FDA Approved', year: 2017, adoptionRate: 2, clinicalImpact: 'High', description: 'Gene therapy for inherited retinal dystrophy' },ye Care',
+  
+  // Glaucoma El Camino Real, Palo Alto, CA 94301',
+  { id: '9', category: 'Glaucoma', name: 'iStent Infinite', manufacturer: 'Glaukos', status: 'FDA Approved', year: 2022, adoptionRate: 25, clinicalImpact: 'High', description: '3-stent trabecular bypass standalone' },
+  { id: '10', category: 'Glaucoma', name: 'OMNI Surgical System', manufacturer: 'Sight Sciences', status: 'FDA Approved', year: 2018, adoptionRate: 32, clinicalImpact: 'High', description: 'Canaloplasty and trabeculotomy' },
+  { id: '11', category: 'Glaucoma', name: 'Hydrus Microstent', manufacturer: 'Alcon', status: 'FDA Approved', year: 2018, adoptionRate: 28, clinicalImpact: 'High', description: 'Schlemm canal scaffold' },: 4.4, yelp: 4.1, healthgrades: 4.5 },
+  { id: '12', category: 'Glaucoma', name: 'Durysta (Bimatoprost Implant)', manufacturer: 'AbbVie', status: 'FDA Approved', year: 2020, adoptionRate: 18, clinicalImpact: 'Medium', description: 'Intracameral sustained-release implant' },
+   'peninsulaeyecare.com',
+  // Diagnostics
+  { id: '13', category: 'Diagnostics', name: 'OCT Angiography', manufacturer: 'Multiple', status: 'FDA Approved', year: 2016, adoptionRate: 65, clinicalImpact: 'High', description: 'Non-invasive retinal vasculature imaging' },nd College of Optometry'],
+  { id: '14', category: 'Diagnostics', name: 'AI Diabetic Retinopathy Screening', manufacturer: 'IDx/Eyenuk', status: 'FDA Approved', year: 2018, adoptionRate: 22, clinicalImpact: 'High', description: 'Autonomous AI diagnosis' },
+  { id: '15', category: 'Diagnostics', name: 'Home OCT Monitoring', manufacturer: 'Notal Vision', status: 'FDA Approved', year: 2022, adoptionRate: 5, clinicalImpact: 'High', description: 'Patient self-monitoring for AMD' } ['Eye Exams', 'Contact Lenses', 'Vision Therapy', 'Sports Vision'],
+];
+ish', 'Spanish'],
+// ============================================================================
+// REGISTRATION WIZARD - 8 STEPS avgWaitTime: '5 min'
+// ============================================================================}
+,
+const REGISTRATION_STEPS = [
+  { id: 'name', question: "What is your practice name?", type: 'text', placeholder: 'Enter practice name', icon: '🏥' },
+  { id: 'type', question: "What type of practice?", type: 'select', options: ['Solo Practice', 'Small Group (2-5 providers)', 'Large Group (6+ providers)', 'PE-Backed Practice', 'Hospital-Based', 'Academic'], icon: '📋' },a',
+  { id: 'specialty', question: "Primary specialty focus?", type: 'multiselect', options: ['Comprehensive Ophthalmology', 'Cataract/Anterior Segment', 'Retina', 'Glaucoma', 'Cornea/Refractive', 'Oculoplastics', 'Pediatrics', 'Neuro-Ophthalmology'], icon: '👁️' },
+  { id: 'providers', question: "How many providers?", type: 'number', placeholder: 'Number of providers', icon: '👨‍⚕️' },0 Scott Blvd, Santa Clara, CA 95050',
+  { id: 'locations', question: "How many locations?", type: 'number', placeholder: 'Number of locations', icon: '📍' },
+  { id: 'hasASC', question: "Do you have an ASC?", type: 'select', options: ['Yes - Owned', 'Yes - Shared/Partnership', 'No - Hospital Outpatient', 'No - External ASC'], icon: '🏥' },
+  { id: 'ehr', question: "What EHR system?", type: 'select', options: ['NextGen', 'Modernizing Medicine (EMA)', 'Epic', 'Compulink', 'DrChrono', 'athenahealth', 'Other'], icon: '💻' },: 4.8, yelp: 4.6, healthgrades: 4.9 },
+  { id: 'package', question: "Which metric package?", type: 'select', options: ['Private Practice 9', 'PE Practice 10', 'KPI 25', 'Private ASC 25', 'PE ASC 21', 'Retina 12'], icon: '📊' }
+]; 'southbayretina.com',
+
+// ============================================================================ UCLA Jules Stein'],
+// COMPETITOR DATA
+// ============================================================================['Retinal Detachment', 'Macular Degeneration', 'Diabetic Retinopathy', 'Vitrectomy', 'Injections'],
+
+const COMPETITOR_PRACTICES = [ish', 'Spanish', 'Vietnamese', 'Hindi'],
+  {
+    id: 'comp1', name: 'Vision Excellence Center', type: 'ophthalmology', avgWaitTime: '18 min'
+    address: '123 Market St, San Francisco, CA 94102', lat: 37.7849, lng: -122.4094,}
+    ratings: { google: 4.8, yelp: 4.5, healthgrades: 4.9 }, reviewCount: 342,,
+    website: 'visionexcellence.com',
+    intel: {
+      providers: ['Dr. Sarah Chen - Harvard Medical School', 'Dr. Michael Park - Stanford Ophthalmology'],Vision Center',
+      equipment: ['Zeiss OPMI Lumera', 'Alcon LenSx Femtosecond', 'Topcon Maestro OCT'],
+      services: ['Cataract Surgery', 'LASIK', 'Glaucoma Treatment', 'Retina Care', 'Oculoplastics'],0 Shattuck Ave, Berkeley, CA 94704',
+      staff: 24, languages: ['English', 'Spanish', 'Mandarin'], telehealth: true, avgWaitTime: '12 min'
+    }
+  },: 4.3, yelp: 4.0, healthgrades: 4.4 },
+  {
+    id: 'comp2', name: 'Bay Area Eye Associates', type: 'optometry', 'eastbayvision.com',
+    address: '456 Powell St, San Francisco, CA 94108', lat: 37.7879, lng: -122.4075,
+    ratings: { google: 4.6, yelp: 4.3, healthgrades: 4.7 }, reviewCount: 218,linois College of Optometry'],
+    website: 'bayareaeye.com',
+    intel: {['Family Eye Care', 'Pediatric Exams', 'Geriatric Vision', 'Low Vision Aids'],
+      providers: ['Dr. Jennifer Lee - UC Berkeley Optometry', 'Dr. David Wong - Pacific University'],
+      equipment: ['Optos Daytona', 'Humphrey Visual Field', 'iCare Tonometer'],sh', 'Spanish', 'Japanese'],
+      services: ['Comprehensive Eye Exams', 'Contact Lens Fitting', 'Dry Eye Treatment', 'Myopia Control'],
+      staff: 12, languages: ['English', 'Cantonese', 'Vietnamese'], telehealth: true, avgWaitTime: '8 min' avgWaitTime: '15 min'
+    } }
+  },}
+  {];
+    id: 'comp3', name: 'Pacific Vision Institute', type: 'ophthalmology',
+    address: '789 Geary St, San Francisco, CA 94109', lat: 37.7865, lng: -122.4145,ode Data
+    ratings: { google: 4.9, yelp: 4.7, healthgrades: 4.8 }, reviewCount: 567,
+    website: 'pacificvision.com',.4117 },
+    intel: {
+      providers: ['Dr. Robert Kim - Johns Hopkins', 'Dr. Lisa Zhang - Mayo Clinic Fellowship', 'Dr. James Miller - Wills Eye'],020 },
+      equipment: ['Zeiss VisuMax', 'Alcon Constellation', 'Heidelberg Spectralis', 'Lenstar LS 900'],
+      services: ['LASIK', 'PRK', 'ICL', 'Cataract Surgery', 'Cornea Transplant', 'Keratoconus Treatment'], },
+      staff: 35, languages: ['English', 'Spanish', 'Korean', 'Tagalog'], telehealth: true, avgWaitTime: '15 min'
+    }13 },
+  },156 },
+  {,
+    id: 'comp4', name: 'Golden Gate Ophthalmology', type: 'ophthalmology', },
+    address: '321 Sutter St, San Francisco, CA 94108', lat: 37.7895, lng: -122.4055,
+    ratings: { google: 4.5, yelp: 4.2, healthgrades: 4.6 }, reviewCount: 189,2.4377 },
+    website: 'goldengateophth.com',
+    intel: {
+      providers: ['Dr. William Brown - UCSF Ophthalmology', 'Dr. Emily Davis - Duke Eye Center'],
+      equipment: ['Zeiss IOLMaster 700', 'Alcon Centurion', 'Optovue Avanti'],},
+      services: ['Cataract Surgery', 'Glaucoma Surgery', 'Macular Degeneration', 'Diabetic Eye Care'],845 },
+      staff: 18, languages: ['English', 'Spanish', 'Russian'], telehealth: false, avgWaitTime: '20 min'
+    }
+  },{ zip: '94127', name: 'St. Francis Wood', patients: 178, profitIndex: 93, lat: 37.7352, lng: -122.4575 }
+  {];
+    id: 'comp5', name: 'Silicon Valley Eye Center', type: 'ophthalmology',
+    address: '555 Castro St, Mountain View, CA 94041', lat: 37.3894, lng: -122.0819,
+    ratings: { google: 4.7, yelp: 4.4, healthgrades: 4.8 }, reviewCount: 423,
+    website: 'sveye.com',
+    intel: {{ id: 'package', question: "Which metric package?", type: 'select', options: ['Private Practice 9', 'PE Practice 10', 'KPI 25', 'Private ASC 25', 'PE ASC 21', 'Retina 12'] }
+      providers: ['Dr. Andrew Thompson - Stanford', 'Dr. Michelle Garcia - Bascom Palmer'],];
+      equipment: ['CATALYS Laser', 'Zeiss Cirrus OCT', 'Nidek Excimer Laser'],
+      services: ['Premium Cataract Surgery', 'LASIK', 'Glaucoma', 'Pediatric Ophthalmology'],
+      staff: 28, languages: ['English', 'Spanish', 'Hindi', 'Mandarin'], telehealth: true, avgWaitTime: '10 min'
+    }
+  },y: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' },
+  {
+    id: 'comp6', name: 'Peninsula Eye Care', type: 'optometry',nt: 'center', fontSize: '20px' },
+    address: '888 El Camino Real, Palo Alto, CA 94301', lat: 37.4419, lng: -122.1430,text', WebkitTextFillColor: 'transparent' },
+    ratings: { google: 4.4, yelp: 4.1, healthgrades: 4.5 }, reviewCount: 156, '2px 8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '10px' },
+    website: 'peninsulaeyecare.com',
+    intel: {tSize: '13px', fontWeight: '500', transition: 'all 0.2s' },
+      providers: ['Dr. Nancy White - SCCO', 'Dr. Tom Richards - New England College of Optometry'],
+      equipment: ['Topcon CT-1', 'Marco TRS-5100', 'Oculus Keratograph'],0a0', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.2)' },
+      services: ['Eye Exams', 'Contact Lenses', 'Vision Therapy', 'Sports Vision'],
+      staff: 8, languages: ['English', 'Spanish'], telehealth: true, avgWaitTime: '5 min'olor: '#fff' },
+    }
+  },
+  {0.95) 100%)', borderRadius: '16px', padding: '24px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.2)' },
+    id: 'comp7', name: 'South Bay Retina', type: 'ophthalmology',
+    address: '1200 Scott Blvd, Santa Clara, CA 95050', lat: 37.3541, lng: -121.9552,tline: 'none', boxSizing: 'border-box' },
+    ratings: { google: 4.8, yelp: 4.6, healthgrades: 4.9 }, reviewCount: 287,backgroundColor: 'rgba(20, 20, 40, 0.8)', color: '#fff', fontSize: '14px' },
+    website: 'southbayretina.com',fontSize: '14px', fontWeight: '600', transition: 'all 0.2s' },
+    intel: {
+      providers: ['Dr. Richard Nguyen - Wilmer Eye Institute', 'Dr. Karen Patel - UCLA Jules Stein'],
+      equipment: ['Zeiss PLEX Elite', 'Alcon Constellation', 'Optos California'],rStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.15)', marginBottom: '12px' },
+      services: ['Retinal Detachment', 'Macular Degeneration', 'Diabetic Retinopathy', 'Vitrectomy', 'Injections'],, borderRadius: '20px', fontSize: '11px', fontWeight: '500' },
+      staff: 22, languages: ['English', 'Spanish', 'Vietnamese', 'Hindi'], telehealth: true, avgWaitTime: '18 min'
+    }color: '#a0a0a0', fontSize: '11px', textTransform: 'uppercase' },
+  },
+  { 0.5)', borderRadius: '12px', marginBottom: '16px' },
+    id: 'comp8', name: 'East Bay Vision Center', type: 'general',
+    address: '2400 Shattuck Ave, Berkeley, CA 94704', lat: 37.8660, lng: -122.2590,, marginLeft: 'auto', color: 'white' },
+    ratings: { google: 4.3, yelp: 4.0, healthgrades: 4.4 }, reviewCount: 134,
+    website: 'eastbayvision.com',overflow: 'hidden' },
+    intel: {
+      providers: ['Dr. Laura Martinez - UC Berkeley', 'Dr. Chris Anderson - Illinois College of Optometry'],
+      equipment: ['Nidek OPD-Scan III', 'Topcon 3D OCT', 'Reichert Tono-Pen'],erStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.15)', marginBottom: '16px' },
+      services: ['Family Eye Care', 'Pediatric Exams', 'Geriatric Vision', 'Low Vision Aids'],,
+      staff: 10, languages: ['English', 'Spanish', 'Japanese'], telehealth: false, avgWaitTime: '15 min'heatmapCell: { padding: '12px', borderRadius: '8px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }
+    }};
+  }
+];00).toFixed(0)}K` : `$${v}`;
+ : `${v} ${u}`;
+// ============================================================================
+// PATIENT HEAT MAP DATA
+// ============================================================================ '#f59e0b' : '#ef4444';
+
+const PATIENT_HEATMAP_DATA = [const getTypeColor = (type) => type === 'ophthalmology' ? '#8b5cf6' : type === 'optometry' ? '#3b82f6' : '#10b981';
+  { zip: '94102', name: 'Tenderloin/Civic Center', patients: 245, profitIndex: 72, lat: 37.7815, lng: -122.4117 },
+  { zip: '94103', name: 'South of Market', patients: 312, profitIndex: 85, lat: 37.7726, lng: -122.4110 },
+  { zip: '94104', name: 'Financial District', patients: 89, profitIndex: 99, lat: 37.7914, lng: -122.4020 },
+  { zip: '94105', name: 'Rincon Hill', patients: 156, profitIndex: 94, lat: 37.7898, lng: -122.3925 },] = useState(() => { try { const s = localStorage.getItem('medpact_profile'); return s ? JSON.parse(s) : null; } catch { return null; } });
+  { zip: '94107', name: 'Potrero Hill', patients: 287, profitIndex: 88, lat: 37.7621, lng: -122.3971 },
+  { zip: '94108', name: 'Chinatown', patients: 198, profitIndex: 76, lat: 37.7925, lng: -122.4074 },
+  { zip: '94109', name: 'Russian Hill/Nob Hill', patients: 423, profitIndex: 96, lat: 37.7935, lng: -122.4213 },file);
+  { zip: '94110', name: 'Mission District', patients: 534, profitIndex: 79, lat: 37.7485, lng: -122.4156 },
+  { zip: '94111', name: 'Embarcadero', patients: 67, profitIndex: 98, lat: 37.7990, lng: -122.3985 }, return {}; } });
+  { zip: '94112', name: 'Ingleside', patients: 612, profitIndex: 74, lat: 37.7198, lng: -122.4426 },e([{ role: 'assistant', content: "Welcome! Ask about metrics, CPT codes, competitors, or innovations." }]);
+  { zip: '94114', name: 'Castro', patients: 356, profitIndex: 91, lat: 37.7609, lng: -122.4350 },= useState('');
+  { zip: '94115', name: 'Pacific Heights', patients: 289, profitIndex: 97, lat: 37.7869, lng: -122.4377 },
+  { zip: '94116', name: 'Sunset', patients: 478, profitIndex: 82, lat: 37.7439, lng: -122.4855 },
+  { zip: '94117', name: 'Haight-Ashbury', patients: 267, profitIndex: 84, lat: 37.7699, lng: -122.4469 },const [innovationFilter, setInnovationFilter] = useState('all');
+  { zip: '94118', name: 'Inner Richmond', patients: 345, profitIndex: 89, lat: 37.7825, lng: -122.4619 },
+  { zip: '94121', name: 'Outer Richmond', patients: 398, profitIndex: 81, lat: 37.7785, lng: -122.4930 },
+  { zip: '94122', name: 'Outer Sunset', patients: 567, profitIndex: 78, lat: 37.7588, lng: -122.4845 }, useState('all');
+  { zip: '94123', name: 'Marina', patients: 234, profitIndex: 95, lat: 37.8005, lng: -122.4360 },
+  { zip: '94124', name: 'Bayview', patients: 389, profitIndex: 68, lat: 37.7308, lng: -122.3883 },(null);
+  { zip: '94127', name: 'St. Francis Wood', patients: 178, profitIndex: 93, lat: 37.7352, lng: -122.4575 }  const [showIntelModal, setShowIntelModal] = useState(false);
+];
+e)); }, [practiceProfile]);
+// ============================================================================icValues]);
+// KCN KNOWLEDGE BASE  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [chatMessages]);
+// ============================================================================
+
+const KCN_KNOWLEDGE = {gStep < REGISTRATION_STEPS.length - 1) { setRegStep(regStep + 1); }
+  metrics: {
+    'net collection rate': 'Net Collection Rate should be 98%+ for healthy practices. Below 95% indicates billing issues, coding problems, or payer contract issues. Calculate: (Payments Received / Allowed Amount) × 100.',ers, createdAt: new Date().toISOString() };
+    'days in ar': 'Days in A/R benchmark is 32 days or less. Over 40 days indicates collection issues. Calculate: (Total A/R / Average Daily Charges).',;
+    'denial rate': 'Denial rate should be under 5%. High denials indicate pre-authorization issues, coding errors, or eligibility verification problems.',
+    'first pass rate': 'First Pass Resolution should be 95%+. This measures claims paid on first submission without rework.',Private ASC 25': 'asc_25', 'PE ASC 21': 'pe_asc_21', 'Retina 12': 'retina_12' };
+    'ebitda': 'EBITDA Margin benchmark is 25% for private practices, 32% for PE-backed ASCs. Calculate: (Revenue - Operating Expenses) / Revenue.', if (regAnswers.package && pkgMap[regAnswers.package]) setSelectedPackage(pkgMap[regAnswers.package]);
+    'premium iol': 'Premium IOL adoption rate should be 30-45%. Higher rates indicate effective patient education and consultation processes.'}
+  },  };
+  cpt: {
+    'cataract': 'Cataract CPT: 66984 (Standard) = $535.42, 66982 (Complex) = $652.18. Complex coding requires documentation of zonular/capsular instability, small pupil, etc.',
+    'injection': 'Intravitreal Injection CPT 67028: $95.67 Medicare rate. Average 8-12 injections per AMD patient per year.',
+    'glaucoma': 'Glaucoma procedures: SLT (65855) = $245.67, Trabeculectomy (66170) = $985.45, iStent (66711) = $425.80 with cataract.'
+  }, => [...p, { role: 'user', content: chatInput }]);
+  innovations: {
+    'light adjustable': 'Light Adjustable Lens (RxSight): 15% adoption rate. Allows post-op UV adjustment for precise refractive outcomes.',
+    'faricimab': 'Faricimab (Vabysmo): Bispecific antibody targeting VEGF-A and Ang-2. Potential for extended dosing intervals in AMD/DME.',";
+    'istent': 'iStent Infinite: 3-stent standalone MIGS for glaucoma. 25% adoption rate. Can be performed without cataract surgery.'= $652.18";
+  },
+  competitors: {ngs.google)[0].name} with ${COMPETITOR_PRACTICES.sort((a,b) => b.ratings.google - a.ratings.google)[0].ratings.google}⭐`;
+    'competitor': 'Use the Competitors tab to analyze local practices. Compare ratings, services, and provider credentials.',inancial District) with 99 profit index. Lowest: 94124 (Bayview) with 68 profit index.`;
+    'rating': 'Google ratings 4.5+ are competitive. Focus on review velocity (new reviews per month) and response to negative reviews.',setTimeout(() => setChatMessages(p => [...p, { role: 'assistant', content: resp }]), 300);
+    'market share': 'Calculate market share: (Your Patient Volume / Total Market Volume) × 100. PE targets 35%+ market share.'  };
+  },
+  heatmap: {
+    'profit index': 'Profit Index combines payer mix, reimbursement rates, and procedure conversion rates by ZIP code. 90+ = High profit potential.',
+    'zip code': 'Target marketing to high-profit ZIP codes. Focus on 94104 (99), 94111 (98), 94115 (97) for best ROI.'c => c.id !== competitor.id));
+  }
+}; setCompareList([...compareList, competitor]);
+}
+// ============================================================================  };
+// STYLES
+// ============================================================================ = practiceTypeFilter === 'all' 
+
+const styles = {    : COMPETITOR_PRACTICES.filter(c => c.type === practiceTypeFilter);
+  container: { fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', backgroundColor: '#0a0a0f', minHeight: '100vh', color: '#e0e0e0' },
+  header: { background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)', padding: '16px 32px', borderBottom: '1px solid rgba(99, 102, 241, 0.3)' },
+  headerContent: { maxWidth: '1400px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' },
+  logo: { display: 'flex', alignItems: 'center', gap: '12px' },🎯' },
+  logoIcon: { width: '40px', height: '40px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' },' },
+  logoText: { fontSize: '22px', fontWeight: '700', background: 'linear-gradient(135deg, #6366f1, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  version: { fontSize: '11px', color: '#6366f1', padding: '2px 8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '10px' },: '🚀' },
+  nav: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
+  navBtn: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '500', transition: 'all 0.2s' },{ id: 'profile', label: 'Profile', icon: '👤' }
+  navBtnActive: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white' },  ];
+  navBtnInactive: { background: 'rgba(99, 102, 241, 0.1)', color: '#a0a0a0', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.2)' },
+  main: { maxWidth: '1400px', margin: '0 auto', padding: '24px 32px' },
+  pageTitle: { fontSize: '28px', fontWeight: '700', marginBottom: '8px', color: '#fff' },ep = REGISTRATION_STEPS[regStep];
+  pageSubtitle: { color: '#888', fontSize: '14px', marginBottom: '24px' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' },
+  card: { background: 'linear-gradient(180deg, rgba(30, 30, 50, 0.9) 0%, rgba(20, 20, 35, 0.95) 100%)', borderRadius: '16px', padding: '24px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.2)' },aderContent}><div style={styles.logo}><div style={styles.logoIcon}>👁️</div><span style={styles.logoText}>MedPact</span><span style={styles.version}>v3.0</span></div></div></header>
+  cardTitle: { fontSize: '16px', fontWeight: '600', color: '#fff', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' },n, maxWidth: '600px' }}>
+  input: { width: '100%', padding: '12px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.3)', backgroundColor: 'rgba(20, 20, 40, 0.8)', color: '#fff', fontSize: '14px', outline: 'none', boxSizing: 'border-box' },
+  select: { width: '100%', padding: '12px 16px', borderRadius: '8px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.3)', backgroundColor: 'rgba(20, 20, 40, 0.8)', color: '#fff', fontSize: '14px' },ntSize: '24px', fontWeight: '700' }}>Welcome to MedPact</h2></div>
+  button: { padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: '600', transition: 'all 0.2s' },0}%` }} /></div>
+  primaryBtn: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white' },regStep + 1} of {REGISTRATION_STEPS.length}</p>
+  secondaryBtn: { background: 'rgba(99, 102, 241, 0.2)', color: '#a0a0ff', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.3)' },
+  successBtn: { background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white' },
+  dangerBtn: { background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: 'white' },egAnswers[step.id] || ''} onChange={e => setRegAnswers(p => ({...p, [step.id]: e.target.value}))}><option value="">Select...</option>{step.options.map(o => <option key={o} value={o}>{o}</option>)}</select>}
+  metricCard: { background: 'rgba(20, 20, 40, 0.6)', borderRadius: '12px', padding: '16px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.15)', marginBottom: '12px' },
+  badge: { display: 'inline-block', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '500' },
+  table: { width: '100%', borderCollapse: 'collapse' },ton onClick={handleRegNext} style={{...styles.button, ...styles.primaryBtn, flex: 1}}>{regStep === REGISTRATION_STEPS.length - 1 ? 'Complete' : 'Continue'}</button>
+  th: { textAlign: 'left', padding: '12px', borderBottom: '1px solid rgba(99, 102, 241, 0.2)', color: '#a0a0a0', fontSize: '11px', textTransform: 'uppercase' },
+  td: { padding: '12px', borderBottom: '1px solid rgba(99, 102, 241, 0.1)', fontSize: '13px' },ton onClick={() => { setShowRegistration(false); setPracticeProfile({ name: 'Demo Practice', type: 'Demo' }); }} style={{ width: '100%', marginTop: '16px', background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>Skip (Demo)</button>
+  chatContainer: { height: '400px', overflowY: 'auto', padding: '16px', background: 'rgba(10, 10, 20, 0.5)', borderRadius: '12px', marginBottom: '16px' },v>
+  chatMessage: { marginBottom: '12px', padding: '12px 16px', borderRadius: '12px', maxWidth: '85%' },v>
+  userMessage: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', marginLeft: 'auto', color: 'white' },</div>
+  botMessage: { background: 'rgba(40, 40, 60, 0.8)', color: '#e0e0e0' }, );
+  progressBar: { height: '8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '4px', overflow: 'hidden' },  }
+  progressFill: { height: '100%', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', transition: 'width 0.3s' },
+  filterBtn: { padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '500', marginRight: '8px', marginBottom: '8px', transition: 'all 0.2s' },
+  competitorCard: { background: 'rgba(20, 20, 40, 0.6)', borderRadius: '12px', padding: '20px', borderWidth: '1px', borderStyle: 'solid', borderColor: 'rgba(99, 102, 241, 0.15)', marginBottom: '16px' },
+  ratingBar: { height: '8px', background: 'rgba(99, 102, 241, 0.2)', borderRadius: '4px', overflow: 'hidden', flex: 1 },
+  heatmapCell: { padding: '12px', borderRadius: '8px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' },
+  csvDropzone: { border: '2px dashed rgba(99, 102, 241, 0.4)', borderRadius: '12px', padding: '40px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' },
+  multiSelect: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px' }, style={styles.nav}>{tabs.map(t => <button key={t.id} onClick={() => setActiveTab(t.id)} style={{...styles.navBtn, ...(activeTab === t.id ? styles.navBtnActive : styles.navBtnInactive)}}><span style={{marginRight:'6px'}}>{t.icon}</span>{t.label}</button>)}</nav>
+  multiSelectOption: { padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontSize: '13px', transition: 'all 0.2s' }
+};      </header>
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================yContent:'center',zIndex:1000,padding:'20px'}} onClick={() => setShowIntelModal(false)}>
+ => e.stopPropagation()}>
+const formatCurrency = (v) => v >= 1000000 ? `$${(v/1000000).toFixed(1)}M` : v >= 1000 ? `$${(v/1000).toFixed(0)}K` : `$${v}`;
+const formatValue = (v, u) => u === 'USD' ? formatCurrency(v) : u === '%' ? `${v}%` : `${v} ${u}`;name}</h2>
+const getScoreColor = (s) => s >= 90 ? '#10b981' : s >= 70 ? '#f59e0b' : '#ef4444';ton onClick={() => setShowIntelModal(false)} style={{background:'none',border:'none',color:'#888',fontSize:'24px',cursor:'pointer'}}>×</button>
+const calculateScore = (v, b) => v && b ? Math.min(100, Math.round((v/b)*100)) : null;</div>
+const getProfitColor = (index) => index >= 90 ? '#10b981' : index >= 80 ? '#3b82f6' : index >= 70 ? '#f59e0b' : '#ef4444';
+const getTypeIcon = (type) => type === 'ophthalmology' ? '🔬' : type === 'optometry' ? '👓' : '🏥';,gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
+const getTypeColor = (type) => type === 'ophthalmology' ? '#8b5cf6' : type === 'optometry' ? '#3b82f6' : '#10b981';
+
+const searchKCN = (query) => {‍⚕️ Provider Training</h4>
+  const q = query.toLowerCase();
+  for (const category of Object.values(KCN_KNOWLEDGE)) {div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{p}</div>
+    for (const [key, value] of Object.entries(category)) {
+      if (q.includes(key) || key.split(' ').some(word => q.includes(word))) {              </div>
+        return value;
+      }
+    }
+  } Equipment & Technology</h4>
+  return "I can help with metrics (collection rate, EBITDA, denial rate), CPT codes (cataract, injection, glaucoma), innovations (LAL, Faricimab, iStent), competitors, and heat map analysis. What would you like to know?";
+};div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{e}</div>
+
+const exportToCSV = (data, filename) => {              </div>
+  if (!data || data.length === 0) return;
+  const headers = Object.keys(data[0]);
+  const csv = [
+    headers.join(','),vices Offered</h4>
+    ...data.map(row => headers.map(h => JSON.stringify(row[h] || '')).join(','))'}}>
+  ].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });span key={i} style={{...styles.badge,background:'rgba(245,158,11,0.2)',color:'#f59e0b'}}>{s}</span>
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');v>
+  a.href = url;              </div>
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+};:'12px'}}>📋 Practice Details</h4>
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================'}</span></div>
+ style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Avg Wait Time:</span><span>{selectedCompetitor.intel.avgWaitTime}</span></div>
+export default function Benchmarks() {v>
+  // State Managementv>
+  const [activeTab, setActiveTab] = useState('dashboard');            </div>
+  const [practiceProfile, setPracticeProfile] = useState(() => { try { const s = localStorage.getItem('medpact_profile'); return s ? JSON.parse(s) : null; } catch { return null; } });
+  const [regStep, setRegStep] = useState(0);ton style={{...styles.button,...styles.primaryBtn,width:'100%',marginTop:'24px'}}>🔄 Rescan Website for Latest Data</button>
+  const [regAnswers, setRegAnswers] = useState({});v>
+  const [showRegistration, setShowRegistration] = useState(!practiceProfile);</div>
+  const [selectedPackage, setSelectedPackage] = useState('practice_9');      )}
+  const [metricValues, setMetricValues] = useState(() => { try { const s = localStorage.getItem('medpact_metrics'); return s ? JSON.parse(s) : {}; } catch { return {}; } });
+  const [chatMessages, setChatMessages] = useState([{ role: 'assistant', content: "Welcome to KCN Intelligence! Ask about metrics, CPT codes, competitors, innovations, or market analysis." }]);
+  const [chatInput, setChatInput] = useState('');
+  const chatEndRef = useRef(null);
+  const [cptFilter, setCptFilter] = useState('all');e || 'Demo'} • {METRIC_PACKAGES[selectedPackage].name}</p>
+  const [innovationFilter, setInnovationFilter] = useState('all');
+  const [practiceTypeFilter, setPracticeTypeFilter] = useState('all');
+  const [compareList, setCompareList] = useState([]); style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>{Object.entries(METRIC_PACKAGES).map(([k,v]) => <button key={k} onClick={() => setSelectedPackage(k)} style={{...styles.button, ...(selectedPackage===k ? styles.primaryBtn : styles.secondaryBtn), borderLeftWidth: '3px', borderLeftStyle: 'solid', borderLeftColor: v.color}}>{v.name}</button>)}</div>
+  const [selectedCompetitor, setSelectedCompetitor] = useState(null);
+  const [showIntelModal, setShowIntelModal] = useState(false);{
+  const [csvData, setCsvData] = useState([]);Score(val, m.benchmark);
+  const [importedData, setImportedData] = useState(null);
+  const fileInputRef = useRef(null);
+style={{display:'flex',gap:'12px',alignItems:'center'}}><input type="number" placeholder="Value" value={val||''} onChange={e => setMetricValues(p => ({...p,[m.key]:parseFloat(e.target.value)||''}))} style={{...styles.input,flex:1}} /><div style={{textAlign:'right',minWidth:'80px'}}><div style={{fontSize:'12px',color:'#888'}}>Benchmark</div><div style={{fontWeight:'600',color:'#6366f1'}}>{formatValue(m.benchmark,m.unit)}</div></div></div>
+  // Effects
+  useEffect(() => { if (practiceProfile) localStorage.setItem('medpact_profile', JSON.stringify(practiceProfile)); }, [practiceProfile]);}</div>
+  useEffect(() => { localStorage.setItem('medpact_metrics', JSON.stringify(metricValues)); }, [metricValues]);        </>}
+  useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [chatMessages]);
+
+  // Registration Handler
+  const handleRegNext = () => {<p style={styles.pageSubtitle}>Monitor and analyze competitor practices</p>
+    if (regStep < REGISTRATION_STEPS.length - 1) {
+      setRegStep(regStep + 1);
+    } else {
+      const profile = { ...regAnswers, createdAt: new Date().toISOString() };</div>
+      setPracticeProfile(profile); style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
+      setShowRegistration(false);
+      const pkgMap = { 'Private Practice 9': 'practice_9', 'PE Practice 10': 'pe_10', 'KPI 25': 'kpi_25', 'Private ASC 25': 'asc_25', 'PE ASC 21': 'pe_asc_21', 'Retina 12': 'retina_12' };
+      if (regAnswers.package && pkgMap[regAnswers.package]) setSelectedPackage(pkgMap[regAnswers.package]); '🔬' },
+    }
+  };neral', label: 'General Eye Care', icon: '🏥' }
+
+  // Chat HandleronClick={() => setPracticeTypeFilter(f.key)} style={{...styles.filterBtn, background: practiceTypeFilter === f.key ? getTypeColor(f.key) : 'rgba(99,102,241,0.1)', color: practiceTypeFilter === f.key ? 'white' : '#a0a0a0'}}>
+  const handleChat = () => {} {f.label}
+    if (!chatInput.trim()) return;/button>
+    setChatMessages(p => [...p, { role: 'user', content: chatInput }]);
+    const response = searchKCN(chatInput);v>
+    setChatInput('');          </div>
+    setTimeout(() => setChatMessages(p => [...p, { role: 'assistant', content: response }]), 300);
+  };
+
+  // Competitor Compare Handler
+  const toggleCompare = (competitor) => {om:'16px'}}>
+    if (compareList.find(c => c.id === competitor.id)) {
+      setCompareList(compareList.filter(c => c.id !== competitor.id));ton onClick={() => setCompareList([])} style={{...styles.button,...styles.secondaryBtn,padding:'6px 12px',fontSize:'12px'}}>Clear All</button>
+    } else if (compareList.length < 4) {
+      setCompareList([...compareList, competitor]);rid',gridTemplateColumns:`repeat(${Math.min(compareList.length + 1, 5)}, 1fr)`,gap:'16px'}}>
+    }
+  };
+
+  // CSV Import Handlerv>
+  const handleCSVImport = (e) => {.3</span></div></div>
+    const file = e.target.files[0];><span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'94%'}}/></div><span style={{fontWeight:'600'}}>4.7</span></div></div>
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target.result;
+      const lines = text.split('\n').filter(l => l.trim());tems:'flex-start',marginBottom:'12px'}}>
+      if (lines.length < 2) return;
+      const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));ton onClick={() => toggleCompare(comp)} style={{background:'none',border:'none',color:'#ef4444',cursor:'pointer',fontSize:'16px'}}>×</button>
+      const data = lines.slice(1).map(line => {
+        const values = line.split(',').map(v => v.trim().replace(/"/g, ''));v></div>
+        return headers.reduce((obj, h, i) => ({ ...obj, [h]: values[i] || '' }), {});
+      });><span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.healthgrades*20}%`,background: comp.ratings.healthgrades > 4.7 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.healthgrades}</span></div></div>
+      setImportedData(data);/div>
+      setCsvData(data);
+    };v>
+    reader.readAsText(file);</div>
+  };          )}
+
+  // Export Metrics
+  const exportMetrics = () => {
+    const pkg = METRIC_PACKAGES[selectedPackage];
+    const data = pkg.metrics.map(m => ({
+      metric: m.title,yle={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'16px'}}>
+      value: metricValues[m.key] || '',
+      benchmark: m.benchmark,type)}22`, color: getTypeColor(comp.type), marginBottom:'8px', display:'inline-block'}}>{getTypeIcon(comp.type)} {comp.type}</span>
+      unit: m.unit,
+      score: calculateScore(metricValues[m.key], m.benchmark) || ''tyle={{color:'#888',fontSize:'12px',marginTop:'4px'}}>{comp.address}</p>
+    }));
+    exportToCSV(data, `medpact_${selectedPackage}_metrics.csv`);
+  };s.google}⭐</div>
+ style={{color:'#888',fontSize:'11px'}}>{comp.reviewCount} reviews</div>
+  const filteredCompetitors = practiceTypeFilter === 'all' ? COMPETITOR_PRACTICES : COMPETITOR_PRACTICES.filter(c => c.type === practiceTypeFilter);v>
+</div>
+  const tabs = [
+    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { id: 'competitors', label: 'Competitors', icon: '🎯' },rgba(20,20,40,0.5)',borderRadius:'8px'}}>
+    { id: 'heatmap', label: 'Heat Map', icon: '🗺️' },
+    { id: 'cpt', label: 'CPT Codes', icon: '💰' }, style={{fontWeight:'600',color:'#f59e0b'}}>{comp.ratings.google}</div>
+    { id: 'innovations', label: 'OnPacePlus', icon: '🚀' },
+    { id: 'chat', label: 'KCN Chat', icon: '💬' },:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
+    { id: 'csv', label: 'CSV Hub', icon: '📁' },
+    { id: 'profile', label: 'Profile', icon: '👤' } style={{fontWeight:'600',color:'#ef4444'}}>{comp.ratings.yelp}</div>
+  ];
+0,20,40,0.5)',borderRadius:'8px'}}>
+  // ============================================================================
+  // REGISTRATION WIZARD RENDER style={{fontWeight:'600',color:'#3b82f6'}}>{comp.ratings.healthgrades}</div>
+  // ============================================================================v>
+                </div>
+  if (showRegistration) {
+    const step = REGISTRATION_STEPS[regStep];
+    return ((compareList.find(c => c.id === comp.id) ? {background:'#ef4444',color:'white'} : styles.secondaryBtn), flex:1, padding:'10px', fontSize:'13px'}}>
+      <div style={styles.container}>eList.find(c => c.id === comp.id) ? '✓ Comparing' : '+ Compare'}
+        <header style={styles.header}>
+          <div style={styles.headerContent}>) => {setSelectedCompetitor(comp); setShowIntelModal(true);}} style={{...styles.button,...styles.primaryBtn,flex:1,padding:'10px',fontSize:'13px'}}>
+            <div style={styles.logo}>ite Intel
+              <div style={styles.logoIcon}>👁️</div>tton>
+              <span style={styles.logoText}>MedPact</span>v>
+              <span style={styles.version}>v3.1</span>/div>
+            </div>
+          </div>div>
+        </header>        </>}
+        <div style={{ ...styles.main, maxWidth: '600px' }}>
+          <div style={styles.card}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>{step.icon}</div><p style={styles.pageSubtitle}>Identify high-profit patient areas by ZIP code</p>
+              <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#fff' }}>Welcome to MedPact</h2>
+              <p style={{ color: '#888', marginTop: '8px' }}>Practice Intelligence Platform</p>
+            </div>
+            <div style={styles.progressBar}>>
+              <div style={{ ...styles.progressFill, width: `${((regStep + 1) / REGISTRATION_STEPS.length) * 100}%` }} />
+            </div>>
+            <p style={{ fontSize: '12px', color: '#888', margin: '8px 0 24px' }}>Step {regStep + 1} of {REGISTRATION_STEPS.length}</p>
+            <h3 style={{ fontSize: '18px', marginBottom: '16px', color: '#fff' }}>{step.question}</h3>v>
+             style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#ef4444'}}/><span style={{fontSize:'13px'}}>Low (&lt;70)</span></div>
+            {step.type === 'text' && (v>
+              <input          </div>
+                type="text"
+                style={styles.input}rid',gridTemplateColumns:'2fr 1fr',gap:'24px'}}>
+                placeholder={step.placeholder}
+                value={regAnswers[step.id] || ''}
+                onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))}
+              />
+            )}
+            orderWidth: '1px', borderStyle: 'solid', borderColor: getProfitColor(zip.profitIndex)}}>
+            {step.type === 'number' && (:'16px'}}>{zip.zip}</div>
+              <input
+                type="number"ifyContent:'space-between',marginTop:'8px',fontSize:'11px'}}>
+                style={styles.input}
+                placeholder={step.placeholder}n style={{fontWeight:'600',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</span>
+                value={regAnswers[step.id] || ''}v>
+                onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))}/div>
+              />
+            )}v>
+                        </div>
+            {step.type === 'select' && (
+              <select
+                style={styles.select}
+                value={regAnswers[step.id] || ''}}>🏆 Top 10 High-Profit ZIPs</div>
+                onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))}yle={styles.table}>
+              >>
+                <option value="">Select...</option>
+                {step.options.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            )} style={styles.th}>Index</th>
+            
+            {step.type === 'multiselect' && (>
+              <div style={styles.multiSelect}>
+                {step.options.map(o => (A.sort((a,b) => b.profitIndex - a.profitIndex).slice(0, 10).map((zip, i) => (
+                  <div
+                    key={o}:'600'}}>{zip.zip}</td>
+                    onClick={() => {
+                      const current = regAnswers[step.id] || []; style={{...styles.td,fontWeight:'700',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</td>
+                      const updated = current.includes(o) ? current.filter(x => x !== o) : [...current, o];/tr>
+                      setRegAnswers(p => ({ ...p, [step.id]: updated }));
+                    }}y>
+                    style={{ble>
+                      ...styles.multiSelectOption,v>
+                      background: (regAnswers[step.id] || []).includes(o) ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99, 102, 241, 0.1)',          </div>
+                      color: (regAnswers[step.id] || []).includes(o) ? 'white' : '#a0a0a0',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      borderColor: 'rgba(99, 102, 241, 0.3)'
+                    }}
+                  >
+                    {o}TIENT_HEATMAP_DATA.filter(z => z.profitIndex >= 90).length}</div>
+                  </div> style={{color:'#888',fontSize:'12px'}}>High Profit Areas</div>
+                ))}
+              </div>
+            )}T_HEATMAP_DATA.reduce((sum, z) => sum + z.patients, 0).toLocaleString()}</div>
+ style={{color:'#888',fontSize:'12px'}}>Total Patients Mapped</div>
+            <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+              {regStep > 0 && <button onClick={() => setRegStep(regStep-1)} style={{...styles.button, ...styles.secondaryBtn, flex: 1}}>Back</button>}
+              <button onClick={handleRegNext} style={{...styles.button, ...styles.primaryBtn, flex: 1}}>{regStep === REGISTRATION_STEPS.length - 1 ? 'Complete' : 'Continue'}</button>ath.round(PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.profitIndex, 0) / PATIENT_HEATMAP_DATA.length)}</div>
+            </div> style={{color:'#888',fontSize:'12px'}}>Avg Profit Index</div>
+            <button onClick={() => { setShowRegistration(false); setPracticeProfile({ name: 'Demo Practice', type: 'Demo' }); }} style={{ width: '100%', marginTop: '16px', background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>Skip (Demo)</button>
+          </div>}>
+        </div>TIENT_HEATMAP_DATA.length}</div>
+      </div> style={{color:'#888',fontSize:'12px'}}>ZIP Codes Covered</div>
+    );v>
+  }v>
+div>
+  return (        </>}
+    <div style={styles.container}>
+      <header style={styles.header}>
+        <div style={styles.headerContent}>
+          <div style={styles.logo}>
+            <div style={styles.logoIcon}>👁️</div>
+            <span style={styles.logoText}>MedPact</span>iv style={styles.card}><table style={styles.table}><thead><tr><th style={styles.th}>CPT</th><th style={styles.th}>Description</th><th style={styles.th}>Category</th><th style={styles.th}>Medicare</th><th style={styles.th}>wRVU</th></tr></thead><tbody>{(cptFilter==='all'?CPT_CODES:CPT_CODES.filter(c=>c.category===cptFilter)).map(c=><tr key={c.code}><td style={{...styles.td,fontFamily:'monospace',fontWeight:'600',color:'#6366f1'}}>{c.code}</td><td style={styles.td}>{c.description}</td><td style={styles.td}><span style={{...styles.badge,background:'rgba(99,102,241,0.2)',color:'#a0a0ff'}}>{c.category}</span></td><td style={{...styles.td,fontWeight:'600',color:'#10b981'}}>${c.medicareRate.toFixed(2)}</td><td style={styles.td}>{c.wRVU}</td></tr>)}</tbody></table></div>
+            <span style={styles.version}>v3.1</span>        </>}
+          </div>
+          <nav style={styles.nav}>
+            {tabs.map(t => er</h1>
+              <button 
+                key={t.id} 
+                onClick={() => setActiveTab(t.id)} iv style={styles.grid}>{(innovationFilter==='all'?INNOVATIONS:INNOVATIONS.filter(i=>i.category===innovationFilter)).map(i=><div key={i.id} style={styles.card}><div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}><span style={{...styles.badge,background:'rgba(16,185,129,0.2)',color:'#10b981'}}>{i.status}</span><span style={{color:'#888',fontSize:'12px'}}>{i.year}</span></div><h3 style={{fontSize:'16px',fontWeight:'600',marginBottom:'8px'}}>{i.name}</h3><p style={{fontSize:'13px',color:'#888',marginBottom:'16px'}}>{i.manufacturer}</p><div style={{display:'flex',justifyContent:'space-between'}}><div><div style={{fontSize:'11px',color:'#888'}}>Adoption</div><div style={{fontWeight:'600',color:'#6366f1'}}>{i.adoptionRate}%</div></div><div><div style={{fontSize:'11px',color:'#888'}}>Impact</div><div style={{fontWeight:'600',color:'#10b981'}}>{i.clinicalImpact}</div></div></div></div>)}</div>
+                style={{...styles.navBtn, ...(activeTab === t.id ? styles.navBtnActive : styles.navBtnInactive)}}        </>}
+              >
+                <span style={{marginRight:'6px'}}>{t.icon}</span>{t.label}
+              </button>
+            )}
+          </nav>iv style={{...styles.card,maxWidth:'800px'}}><div style={styles.chatContainer}>{chatMessages.map((m,i) => <div key={i} style={{...styles.chatMessage,...(m.role==='user'?styles.userMessage:styles.botMessage)}}>{m.content}</div>)}<div ref={chatEndRef}/></div><div style={{display:'flex',gap:'12px'}}><input type="text" style={{...styles.input,flex:1}} placeholder="Ask about metrics, competitors, heat map..." value={chatInput} onChange={e=>setChatInput(e.target.value)} onKeyPress={e=>e.key==='Enter'&&handleChat()}/><button onClick={handleChat} style={{...styles.button,...styles.primaryBtn}}>Send</button></div></div>
+        </div>        </>}
+      </header>
+
+      {/* Intel Modal */}1>
+      {showIntelModal && selectedCompetitor && (
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.8)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'20px'}} onClick={() => setShowIntelModal(false)}>iv style={{...styles.card,maxWidth:'600px'}}><div style={{fontSize:'48px',textAlign:'center',marginBottom:'16px'}}>🏥</div><h2 style={{fontSize:'24px',fontWeight:'700',textAlign:'center',marginBottom:'24px'}}>{practiceProfile?.name||'Demo'}</h2>{practiceProfile&&Object.entries(practiceProfile).filter(([k])=>k!=='createdAt').map(([k,v])=><div key={k} style={{display:'flex',justifyContent:'space-between',padding:'12px',background:'rgba(20,20,40,0.5)',borderRadius:'8px',marginBottom:'8px'}}><span style={{color:'#888',textTransform:'capitalize'}}>{k}</span><span style={{fontWeight:'500'}}>{Array.isArray(v)?v.join(', '):v}</span></div>)}<button onClick={()=>{setShowRegistration(true);setRegStep(0);setRegAnswers({});}} style={{...styles.button,...styles.secondaryBtn,width:'100%',marginTop:'16px'}}>Edit Profile</button><button onClick={()=>{localStorage.clear();setPracticeProfile(null);setMetricValues({});setShowRegistration(true);setRegStep(0);}} style={{width:'100%',marginTop:'12px',background:'none',border:'none',color:'#ef4444',cursor:'pointer'}}>Reset All</button></div>
+          <div style={{...styles.card,maxWidth:'800px',maxHeight:'90vh',overflow:'auto',width:'100%'}} onClick={e => e.stopPropagation()}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'24px'}}>
+              <h2 style={{fontSize:'24px',fontWeight:'700'}}><span style={{marginRight:'12px'}}>{getTypeIcon(selectedCompetitor.type)}</span>{selectedCompetitor.name}</h2>ter style={{textAlign:'center',padding:'24px',color:'#666',fontSize:'12px',borderTop:'1px solid rgba(99,102,241,0.1)'}}><p>MedPact Practice Intelligence v3.0.0</p></footer>
+              <button onClick={() => setShowIntelModal(false)} style={{background:'none',border:'none',color:'#888',fontSize:'24px',cursor:'pointer'}}>×</button></div>
+            </div> );
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}  );    </div>      </footer>        <p>MedPact Practice Intelligence v3.1.0</p>      <footer style={{textAlign:'center',padding:'24px',color:'#666',fontSize:'12px',borderTop:'1px solid rgba(99,102,241,0.1)'}}>      </main>        </>}          </div>            <button onClick={()=>{localStorage.clear();setPracticeProfile(null);setMetricValues({});setShowRegistration(true);setRegStep(0);}} style={{width:'100%',marginTop:'12px',background:'none',border:'none',color:'#ef4444',cursor:'pointer'}}>Reset All</button>            <button onClick={()=>{setShowRegistration(true);setRegStep(0);setRegAnswers({});}} style={{...styles.button,...styles.secondaryBtn,width:'100%',marginTop:'16px'}}>Edit Profile</button>            )}              </div>                <span style={{fontWeight:'500'}}>{Array.isArray(v)?v.join(', '):v}</span>                <span style={{color:'#888',textTransform:'capitalize'}}>{k}</span>              <div key={k} style={{display:'flex',justifyContent:'space-between',padding:'12px',background:'rgba(20,20,40,0.5)',borderRadius:'8px',marginBottom:'8px'}}>            {practiceProfile&&Object.entries(practiceProfile).filter(([k])=>k!=='createdAt').map(([k,v])=>            <h2 style={{fontSize:'24px',fontWeight:'700',textAlign:'center',marginBottom:'24px'}}>{practiceProfile?.name||'Demo'}</h2>            <div style={{fontSize:'48px',textAlign:'center',marginBottom:'16px'}}>🏥</div>          <div style={{...styles.card,maxWidth:'600px'}}>          <p style={styles.pageSubtitle}>Your settings</p>          <h1 style={styles.pageTitle}>Practice Profile</h1>        {activeTab === 'profile' && <>        </>}          </div>            </button>              Download Metrics CSV            <button onClick={exportMetrics} style={{...styles.button, flex: 1, padding:'12px 24px'}}>            <div style={styles.cardTitle}>📤 Export Metrics to CSV</div>          <div style={styles.card}>          {/* Export Section */}          </div>            )}              </div>                </pre>                  {JSON.stringify(importedData, null, 2)}                <pre style={{background:'rgba(255,255,255,0.1)',padding:'12px',borderRadius:'8px',fontSize:'13px',overflowX:'auto'}}>                <div style={{color:'#10b981',fontWeight:'600',marginBottom:'8px'}}>Imported Data:</div>              <div style={{marginTop:'16px'}}>            {importedData && (            </button>              📂 Upload CSV File            <button onClick={() => fileInputRef.current.click()} style={{...styles.button, flex: 1, padding:'12px 24px'}}>            />              ref={fileInputRef}              style={{display:'none'}}               onChange={handleCSVImport}               accept=".csv"               type="file"             <input             <div style={styles.cardTitle}>📥 Import CSV Data</div>          <div style={{...styles.card, marginBottom: '24px'}}>          {/* Import Section */}                    <p style={styles.pageSubtitle}>Import and export practice data</p>          <h1 style={styles.pageTitle}>CSV Data Hub</h1>        {activeTab === 'csv' && <>        </>}          </div>            </div>              </button>                Send              <button onClick={handleChat} style={{...styles.button,...styles.primaryBtn}}>              />                onKeyPress={e=>e.key==='Enter'&&handleChat()}                onChange={e=>setChatInput(e.target.value)}                 value={chatInput}                 placeholder="Ask about metrics, competitors, heat map..."                style={{...styles.input,flex:1}}                 type="text"               <input             <div style={{display:'flex',gap:'12px'}}>            </div>              <div ref={chatEndRef}/>              )}                </div>                  {m.content}                <div key={i} style={{...styles.chatMessage,...(m.role==='user'?styles.userMessage:styles.botMessage)}}>              {chatMessages.map((m,i) =>             <div style={styles.chatContainer}>          <div style={{...styles.card,maxWidth:'800px'}}>          <p style={styles.pageSubtitle}>Ask about metrics, CPT codes, competitors, innovations</p>          <h1 style={styles.pageTitle}>KCN Intelligence Chat</h1>        {activeTab === 'chat' && <>        </>}          <div style={styles.grid}>{(innovationFilter==='all'?INNOVATIONS:INNOVATIONS.filter(i=>i.category===innovationFilter)).map(i=><div key={i.id} style={styles.card}><div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}><span style={{...styles.badge,background:'rgba(16,185,129,0.2)',color:'#10b981'}}>{i.status}</span><span style={{color:'#888',fontSize:'12px'}}>{i.year}</span></div><h3 style={{fontSize:'16px',fontWeight:'600',marginBottom:'8px'}}>{i.name}</h3><p style={{fontSize:'13px',color:'#888',marginBottom:'16px'}}>{i.manufacturer}</p><div style={{display:'flex',justifyContent:'space-between'}}><div><div style={{fontSize:'11px',color:'#888'}}>Adoption</div><div style={{fontWeight:'600',color:'#6366f1'}}>{i.adoptionRate}%</div></div><div><div style={{fontSize:'11px',color:'#888'}}>Impact</div><div style={{fontWeight:'600',color:'#10b981'}}>{i.clinicalImpact}</div></div></div></div>)}</div>          <div style={{...styles.card,marginBottom:'24px'}}><div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>{['all',...new Set(INNOVATIONS.map(i=>i.category))].map(c => <button key={c} onClick={() => setInnovationFilter(c)} style={{...styles.button, ...(innovationFilter===c ? styles.primaryBtn : styles.secondaryBtn), padding:'8px 16px', fontSize:'13px'}}>{c==='all'?'All':c}</button>)}</div></div>          <p style={styles.pageSubtitle}>Emerging technologies</p>          <h1 style={styles.pageTitle}>OnPacePlus Innovation Tracker</h1>        {activeTab === 'innovations' && <>        </>}          <div style={styles.card}><table style={styles.table}><thead><tr><th style={styles.th}>CPT</th><th style={styles.th}>Description</th><th style={styles.th}>Category</th><th style={styles.th}>Medicare</th><th style={styles.th}>wRVU</th></tr></thead><tbody>{(cptFilter==='all'?CPT_CODES:CPT_CODES.filter(c=>c.category===cptFilter)).map(c=><tr key={c.code}><td style={{...styles.td,fontFamily:'monospace',fontWeight:'600',color:'#6366f1'}}>{c.code}</td><td style={styles.td}>{c.description}</td><td style={styles.td}><span style={{...styles.badge,background:'rgba(99,102,241,0.2)',color:'#a0a0ff'}}>{c.category}</span></td><td style={{...styles.td,fontWeight:'600',color:'#10b981'}}>${c.medicareRate.toFixed(2)}</td><td style={styles.td}>{c.wRVU}</td></tr>)}</tbody></table></div>          <div style={{...styles.card,marginBottom:'24px'}}><div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>{['all',...new Set(CPT_CODES.map(c=>c.category))].map(c => <button key={c} onClick={() => setCptFilter(c)} style={{...styles.button, ...(cptFilter===c ? styles.primaryBtn : styles.secondaryBtn), padding:'8px 16px', fontSize:'13px'}}>{c==='all'?'All':c}</button>)}</div></div>          <p style={styles.pageSubtitle}>2025 Medicare Rates</p>          <h1 style={styles.pageTitle}>Price Transparency</h1>        {activeTab === 'cpt' && <>        </>}          </div>            </div>              </div>                <div style={{color:'#888',fontSize:'12px'}}>ZIP Codes Covered</div>                <div style={{fontSize:'28px',fontWeight:'700',color:'#8b5cf6'}}>{PATIENT_HEATMAP_DATA.length}</div>              <div style={{textAlign:'center',padding:'16px',background:'rgba(139,92,246,0.1)',borderRadius:'12px'}}>              </div>                <div style={{color:'#888',fontSize:'12px'}}>Avg Profit Index</div>                <div style={{fontSize:'28px',fontWeight:'700',color:'#f59e0b'}}>{Math.round(PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.profitIndex, 0) / PATIENT_HEATMAP_DATA.length)}</div>              <div style={{textAlign:'center',padding:'16px',background:'rgba(245,158,11,0.1)',borderRadius:'12px'}}>              </div>                <div style={{color:'#888',fontSize:'12px'}}>Total Patients Mapped</div>                <div style={{fontSize:'28px',fontWeight:'700',color:'#3b82f6'}}>{PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.patients, 0).toLocaleString()}</div>              <div style={{textAlign:'center',padding:'16px',background:'rgba(59,130,246,0.1)',borderRadius:'12px'}}>              </div>                <div style={{color:'#888',fontSize:'12px'}}>High Profit Areas</div>                <div style={{fontSize:'28px',fontWeight:'700',color:'#10b981'}}>{PATIENT_HEATMAP_DATA.filter(z => z.profitIndex >= 90).length}</div>              <div style={{textAlign:'center',padding:'16px',background:'rgba(16,185,129,0.1)',borderRadius:'12px'}}>            <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px'}}>            <div style={styles.cardTitle}>📈 Patient Distribution Summary</div>          <div style={{...styles.card, marginTop: '24px'}}>          {/* Summary Stats */}          </div>            </div>              </table>                </tbody>                  ))}                    </tr>                      <td style={{...styles.td,fontWeight:'700',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</td>                      <td style={{...styles.td,fontSize:'12px'}}>{zip.name}</td>                      <td style={{...styles.td,fontFamily:'monospace',fontWeight:'600'}}>{zip.zip}</td>                    <tr key={zip.zip}>                  {PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).slice(0, 10).map((zip, i) => (                <tbody>                </thead>                  </tr>                    <th style={styles.th}>Index</th>                    <th style={styles.th}>Area</th>                    <th style={styles.th}>ZIP</th>                  <tr>                <thead>              <table style={styles.table}>              <div style={styles.cardTitle}>🏆 Top 10 High-Profit ZIPs</div>            <div style={styles.card}>            {/* Top 10 Table */}            </div>              </div>                ))}                  </div>                    </div>                      <span style={{fontWeight:'600',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</span>                      <span>👥 {zip.patients}</span>                    <div style={{display:'flex',justifyContent:'space-between',marginTop:'8px',fontSize:'11px'}}>                    <div style={{fontSize:'11px',color:'#888',marginTop:'4px'}}>{zip.name}</div>                    <div style={{fontWeight:'700',color:getProfitColor(zip.profitIndex),fontSize:'16px'}}>{zip.zip}</div>                  <div key={zip.zip} style={{...styles.heatmapCell, background: `${getProfitColor(zip.profitIndex)}22`, borderWidth: '1px', borderStyle: 'solid', borderColor: getProfitColor(zip.profitIndex)}}>                {PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).map(zip => (              <div style={{display:'grid',gridTemplateColumns:'repeat(4, 1fr)',gap:'8px'}}>              <div style={styles.cardTitle}>🗺️ ZIP Code Profit Map</div>            <div style={styles.card}>            {/* Heat Map Grid */}          <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:'24px'}}>          </div>            </div>              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#ef4444'}}/><span style={{fontSize:'13px'}}>Low (&lt;70)</span></div>              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#f59e0b'}}/><span style={{fontSize:'13px'}}>Medium (70-79)</span></div>              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#3b82f6'}}/><span style={{fontSize:'13px'}}>Good (80-89)</span></div>              <div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#10b981'}}/><span style={{fontSize:'13px'}}>High (90-100)</span></div>            <div style={{display:'flex',gap:'16px',flexWrap:'wrap'}}>            <div style={styles.cardTitle}>📊 Profit Index Legend</div>          <div style={{...styles.card, marginBottom: '24px'}}>          {/* Legend */}                    <p style={styles.pageSubtitle}>Identify high-profit patient areas by ZIP code</p>          <h1 style={styles.pageTitle}>Patient Location Heat Map</h1>        {activeTab === 'heatmap' && <>        </>}          </div>            ))}              </div>                </div>                  </button>                    🔍 Website Intel                  <button onClick={() => {setSelectedCompetitor(comp); setShowIntelModal(true);}} style={{...styles.button,...styles.primaryBtn,flex:1,padding:'10px',fontSize:'13px'}}>                  </button>                    {compareList.find(c => c.id === comp.id) ? '✓ Comparing' : '+ Compare'}                  <button onClick={() => toggleCompare(comp)} style={{...styles.button, ...(compareList.find(c => c.id === comp.id) ? {background:'#ef4444',color:'white'} : styles.secondaryBtn), flex:1, padding:'10px', fontSize:'13px'}}>                <div style={{display:'flex',gap:'8px'}}>                </div>                  </div>                    <div style={{fontWeight:'600',color:'#3b82f6'}}>{comp.ratings.healthgrades}</div>                    <div style={{fontSize:'11px',color:'#888'}}>Healthgrades</div>                  <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>                  </div>                    <div style={{fontWeight:'600',color:'#ef4444'}}>{comp.ratings.yelp}</div>                    <div style={{fontSize:'11px',color:'#888'}}>Yelp</div>                  <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>                  </div>                    <div style={{fontWeight:'600',color:'#f59e0b'}}>{comp.ratings.google}</div>                    <div style={{fontSize:'11px',color:'#888'}}>Google</div>                  <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>                <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px',marginBottom:'16px'}}>                                </div>                  </div>                    <div style={{color:'#888',fontSize:'11px'}}>{comp.reviewCount} reviews</div>                    <div style={{fontSize:'24px',fontWeight:'700',color:'#f59e0b'}}>{comp.ratings.google}⭐</div>                  <div style={{textAlign:'right'}}>                  </div>                    <p style={{color:'#888',fontSize:'12px',marginTop:'4px'}}>{comp.address}</p>                    <h3 style={{fontSize:'18px',fontWeight:'600'}}>{comp.name}</h3>                    <span style={{...styles.badge, background:`${getTypeColor(comp.type)}22`, color: getTypeColor(comp.type), marginBottom:'8px', display:'inline-block'}}>{getTypeIcon(comp.type)} {comp.type}</span>                  <div>                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'16px'}}>              <div key={comp.id} style={styles.competitorCard}>            {filteredCompetitors.map(comp => (          <div style={styles.grid}>          {/* Competitor Cards */}          )}            </div>              </div>                ))}                  </div>                    <div><span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.healthgrades*20}%`,background: comp.ratings.healthgrades > 4.7 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.healthgrades}</span></div></div>                    <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Yelp</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.yelp*20}%`,background: comp.ratings.yelp > 4.3 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.yelp}</span></div></div>                    <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Google</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings.google*20}%`,background: comp.ratings.google > 4.6 ? '#10b981' : '#6366f1'}}/></div><span style={{fontWeight:'600'}}>{comp.ratings.google}</span></div></div>                    </div>                      <button onClick={() => toggleCompare(comp)} style={{background:'none',border:'none',color:'#ef4444',cursor:'pointer',fontSize:'16px'}}>×</button>                      <h4 style={{fontWeight:'600',fontSize:'14px'}}>{comp.name}</h4>                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'12px'}}>                  <div key={comp.id} style={styles.metricCard}>                {compareList.map(comp => (                {/* Compared Practices */}                </div>                  <div><span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'94%'}}/></div><span style={{fontWeight:'600'}}>4.7</span></div></div>                  <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Yelp</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'86%'}}/></div><span style={{fontWeight:'600'}}>4.3</span></div></div>                  <div style={{marginBottom:'8px'}}><span style={{color:'#888',fontSize:'12px'}}>Google</span><div style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={styles.ratingBar}><div style={{...styles.progressFill,width:'92%'}}/></div><span style={{fontWeight:'600'}}>4.6</span></div></div>                  <h4 style={{fontWeight:'600',marginBottom:'12px',color:'#6366f1'}}>📍 Your Practice</h4>                <div style={{...styles.metricCard,background:'rgba(99,102,241,0.1)'}}>                {/* Your Practice */}              <div style={{display:'grid',gridTemplateColumns:`repeat(${Math.min(compareList.length + 1, 5)}, 1fr)`,gap:'16px'}}>              </div>                <button onClick={() => setCompareList([])} style={{...styles.button,...styles.secondaryBtn,padding:'6px 12px',fontSize:'12px'}}>Clear All</button>                <div style={styles.cardTitle}>📊 Side-by-Side Comparison ({compareList.length}/4)</div>              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'}}>            <div style={{...styles.card, marginBottom: '24px'}}>          {compareList.length > 0 && (          {/* Comparison Panel */}          </div>            </div>              ))}                </button>                  {f.icon} {f.label}                <button key={f.key} onClick={() => setPracticeTypeFilter(f.key)} style={{...styles.filterBtn, background: practiceTypeFilter === f.key ? getTypeColor(f.key) : 'rgba(99,102,241,0.1)', color: practiceTypeFilter === f.key ? 'white' : '#a0a0a0'}}>              ].map(f => (                { key: 'general', label: 'General Eye Care', icon: '🏥' }                { key: 'optometry', label: 'Optometry', icon: '👓' },                { key: 'ophthalmology', label: 'Ophthalmology', icon: '🔬' },                { key: 'all', label: 'All Practices', icon: '📍' },              {[            <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>            <div style={styles.cardTitle}>🔍 Filter by Practice Type</div>          <div style={{...styles.card, marginBottom: '24px'}}>          {/* Practice Type Filter */}                    <p style={styles.pageSubtitle}>Monitor and analyze competitor practices</p>          <h1 style={styles.pageTitle}>Competitive Intelligence</h1>        {activeTab === 'competitors' && <>        </>}          })}</div>            </div>;              <div style={{display:'flex',gap:'12px',alignItems:'center'}}><input type="number" placeholder="Value" value={val||''} onChange={e => setMetricValues(p => ({...p,[m.key]:parseFloat(e.target.value)||''}))} style={{...styles.input,flex:1}} /><div style={{textAlign:'right',minWidth:'80px'}}><div style={{fontSize:'12px',color:'#888'}}>Benchmark</div><div style={{fontWeight:'600',color:'#6366f1'}}>{formatValue(m.benchmark,m.unit)}</div></div></div>              <div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}><div><span style={{fontSize:'20px',marginRight:'8px'}}>{m.icon}</span><span style={{fontWeight:'600'}}>{m.title}</span></div>{score && <span style={{...styles.badge, background:`${getScoreColor(score)}22`, color:getScoreColor(score)}}>{score}%</span>}</div>            return <div key={m.key} style={styles.metricCard}>            const val = metricValues[m.key], score = calculateScore(val, m.benchmark);          <div style={styles.grid}>{METRIC_PACKAGES[selectedPackage].metrics.map(m => {          </div>            <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>{Object.entries(METRIC_PACKAGES).map(([k,v]) => <button key={k} onClick={() => setSelectedPackage(k)} style={{...styles.button, ...(selectedPackage===k ? styles.primaryBtn : styles.secondaryBtn), borderLeftWidth: '3px', borderLeftStyle: 'solid', borderLeftColor: v.color}}>{v.name}</button>)}</div>            <div style={styles.cardTitle}>📦 Select Package</div>          <div style={{...styles.card, marginBottom: '24px'}}>          <p style={styles.pageSubtitle}>{practiceProfile?.name || 'Demo'} • {METRIC_PACKAGES[selectedPackage].name}</p>          <h1 style={styles.pageTitle}>Practice Intelligence Dashboard</h1>        {activeTab === 'dashboard' && <>      <main style={styles.main}>      )}        </div>          </div>            <button style={{...styles.button,...styles.primaryBtn,width:'100%',marginTop:'24px'}}>🔄 Rescan Website for Latest Data</button>            </div>              </div>                </div>                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Avg Wait Time:</span><span>{selectedCompetitor.intel.avgWaitTime}</span></div>                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Telehealth:</span><span>{selectedCompetitor.intel.telehealth ? '✅ Yes' : '❌ No'}</span></div>                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Languages:</span><span>{selectedCompetitor.intel.languages.join(', ')}</span></div>                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Staff Size:</span><span>{selectedCompetitor.intel.staff}</span></div>                <div style={{display:'grid',gap:'8px'}}>                <h4 style={{color:'#ec4899',marginBottom:'12px'}}>📋 Practice Details</h4>              <div style={{...styles.metricCard}}>              {/* Practice Details */}              </div>                </div>                  ))}                    <span key={i} style={{...styles.badge,background:'rgba(245,158,11,0.2)',color:'#f59e0b'}}>{s}</span>                  {selectedCompetitor.intel.services.map((s, i) => (                <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>                <h4 style={{color:'#f59e0b',marginBottom:'12px'}}>🩺 Services Offered</h4>              <div style={{...styles.metricCard}}>              {/* Services */}              </div>                ))}                  <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{e}</div>                {selectedCompetitor.intel.equipment.map((e, i) => (                <h4 style={{color:'#10b981',marginBottom:'12px'}}>🔧 Equipment & Technology</h4>              <div style={{...styles.metricCard}}>              {/* Equipment */}              </div>                ))}                  <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{p}</div>                {selectedCompetitor.intel.providers.map((p, i) => (                <h4 style={{color:'#6366f1',marginBottom:'12px'}}>👨‍⚕️ Provider Training</h4>              <div style={{...styles.metricCard}}>              {/* Provider Training */}            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>

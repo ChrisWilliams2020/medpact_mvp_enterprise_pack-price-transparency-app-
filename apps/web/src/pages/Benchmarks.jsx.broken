@@ -1,0 +1,73 @@
+import React, { useState, useRef, useEffect } from 'react';
+
+// ============================================================================
+// MedPact Practice Intelligence v2.9.0
+// Features: 6 Metric Packages, AI Registration, OnPacePlus, KCN Chat, CSV Hub
+// ============================================================================
+
+// Package 1: PRIVATE PRACTICE 9 METRICS
+const PRACTICE_9_METRICS = [
+  { key: 'collection_rate', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💰' },
+  { key: 'days_in_ar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📅' },
+  { key: 'denial_rate', title: 'Denial Rate', benchmark: 5, unit: '%', icon: '❌' },
+  { key: 'first_pass_rate', title: 'First Pass Resolution', benchmark: 95, unit: '%', icon: '✅' },
+  { key: 'charge_lag', title: 'Charge Lag', benchmark: 2, unit: 'days', icon: '⏱️' },
+  { key: 'ar_over_90', title: 'A/R Over 90 Days', benchmark: 15, unit: '%', icon: '⚠️' },
+  { key: 'patient_volume', title: 'Patient Volume', benchmark: 1200, unit: 'visits/mo', icon: '👥' },
+  { key: 'revenue_per_visit', title: 'Revenue per Visit', benchmark: 185, unit: 'USD', icon: '💵' },
+  { key: 'bad_debt_rate', title: 'Bad Debt Rate', benchmark: 3, unit: '%', icon: '📉' }
+];
+
+// Package 2: PE PRACTICE 10 METRICS
+const PE_10_METRICS = [
+  { key: 'pe_revenue', title: 'Total Revenue', benchmark: 2500000, unit: 'USD', icon: '💰' },
+  { key: 'pe_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊' },
+  { key: 'pe_revenue_per_provider', title: 'Revenue per Provider', benchmark: 625000, unit: 'USD', icon: '👨‍⚕️' },
+  { key: 'pe_patients_per_clinic_day', title: 'Patients per Clinic Day', benchmark: 28, unit: 'patients', icon: '📅' },
+  { key: 'pe_procedure_conversion', title: 'Procedure Conversion Rate', benchmark: 35, unit: '%', icon: '🔬' },
+  { key: 'pe_net_collection_rate', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵' },
+  { key: 'pe_days_in_ar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '⏰' },
+  { key: 'pe_staffing_ratio', title: 'Staffing Ratio', benchmark: 4.5, unit: 'staff:1', icon: '👥' },
+  { key: 'pe_cost_per_encounter', title: 'Cost per Encounter', benchmark: 85, unit: 'USD', icon: '📋' },
+  { key: 'pe_asc_utilization', title: 'ASC Utilization', benchmark: 78, unit: '%', icon: '🏥' }
+];
+
+// Package 3: KPI 25 METRICS
+const KPI_25_METRICS = [
+  { key: 'kpi_total_revenue', title: 'Total Revenue', benchmark: 15000000, unit: 'USD', icon: '💵', category: 'financial' },
+  { key: 'kpi_ebitda', title: 'EBITDA', benchmark: 3750000, unit: 'USD', icon: '📈', category: 'financial' },
+  { key: 'kpi_ebitda_margin', title: 'EBITDA Margin', benchmark: 25, unit: '%', icon: '📊', category: 'financial' },
+  { key: 'kpi_revenue_per_provider', title: 'Revenue per Provider', benchmark: 750000, unit: 'USD', icon: '👨‍⚕️', category: 'financial' },
+  { key: 'kpi_revenue_per_encounter', title: 'Revenue per Encounter', benchmark: 185, unit: 'USD', icon: '💰', category: 'financial' },
+  { key: 'kpi_revenue_growth', title: 'Revenue Growth Rate', benchmark: 12, unit: '%', icon: '🚀', category: 'financial' },
+  { key: 'kpi_wrvus', title: 'Work RVUs per Provider', benchmark: 8500, unit: 'wRVUs', icon: '⚡', category: 'productivity' },
+  { key: 'kpi_patients_per_day', title: 'Patients per Provider Day', benchmark: 28, unit: 'patients', icon: '📅', category: 'productivity' },
+  { key: 'kpi_surgical_cases', title: 'Surgical Cases per Surgeon', benchmark: 420, unit: 'cases/yr', icon: '🔪', category: 'productivity' },
+  { key: 'kpi_procedure_conversion', title: 'Procedure Conversion Rate', benchmark: 35, unit: '%', icon: '🔬', category: 'productivity' },
+  { key: 'kpi_injection_rate', title: 'Injection Rate', benchmark: 6.5, unit: 'per patient', icon: '💉', category: 'productivity' },
+  { key: 'kpi_new_patient_rate', title: 'New Patient Rate', benchmark: 25, unit: '%', icon: '🆕', category: 'productivity' },
+  { key: 'kpi_ncr', title: 'Net Collection Rate', benchmark: 98, unit: '%', icon: '💵', category: 'rcm' },
+  { key: 'kpi_dar', title: 'Days in A/R', benchmark: 32, unit: 'days', icon: '📆', category: 'rcm' },
+  { key: 'kpi_denial_rate', title: 'Denial Rate', benchmark: 5, unit: '%', icon: '❌', category: 'rcm' },
+  { key: 'kpi_first_pass', title: 'First Pass Resolution', benchmark: 95, unit: '%', icon: '✅', category: 'rcm' },
+  { key: 'kpi_charge_lag', title: 'Charge Lag', benchmark: 2, unit: 'days', icon: '⏱️', category: 'rcm' },
+  { key: 'kpi_bad_debt', title: 'Bad Debt Rate', benchmark: 3, unit: '%', icon: '📉', category: 'rcm' },
+  { key: 'kpi_staffing_ratio', title: 'Staff per Provider', benchmark: 4.5, unit: 'ratio', icon: '👥', category: 'operations' },
+  { key: 'kpi_cost_per_encounter', title: 'Cost per Encounter', benchmark: 85, unit: 'USD', icon: '📋', category: 'operations' },
+  { key: 'kpi_expense_ratio', title: 'Operating Expense Ratio', benchmark: 65, unit: '%', icon: '⚙️', category: 'operations' },
+  { key: 'kpi_optical_revenue', title: 'Optical Revenue per Patient', benchmark: 285, unit: 'USD', icon: '👓', category: 'operations' },
+  { key: 'kpi_wait_time', title: 'Average Wait Time', benchmark: 15, unit: 'min', icon: '⏰', category: 'operations' },
+  { key: 'kpi_asc_utilization', title: 'ASC Utilization', benchmark: 78, unit: '%', icon: '🏥', category: 'surgical' },
+  { key: 'kpi_revenue_per_case', title: 'Avg Revenue per Surgical Case', benchmark: 2200, unit: 'USD', icon: '💎', category: 'surgical' }
+];
+
+// Package 4: PRIVATE ASC 25 METRICS
+const ASC_25_METRICS = [
+  { key: 'asc_cases_per_or', title: 'Cases per OR per Day', benchmark: 8, unit: 'cases', icon: '🔪', category: 'throughput' },
+  { key: 'asc_turnover_time', title: 'Room Turnover Time', benchmark: 12, unit: 'min', icon: '⏱️', category: 'throughput' },
+  { key: 'asc_first_case_ontime', title: 'First Case On-Time Start', benchmark: 90, unit: '%', icon: '🕐', category: 'throughput' },
+  { key: 'asc_block_utilization', title: 'Block Utilization', benchmark: 85, unit: '%', icon: '📊', category: 'throughput' },
+  { key: 'asc_cancellation_rate', title: 'Same-Day Cancellation Rate', benchmark: 3, unit: '%', icon: '❌', category: 'throughput' },
+  { key: 'asc_cost_per_case', title: 'Total Cost per Case', benchmark: 850, unit: 'USD', icon: '💰', category: 'cost' },
+  { key: 'asc_supply_cost', title: 'Supply Cost per Case', benchmark: 285, unit: 'USD', icon: '📦', category: 'cost' },
+  { key: 'asc_labor_cost', title: 'Labor Cost per Case', benchmark: 425, unit: 'USD', icon: '👥'

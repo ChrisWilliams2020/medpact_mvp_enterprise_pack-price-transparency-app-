@@ -1,0 +1,6 @@
+
+'use client';
+import Benchmarks from '../pages/Benchmarks';
+export default function Home() {
+  return <Benchmarks />;
+}
