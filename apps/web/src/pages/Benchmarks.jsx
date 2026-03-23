@@ -11,6 +11,73 @@ import { REGISTRATION_STEPS } from '../data/registration';
 import { styles } from '../styles/theme';
 import { formatValue, getScoreColor, calculateScore, getProfitColor, getTypeIcon, getTypeColor, searchKCN, exportToCSV } from '../utils/helpers';
 
+// ============================================================================
+// AI INSIGHTS DATA
+// ============================================================================
+const AI_INSIGHTS = {
+  revenueOptimization: [
+    { id: 1, title: 'Premium IOL Conversion Opportunity', impact: '$145K/year', priority: 'high', description: 'Your premium IOL rate is 22% vs benchmark 35%. Increasing by 10% could add $145K annually.', action: 'Implement patient education program and update consent process.' },
+    { id: 2, title: 'Reduce A/R Over 90 Days', impact: '$89K recovery', priority: 'high', description: 'Your A/R >90 days is 18% vs benchmark 12%. Focus on aged claims to recover $89K.', action: 'Assign dedicated staff to work claims >60 days weekly.' },
+    { id: 3, title: 'Optical Capture Rate', impact: '$67K/year', priority: 'medium', description: 'Optical capture at 38% vs benchmark 55%. Each 5% increase = $22K revenue.', action: 'Implement post-exam optical handoff protocol.' },
+    { id: 4, title: 'Referral Conversion', impact: '$52K/year', priority: 'medium', description: 'Referral conversion at 68% vs 82% benchmark. 45 patients/month not converting.', action: 'Reduce new patient wait time and implement 48-hour callback.' },
+    { id: 5, title: 'Dry Eye Revenue Stream', impact: '$38K/year', priority: 'low', description: 'Dry eye services underutilized. IPL and specialty lens fitting opportunities.', action: 'Add dry eye screening to all comprehensive exams.' }
+  ],
+  staffingRecommendations: [
+    { id: 1, role: 'Surgical Coordinator', need: 'Add 1 FTE', reason: 'Current ratio 1:4 surgeons vs benchmark 1:2.5', impact: 'Could increase surgical volume 15%' },
+    { id: 2, role: 'Billing Specialist', need: 'Add 0.5 FTE', reason: 'Days in A/R trending up, denial rate at 7%', impact: 'Expected A/R reduction of 8 days' },
+    { id: 3, role: 'Ophthalmic Tech', need: 'Optimize schedule', reason: 'Tech utilization at 92% causing burnout risk', impact: 'Reduce overtime costs $24K/year' },
+    { id: 4, role: 'Front Desk', need: 'Cross-train 2 staff', reason: 'Check-in bottleneck causing 12min avg wait', impact: 'Improve patient satisfaction scores' }
+  ],
+  performanceAlerts: [
+    { id: 1, type: 'critical', metric: 'Denial Rate', value: '7.2%', benchmark: '5%', trend: 'up', message: 'Denial rate increased 1.5% this month. Review coding patterns.' },
+    { id: 2, type: 'warning', metric: 'No-Show Rate', value: '8.5%', benchmark: '5%', trend: 'up', message: 'No-shows trending up. Consider reminder system upgrade.' },
+    { id: 3, type: 'warning', metric: 'Charge Lag', value: '3.2 days', benchmark: '2 days', trend: 'stable', message: 'Charge entry delayed. Revenue recognition impact.' },
+    { id: 4, type: 'success', metric: 'Collection Rate', value: '97.8%', benchmark: '98%', trend: 'up', message: 'Collection rate improving. 0.2% from target.' }
+  ],
+  topQuartile: [
+    { metric: 'Patient Satisfaction', value: '94%', benchmark: '92%', quartile: 'Top 10%', icon: '😊' },
+    { metric: 'First Pass Rate', value: '96%', benchmark: '95%', quartile: 'Top 25%', icon: '✅' },
+    { metric: 'Staff Retention', value: '91%', benchmark: '85%', quartile: 'Top 15%', icon: '👥' },
+    { metric: 'Surgical Volume Growth', value: '+12%', benchmark: '+8%', quartile: 'Top 20%', icon: '📈' }
+  ]
+};
+
+// ============================================================================
+// SOCIAL MEDIA CAMPAIGN DATA
+// ============================================================================
+const SOCIAL_PLATFORMS = [
+  { id: 'facebook', name: 'Facebook', icon: '📘', color: '#1877F2', cpc: 1.72, reach: 'High for 45+' },
+  { id: 'instagram', name: 'Instagram', icon: '📸', color: '#E4405F', cpc: 1.28, reach: 'High for 25-45' },
+  { id: 'linkedin', name: 'LinkedIn', icon: '💼', color: '#0A66C2', cpc: 5.26, reach: 'Professional/B2B' },
+  { id: 'google', name: 'Google Ads', icon: '🔍', color: '#4285F4', cpc: 2.85, reach: 'Intent-based' }
+];
+
+const AUDIENCE_PERSONAS = [
+  { id: 'cataract_seniors', name: 'Cataract Seniors', age: '65+', icon: '👴', interests: ['Health', 'Medicare', 'Retirement'], platforms: ['facebook', 'google'], budget: 'Medium', conversionRate: 4.2 },
+  { id: 'lasik_candidates', name: 'LASIK Candidates', age: '25-45', icon: '👓', interests: ['Fitness', 'Technology', 'Career'], platforms: ['instagram', 'google'], budget: 'High', conversionRate: 3.8 },
+  { id: 'pediatric_parents', name: 'Pediatric Parents', age: '30-50', icon: '👨‍👩‍👧', interests: ['Parenting', 'Education', 'Health'], platforms: ['facebook', 'instagram'], budget: 'Medium', conversionRate: 3.2 },
+  { id: 'diabetic_care', name: 'Diabetic Eye Care', age: '45-70', icon: '🩺', interests: ['Diabetes Management', 'Health', 'Nutrition'], platforms: ['facebook', 'google'], budget: 'Medium', conversionRate: 5.1 },
+  { id: 'dry_eye', name: 'Dry Eye Sufferers', age: '35-65', icon: '💧', interests: ['Wellness', 'Screen Time', 'Comfort'], platforms: ['facebook', 'instagram', 'google'], budget: 'Low-Medium', conversionRate: 4.5 }
+];
+
+const AD_TEMPLATES = [
+  { id: 1, persona: 'cataract_seniors', title: 'See Life Clearly Again', headline: 'Advanced Cataract Surgery', body: 'Restore your vision with premium lens options. Medicare accepted. Schedule your free consultation today.', cta: 'Book Consultation', image: '🏥👁️' },
+  { id: 2, persona: 'cataract_seniors', title: 'Premium IOL Options', headline: 'Freedom from Glasses After Cataract Surgery', body: 'Ask about our premium lens implants that can reduce or eliminate your need for glasses.', cta: 'Learn More', image: '💎👓' },
+  { id: 3, persona: 'lasik_candidates', title: 'Ditch the Contacts', headline: 'LASIK Starting at $1,999/eye', body: 'Wake up with clear vision. 15-minute procedure. Most patients see 20/20 the next day.', cta: 'Free LASIK Evaluation', image: '✨👁️' },
+  { id: 4, persona: 'lasik_candidates', title: 'Life Without Limits', headline: 'Custom LASIK Technology', body: 'Our wavefront-guided LASIK corrects imperfections unique to your eyes. Financing available.', cta: 'Calculate Your Price', image: '🎯🔬' },
+  { id: 5, persona: 'pediatric_parents', title: 'Protect Their Vision', headline: "Your Child's Eyes Matter", body: 'Comprehensive pediatric eye exams. Early detection of vision problems. Fun, kid-friendly environment.', cta: 'Schedule Exam', image: '👧👁️' },
+  { id: 6, persona: 'diabetic_care', title: 'Diabetic Eye Exam', headline: 'Annual Diabetic Retinopathy Screening', body: 'Protect your vision with regular diabetic eye exams. We work with your endocrinologist.', cta: 'Book Today', image: '🩺👁️' },
+  { id: 7, persona: 'dry_eye', title: 'End Dry Eye Discomfort', headline: 'Advanced Dry Eye Treatment Center', body: 'IPL therapy, specialty drops, and personalized treatment plans. Stop suffering today.', cta: 'Get Relief', image: '💧✨' }
+];
+
+const CAMPAIGN_STEPS = [
+  { id: 1, title: 'Select Platform', icon: '📱' },
+  { id: 2, title: 'Choose Audience', icon: '🎯' },
+  { id: 3, title: 'Pick Template', icon: '📝' },
+  { id: 4, title: 'Set Budget & Targeting', icon: '💰' },
+  { id: 5, title: 'Review & Launch', icon: '🚀' }
+];
+
 export default function Benchmarks() {
   // State Management
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -45,6 +112,15 @@ export default function Benchmarks() {
   const [showIntelModal, setShowIntelModal] = useState(false);
   const [importedData, setImportedData] = useState(null);
   const fileInputRef = useRef(null);
+  
+  // Campaign Builder State
+  const [campaignStep, setCampaignStep] = useState(1);
+  const [selectedPlatform, setSelectedPlatform] = useState(null);
+  const [selectedPersona, setSelectedPersona] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [campaignBudget, setCampaignBudget] = useState(1000);
+  const [campaignDuration, setCampaignDuration] = useState(30);
+  const [targetZips, setTargetZips] = useState([]);
 
   // Effects
   useEffect(() => {
@@ -67,7 +143,7 @@ export default function Benchmarks() {
       const profile = { ...regAnswers, createdAt: new Date().toISOString() };
       setPracticeProfile(profile);
       setShowRegistration(false);
-      const pkgMap = { 'Private Practice 9': 'practice_9', 'PE Practice 10': 'pe_10', 'KPI 25': 'kpi_25', 'Private ASC 25': 'asc_25', 'PE ASC 21': 'pe_asc_21', 'Price Transparency': 'price_transparency' };
+      const pkgMap = { 'Private Practice 9': 'practice_9', 'PE Practice 10': 'pe_10', 'KPI 25': 'kpi_25', 'Private ASC 25': 'asc_25', 'PE ASC 21': 'pe_asc_21', 'Retina 12': 'retina_12' };
       if (regAnswers.package && pkgMap[regAnswers.package]) setSelectedPackage(pkgMap[regAnswers.package]);
     }
   };
@@ -118,12 +194,48 @@ export default function Benchmarks() {
     exportToCSV(data, `medpact_${selectedPackage}_metrics.csv`);
   };
 
+  const toggleZipTarget = (zip) => {
+    if (targetZips.includes(zip)) {
+      setTargetZips(targetZips.filter(z => z !== zip));
+    } else {
+      setTargetZips([...targetZips, zip]);
+    }
+  };
+
+  const calculateCampaignROI = () => {
+    if (!selectedPlatform || !selectedPersona) return null;
+    const platform = SOCIAL_PLATFORMS.find(p => p.id === selectedPlatform);
+    const persona = AUDIENCE_PERSONAS.find(p => p.id === selectedPersona);
+    const clicks = Math.round(campaignBudget / platform.cpc);
+    const conversions = Math.round(clicks * (persona.conversionRate / 100));
+    const avgPatientValue = 850; // Average lifetime value
+    const projectedRevenue = conversions * avgPatientValue;
+    const roi = ((projectedRevenue - campaignBudget) / campaignBudget * 100).toFixed(0);
+    return { clicks, conversions, projectedRevenue, roi };
+  };
+
+  const resetCampaign = () => {
+    setCampaignStep(1);
+    setSelectedPlatform(null);
+    setSelectedPersona(null);
+    setSelectedTemplate(null);
+    setCampaignBudget(1000);
+    setCampaignDuration(30);
+    setTargetZips([]);
+  };
+
   const filteredCompetitors = practiceTypeFilter === 'all' 
     ? COMPETITOR_PRACTICES 
     : COMPETITOR_PRACTICES.filter(c => c.type === practiceTypeFilter);
 
+  const filteredTemplates = selectedPersona 
+    ? AD_TEMPLATES.filter(t => t.persona === selectedPersona)
+    : AD_TEMPLATES;
+
   const tabs = [
     { id: 'dashboard', label: 'Dashboard', icon: '📊' },
+    { id: 'ai', label: 'AI Insights', icon: '🤖' },
+    { id: 'campaigns', label: 'Campaigns', icon: '📣' },
     { id: 'competitors', label: 'Competitors', icon: '🎯' },
     { id: 'heatmap', label: 'Heat Map', icon: '🗺️' },
     { id: 'cpt', label: 'CPT Codes', icon: '💰' },
@@ -143,7 +255,7 @@ export default function Benchmarks() {
             <div style={styles.logo}>
               <div style={styles.logoIcon}>👁️</div>
               <span style={styles.logoText}>MedPact</span>
-              <span style={styles.version}>v3.1</span>
+              <span style={styles.version}>v3.2</span>
             </div>
           </div>
         </header>
@@ -161,81 +273,31 @@ export default function Benchmarks() {
             <h3 style={{ fontSize: '18px', marginBottom: '16px', color: '#fff' }}>{step.question}</h3>
             
             {step.type === 'text' && (
-              <input 
-                type="text" 
-                style={styles.input} 
-                placeholder={step.placeholder} 
-                value={regAnswers[step.id] || ''} 
-                onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))} 
-              />
+              <input type="text" style={styles.input} placeholder={step.placeholder} value={regAnswers[step.id] || ''} onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))} />
             )}
-            
             {step.type === 'number' && (
-              <input 
-                type="number" 
-                style={styles.input} 
-                placeholder={step.placeholder} 
-                value={regAnswers[step.id] || ''} 
-                onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))} 
-              />
+              <input type="number" style={styles.input} placeholder={step.placeholder} value={regAnswers[step.id] || ''} onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))} />
             )}
-            
             {step.type === 'select' && (
-              <select 
-                style={styles.select} 
-                value={regAnswers[step.id] || ''} 
-                onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))}
-              >
+              <select style={styles.select} value={regAnswers[step.id] || ''} onChange={e => setRegAnswers(p => ({ ...p, [step.id]: e.target.value }))}>
                 <option value="">Select...</option>
                 {step.options.map(o => <option key={o} value={o}>{o}</option>)}
               </select>
             )}
-            
             {step.type === 'multiselect' && (
               <div style={styles.multiSelect}>
                 {step.options.map(o => (
-                  <div
-                    key={o}
-                    onClick={() => {
-                      const current = regAnswers[step.id] || [];
-                      const updated = current.includes(o) ? current.filter(x => x !== o) : [...current, o];
-                      setRegAnswers(p => ({ ...p, [step.id]: updated }));
-                    }}
-                    style={{
-                      ...styles.multiSelectOption,
-                      background: (regAnswers[step.id] || []).includes(o) ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99, 102, 241, 0.1)',
-                      color: (regAnswers[step.id] || []).includes(o) ? 'white' : '#a0a0a0',
-                      border: '1px solid rgba(99, 102, 241, 0.3)'
-                    }}
-                  >
-                    {o}
-                  </div>
+                  <div key={o} onClick={() => { const current = regAnswers[step.id] || []; const updated = current.includes(o) ? current.filter(x => x !== o) : [...current, o]; setRegAnswers(p => ({ ...p, [step.id]: updated })); }}
+                    style={{ ...styles.multiSelectOption, background: (regAnswers[step.id] || []).includes(o) ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99, 102, 241, 0.1)', color: (regAnswers[step.id] || []).includes(o) ? 'white' : '#a0a0a0', border: '1px solid rgba(99, 102, 241, 0.3)' }}>{o}</div>
                 ))}
               </div>
             )}
 
             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-              {regStep > 0 && (
-                <button 
-                  onClick={() => setRegStep(regStep - 1)} 
-                  style={{...styles.button, ...styles.secondaryBtn, flex: 1}}
-                >
-                  Back
-                </button>
-              )}
-              <button 
-                onClick={handleRegNext} 
-                style={{...styles.button, ...styles.primaryBtn, flex: 1}}
-              >
-                {regStep === REGISTRATION_STEPS.length - 1 ? 'Complete' : 'Continue'}
-              </button>
+              {regStep > 0 && <button onClick={() => setRegStep(regStep - 1)} style={{...styles.button, ...styles.secondaryBtn, flex: 1}}>Back</button>}
+              <button onClick={handleRegNext} style={{...styles.button, ...styles.primaryBtn, flex: 1}}>{regStep === REGISTRATION_STEPS.length - 1 ? 'Complete' : 'Continue'}</button>
             </div>
-            <button 
-              onClick={() => { setShowRegistration(false); setPracticeProfile({ name: 'Demo Practice', type: 'Demo' }); }} 
-              style={{ width: '100%', marginTop: '16px', background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}
-            >
-              Skip (Demo)
-            </button>
+            <button onClick={() => { setShowRegistration(false); setPracticeProfile({ name: 'Demo Practice', type: 'Demo' }); }} style={{ width: '100%', marginTop: '16px', background: 'none', border: 'none', color: '#888', cursor: 'pointer' }}>Skip (Demo)</button>
           </div>
         </div>
       </div>
@@ -251,15 +313,11 @@ export default function Benchmarks() {
           <div style={styles.logo}>
             <div style={styles.logoIcon}>👁️</div>
             <span style={styles.logoText}>MedPact</span>
-            <span style={styles.version}>v3.1</span>
+            <span style={styles.version}>v3.2</span>
           </div>
           <nav style={styles.nav}>
             {tabs.map(t => (
-              <button 
-                key={t.id} 
-                onClick={() => setActiveTab(t.id)} 
-                style={{...styles.navBtn, ...(activeTab === t.id ? styles.navBtnActive : styles.navBtnInactive)}}
-              >
+              <button key={t.id} onClick={() => setActiveTab(t.id)} style={{...styles.navBtn, ...(activeTab === t.id ? styles.navBtnActive : styles.navBtnInactive)}}>
                 <span style={{marginRight:'6px'}}>{t.icon}</span>{t.label}
               </button>
             ))}
@@ -269,58 +327,22 @@ export default function Benchmarks() {
 
       {/* Intel Modal */}
       {showIntelModal && selectedCompetitor && (
-        <div 
-          style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.8)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'20px'}} 
-          onClick={() => setShowIntelModal(false)}
-        >
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,background:'rgba(0,0,0,0.8)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'20px'}} onClick={() => setShowIntelModal(false)}>
           <div style={{...styles.card,maxWidth:'800px',maxHeight:'90vh',overflow:'auto',width:'100%'}} onClick={e => e.stopPropagation()}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'24px'}}>
-              <h2 style={{fontSize:'24px',fontWeight:'700'}}>
-                <span style={{marginRight:'12px'}}>{getTypeIcon(selectedCompetitor.type)}</span>
-                {selectedCompetitor.name}
-              </h2>
+              <h2 style={{fontSize:'24px',fontWeight:'700'}}><span style={{marginRight:'12px'}}>{getTypeIcon(selectedCompetitor.type)}</span>{selectedCompetitor.name}</h2>
               <button onClick={() => setShowIntelModal(false)} style={{background:'none',border:'none',color:'#888',fontSize:'24px',cursor:'pointer'}}>×</button>
             </div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'20px'}}>
-              <div style={styles.metricCard}>
-                <h4 style={{color:'#6366f1',marginBottom:'12px'}}>👨‍⚕️ Provider Training</h4>
-                {selectedCompetitor.intel?.providers?.map((p, i) => (
-                  <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{p}</div>
-                ))}
-              </div>
-              <div style={styles.metricCard}>
-                <h4 style={{color:'#10b981',marginBottom:'12px'}}>🔧 Equipment & Technology</h4>
-                {selectedCompetitor.intel?.equipment?.map((e, i) => (
-                  <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{e}</div>
-                ))}
-              </div>
-              <div style={styles.metricCard}>
-                <h4 style={{color:'#f59e0b',marginBottom:'12px'}}>🩺 Services Offered</h4>
-                <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
-                  {selectedCompetitor.intel?.services?.map((s, i) => (
-                    <span key={i} style={{...styles.badge,background:'rgba(245,158,11,0.2)',color:'#f59e0b'}}>{s}</span>
-                  ))}
-                </div>
-              </div>
-              <div style={styles.metricCard}>
-                <h4 style={{color:'#ec4899',marginBottom:'12px'}}>📋 Practice Details</h4>
+              <div style={styles.metricCard}><h4 style={{color:'#6366f1',marginBottom:'12px'}}>👨‍⚕️ Provider Training</h4>{selectedCompetitor.intel?.providers?.map((p, i) => <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{p}</div>)}</div>
+              <div style={styles.metricCard}><h4 style={{color:'#10b981',marginBottom:'12px'}}>🔧 Equipment & Technology</h4>{selectedCompetitor.intel?.equipment?.map((e, i) => <div key={i} style={{padding:'8px 0',borderBottom:'1px solid rgba(99,102,241,0.1)'}}>{e}</div>)}</div>
+              <div style={styles.metricCard}><h4 style={{color:'#f59e0b',marginBottom:'12px'}}>🩺 Services Offered</h4><div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>{selectedCompetitor.intel?.services?.map((s, i) => <span key={i} style={{...styles.badge,background:'rgba(245,158,11,0.2)',color:'#f59e0b'}}>{s}</span>)}</div></div>
+              <div style={styles.metricCard}><h4 style={{color:'#ec4899',marginBottom:'12px'}}>📋 Practice Details</h4>
                 <div style={{display:'grid',gap:'8px'}}>
-                  <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <span style={{color:'#888'}}>Staff Size:</span>
-                    <span>{selectedCompetitor.intel?.staff}</span>
-                  </div>
-                  <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <span style={{color:'#888'}}>Languages:</span>
-                    <span>{selectedCompetitor.intel?.languages?.join(', ')}</span>
-                  </div>
-                  <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <span style={{color:'#888'}}>Telehealth:</span>
-                    <span>{selectedCompetitor.intel?.telehealth ? '✅ Yes' : '❌ No'}</span>
-                  </div>
-                  <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <span style={{color:'#888'}}>Avg Wait Time:</span>
-                    <span>{selectedCompetitor.intel?.avgWaitTime}</span>
-                  </div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Staff Size:</span><span>{selectedCompetitor.intel?.staff}</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Languages:</span><span>{selectedCompetitor.intel?.languages?.join(', ')}</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Telehealth:</span><span>{selectedCompetitor.intel?.telehealth ? '✅ Yes' : '❌ No'}</span></div>
+                  <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Avg Wait Time:</span><span>{selectedCompetitor.intel?.avgWaitTime}</span></div>
                 </div>
               </div>
             </div>
@@ -341,17 +363,7 @@ export default function Benchmarks() {
               <div style={styles.cardTitle}>📦 Select Metric Package</div>
               <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
                 {Object.entries(METRIC_PACKAGES).map(([k, v]) => (
-                  <button 
-                    key={k} 
-                    onClick={() => setSelectedPackage(k)} 
-                    style={{
-                      ...styles.button, 
-                      ...(selectedPackage === k ? styles.primaryBtn : styles.secondaryBtn), 
-                      borderLeft: `3px solid ${v.color}`
-                    }}
-                  >
-                    {v.name}
-                  </button>
+                  <button key={k} onClick={() => setSelectedPackage(k)} style={{...styles.button, ...(selectedPackage === k ? styles.primaryBtn : styles.secondaryBtn), borderLeft: `3px solid ${v.color}`}}>{v.name}</button>
                 ))}
               </div>
             </div>
@@ -363,24 +375,11 @@ export default function Benchmarks() {
                 return (
                   <div key={m.key} style={styles.metricCard}>
                     <div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}>
-                      <div>
-                        <span style={{fontSize:'20px',marginRight:'8px'}}>{m.icon}</span>
-                        <span style={{fontWeight:'600'}}>{m.title}</span>
-                      </div>
-                      {score && (
-                        <span style={{...styles.badge, background:`${getScoreColor(score)}22`, color:getScoreColor(score)}}>
-                          {score}%
-                        </span>
-                      )}
+                      <div><span style={{fontSize:'20px',marginRight:'8px'}}>{m.icon}</span><span style={{fontWeight:'600'}}>{m.title}</span></div>
+                      {score && <span style={{...styles.badge, background:`${getScoreColor(score)}22`, color:getScoreColor(score)}}>{score}%</span>}
                     </div>
                     <div style={{display:'flex',gap:'12px',alignItems:'center'}}>
-                      <input 
-                        type="number" 
-                        placeholder="Value" 
-                        value={val || ''} 
-                        onChange={e => setMetricValues(p => ({...p, [m.key]: parseFloat(e.target.value) || ''}))} 
-                        style={{...styles.input, flex:1}} 
-                      />
+                      <input type="number" placeholder="Value" value={val || ''} onChange={e => setMetricValues(p => ({...p, [m.key]: parseFloat(e.target.value) || ''}))} style={{...styles.input, flex:1}} />
                       <div style={{textAlign:'right',minWidth:'80px'}}>
                         <div style={{fontSize:'12px',color:'#888'}}>Benchmark</div>
                         <div style={{fontWeight:'600',color:'#6366f1'}}>{formatValue(m.benchmark, m.unit)}</div>
@@ -393,6 +392,293 @@ export default function Benchmarks() {
           </>
         )}
 
+        {/* AI Insights Tab */}
+        {activeTab === 'ai' && (
+          <>
+            <h1 style={styles.pageTitle}>🤖 AI-Powered Insights</h1>
+            <p style={styles.pageSubtitle}>Intelligent recommendations based on your practice data</p>
+
+            {/* Top Quartile Performance */}
+            <div style={{...styles.card, marginBottom: '24px'}}>
+              <div style={styles.cardTitle}>🏆 Top Quartile Performance</div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px'}}>
+                {AI_INSIGHTS.topQuartile.map((item, i) => (
+                  <div key={i} style={{textAlign:'center',padding:'20px',background:'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05))',borderRadius:'12px',border:'1px solid rgba(16,185,129,0.3)'}}>
+                    <div style={{fontSize:'32px',marginBottom:'8px'}}>{item.icon}</div>
+                    <div style={{fontSize:'24px',fontWeight:'700',color:'#10b981'}}>{item.value}</div>
+                    <div style={{fontSize:'13px',color:'#fff',marginTop:'4px'}}>{item.metric}</div>
+                    <div style={{...styles.badge,background:'rgba(16,185,129,0.2)',color:'#10b981',marginTop:'8px'}}>{item.quartile}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Performance Alerts */}
+            <div style={{...styles.card, marginBottom: '24px'}}>
+              <div style={styles.cardTitle}>🚨 Performance Alerts</div>
+              <div style={{display:'grid',gap:'12px'}}>
+                {AI_INSIGHTS.performanceAlerts.map(alert => (
+                  <div key={alert.id} style={{display:'flex',alignItems:'center',gap:'16px',padding:'16px',background: alert.type === 'critical' ? 'rgba(239,68,68,0.1)' : alert.type === 'warning' ? 'rgba(245,158,11,0.1)' : 'rgba(16,185,129,0.1)',borderRadius:'12px',border: `1px solid ${alert.type === 'critical' ? '#ef4444' : alert.type === 'warning' ? '#f59e0b' : '#10b981'}`}}>
+                    <div style={{fontSize:'24px'}}>{alert.type === 'critical' ? '🔴' : alert.type === 'warning' ? '🟡' : '🟢'}</div>
+                    <div style={{flex:1}}>
+                      <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'4px'}}>
+                        <span style={{fontWeight:'600'}}>{alert.metric}</span>
+                        <span style={{...styles.badge,background:'rgba(99,102,241,0.2)',color:'#a0a0ff'}}>{alert.value}</span>
+                        <span style={{fontSize:'12px',color:'#888'}}>vs {alert.benchmark} benchmark</span>
+                        <span style={{fontSize:'12px'}}>{alert.trend === 'up' ? '📈' : alert.trend === 'down' ? '📉' : '➡️'}</span>
+                      </div>
+                      <div style={{fontSize:'13px',color:'#888'}}>{alert.message}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px'}}>
+              {/* Revenue Optimization */}
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>💰 Revenue Optimization Opportunities</div>
+                {AI_INSIGHTS.revenueOptimization.map(item => (
+                  <div key={item.id} style={{...styles.metricCard,marginBottom:'12px'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}}>
+                      <h4 style={{fontWeight:'600',fontSize:'14px'}}>{item.title}</h4>
+                      <span style={{...styles.badge,background: item.priority === 'high' ? 'rgba(239,68,68,0.2)' : item.priority === 'medium' ? 'rgba(245,158,11,0.2)' : 'rgba(16,185,129,0.2)', color: item.priority === 'high' ? '#ef4444' : item.priority === 'medium' ? '#f59e0b' : '#10b981'}}>{item.priority}</span>
+                    </div>
+                    <div style={{fontSize:'20px',fontWeight:'700',color:'#10b981',marginBottom:'8px'}}>{item.impact}</div>
+                    <p style={{fontSize:'12px',color:'#888',marginBottom:'8px'}}>{item.description}</p>
+                    <div style={{fontSize:'12px',color:'#6366f1',fontStyle:'italic'}}>💡 {item.action}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Staffing Recommendations */}
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>👥 Staffing Recommendations</div>
+                {AI_INSIGHTS.staffingRecommendations.map(item => (
+                  <div key={item.id} style={{...styles.metricCard,marginBottom:'12px'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}}>
+                      <h4 style={{fontWeight:'600',fontSize:'14px'}}>{item.role}</h4>
+                      <span style={{...styles.badge,background:'rgba(99,102,241,0.2)',color:'#a0a0ff'}}>{item.need}</span>
+                    </div>
+                    <p style={{fontSize:'12px',color:'#888',marginBottom:'8px'}}>{item.reason}</p>
+                    <div style={{fontSize:'12px',color:'#10b981'}}>📈 Impact: {item.impact}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Social Media Campaigns Tab */}
+        {activeTab === 'campaigns' && (
+          <>
+            <h1 style={styles.pageTitle}>📣 Social Media Campaign Builder</h1>
+            <p style={styles.pageSubtitle}>Create targeted marketing campaigns for your practice</p>
+
+            {/* Progress Steps */}
+            <div style={{...styles.card, marginBottom: '24px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                {CAMPAIGN_STEPS.map((step, i) => (
+                  <div key={step.id} style={{display:'flex',alignItems:'center',flex:1}}>
+                    <div style={{display:'flex',flexDirection:'column',alignItems:'center',flex:1}}>
+                      <div style={{width:'48px',height:'48px',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',background: campaignStep >= step.id ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(99,102,241,0.1)',border: campaignStep === step.id ? '2px solid #6366f1' : '2px solid transparent',cursor:'pointer'}} onClick={() => setCampaignStep(step.id)}>
+                        {campaignStep > step.id ? '✓' : step.icon}
+                      </div>
+                      <span style={{fontSize:'11px',marginTop:'8px',color: campaignStep >= step.id ? '#fff' : '#888'}}>{step.title}</span>
+                    </div>
+                    {i < CAMPAIGN_STEPS.length - 1 && <div style={{height:'2px',flex:1,background: campaignStep > step.id ? '#6366f1' : 'rgba(99,102,241,0.2)',margin:'0 8px'}}/>}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 1: Platform Selection */}
+            {campaignStep === 1 && (
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>📱 Select Advertising Platform</div>
+                <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px'}}>
+                  {SOCIAL_PLATFORMS.map(platform => (
+                    <div key={platform.id} onClick={() => setSelectedPlatform(platform.id)} style={{padding:'24px',borderRadius:'12px',textAlign:'center',cursor:'pointer',background: selectedPlatform === platform.id ? `${platform.color}22` : 'rgba(99,102,241,0.1)',border: `2px solid ${selectedPlatform === platform.id ? platform.color : 'rgba(99,102,241,0.2)'}`,transition:'all 0.2s'}}>
+                      <div style={{fontSize:'40px',marginBottom:'12px'}}>{platform.icon}</div>
+                      <div style={{fontWeight:'600',marginBottom:'4px'}}>{platform.name}</div>
+                      <div style={{fontSize:'12px',color:'#888'}}>Avg CPC: ${platform.cpc}</div>
+                      <div style={{fontSize:'11px',color:'#6366f1',marginTop:'4px'}}>{platform.reach}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:'flex',justifyContent:'flex-end',marginTop:'24px'}}>
+                  <button onClick={() => selectedPlatform && setCampaignStep(2)} style={{...styles.button,...(selectedPlatform ? styles.primaryBtn : styles.secondaryBtn)}} disabled={!selectedPlatform}>Continue →</button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Audience Persona */}
+            {campaignStep === 2 && (
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>🎯 Choose Target Audience</div>
+                <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'16px'}}>
+                  {AUDIENCE_PERSONAS.map(persona => (
+                    <div key={persona.id} onClick={() => setSelectedPersona(persona.id)} style={{padding:'20px',borderRadius:'12px',cursor:'pointer',background: selectedPersona === persona.id ? 'rgba(99,102,241,0.2)' : 'rgba(20,20,40,0.5)',border: `2px solid ${selectedPersona === persona.id ? '#6366f1' : 'rgba(99,102,241,0.2)'}`,transition:'all 0.2s'}}>
+                      <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'12px'}}>
+                        <span style={{fontSize:'32px'}}>{persona.icon}</span>
+                        <div>
+                          <div style={{fontWeight:'600'}}>{persona.name}</div>
+                          <div style={{fontSize:'12px',color:'#888'}}>Age: {persona.age}</div>
+                        </div>
+                      </div>
+                      <div style={{display:'flex',flexWrap:'wrap',gap:'4px',marginBottom:'8px'}}>
+                        {persona.interests.map((int, i) => <span key={i} style={{...styles.badge,background:'rgba(99,102,241,0.1)',color:'#a0a0ff',fontSize:'10px'}}>{int}</span>)}
+                      </div>
+                      <div style={{fontSize:'11px',color:'#888',marginBottom:'4px'}}>Best on: {persona.platforms.map(p => SOCIAL_PLATFORMS.find(sp => sp.id === p)?.icon).join(' ')}</div>
+                      <div style={{fontSize:'11px',color:'#10b981',marginTop:'4px'}}>Conv. Rate: {persona.conversionRate}%</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:'flex',justifyContent:'space-between',marginTop:'24px'}}>
+                  <button onClick={() => setCampaignStep(1)} style={{...styles.button,...styles.secondaryBtn}}>← Back</button>
+                  <button onClick={() => selectedPersona && setCampaignStep(3)} style={{...styles.button,...(selectedPersona ? styles.primaryBtn : styles.secondaryBtn)}} disabled={!selectedPersona}>Continue →</button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Ad Template */}
+            {campaignStep === 3 && (
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>📝 Select Ad Template</div>
+                <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:'16px'}}>
+                  {filteredTemplates.map(template => (
+                    <div key={template.id} onClick={() => setSelectedTemplate(template.id)} style={{padding:'20px',borderRadius:'12px',cursor:'pointer',background: selectedTemplate === template.id ? 'rgba(99,102,241,0.2)' : 'rgba(20,20,40,0.5)',border: `2px solid ${selectedTemplate === template.id ? '#6366f1' : 'rgba(99,102,241,0.2)'}`,transition:'all 0.2s'}}>
+                      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'12px'}}>
+                        <span style={{fontSize:'32px'}}>{template.image}</span>
+                        {selectedTemplate === template.id && <span style={{color:'#10b981'}}>✓</span>}
+                      </div>
+                      <h4 style={{fontWeight:'600',marginBottom:'4px'}}>{template.title}</h4>
+                      <div style={{fontSize:'14px',color:'#6366f1',marginBottom:'8px'}}>{template.headline}</div>
+                      <p style={{fontSize:'12px',color:'#888',marginBottom:'12px'}}>{template.body}</p>
+                      <span style={{...styles.badge,background:'rgba(16,185,129,0.2)',color:'#10b981'}}>{template.cta}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:'flex',justifyContent:'space-between',marginTop:'24px'}}>
+                  <button onClick={() => setCampaignStep(2)} style={{...styles.button,...styles.secondaryBtn}}>← Back</button>
+                  <button onClick={() => selectedTemplate && setCampaignStep(4)} style={{...styles.button,...(selectedTemplate ? styles.primaryBtn : styles.secondaryBtn)}} disabled={!selectedTemplate}>Continue →</button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Budget & Targeting */}
+            {campaignStep === 4 && (
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>💰 Set Budget & Geographic Targeting</div>
+                
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px'}}>
+                  <div>
+                    <h4 style={{marginBottom:'16px',color:'#fff'}}>Campaign Budget</h4>
+                    <div style={{marginBottom:'16px'}}>
+                      <label style={{fontSize:'12px',color:'#888',display:'block',marginBottom:'8px'}}>Monthly Budget ($)</label>
+                      <input type="range" min="500" max="10000" step="100" value={campaignBudget} onChange={e => setCampaignBudget(Number(e.target.value))} style={{width:'100%'}} />
+                      <div style={{fontSize:'24px',fontWeight:'700',color:'#6366f1',marginTop:'8px'}}>${campaignBudget.toLocaleString()}/month</div>
+                    </div>
+                    <div style={{marginBottom:'16px'}}>
+                      <label style={{fontSize:'12px',color:'#888',display:'block',marginBottom:'8px'}}>Duration (days)</label>
+                      <input type="range" min="7" max="90" step="7" value={campaignDuration} onChange={e => setCampaignDuration(Number(e.target.value))} style={{width:'100%'}} />
+                      <div style={{fontSize:'18px',fontWeight:'600',color:'#fff',marginTop:'8px'}}>{campaignDuration} days</div>
+                    </div>
+
+                    {calculateCampaignROI() && (
+                      <div style={{...styles.metricCard,marginTop:'24px'}}>
+                        <h4 style={{color:'#10b981',marginBottom:'12px'}}>📊 Estimated Results</h4>
+                        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+                          <div><div style={{fontSize:'11px',color:'#888'}}>Est. Clicks</div><div style={{fontSize:'20px',fontWeight:'700'}}>{calculateCampaignROI().clicks.toLocaleString()}</div></div>
+                          <div><div style={{fontSize:'11px',color:'#888'}}>Est. Conversions</div><div style={{fontSize:'20px',fontWeight:'700'}}>{calculateCampaignROI().conversions}</div></div>
+                          <div><div style={{fontSize:'11px',color:'#888'}}>Projected Revenue</div><div style={{fontSize:'20px',fontWeight:'700',color:'#10b981'}}>${calculateCampaignROI().projectedRevenue.toLocaleString()}</div></div>
+                          <div><div style={{fontSize:'11px',color:'#888'}}>Est. ROI</div><div style={{fontSize:'20px',fontWeight:'700',color:'#6366f1'}}>{calculateCampaignROI().roi}%</div></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 style={{marginBottom:'16px',color:'#fff'}}>Geographic Targeting (ZIP Codes)</h4>
+                    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'8px',maxHeight:'300px',overflowY:'auto'}}>
+                      {PATIENT_HEATMAP_DATA.slice(0,16).map(zip => (
+                        <div key={zip.zip} onClick={() => toggleZipTarget(zip.zip)} style={{padding:'8px',borderRadius:'8px',textAlign:'center',cursor:'pointer',background: targetZips.includes(zip.zip) ? 'rgba(99,102,241,0.3)' : 'rgba(20,20,40,0.5)',border: `1px solid ${targetZips.includes(zip.zip) ? '#6366f1' : 'rgba(99,102,241,0.2)'}',transition:'all 0.2s'}}>
+                          <div style={{fontWeight:'600',fontSize:'12px'}}>{zip.zip}</div>
+                          <div style={{fontSize:'10px',color:'#888'}}>{zip.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{marginTop:'12px',fontSize:'12px',color:'#888'}}>{targetZips.length} ZIP codes selected</div>
+                  </div>
+                </div>
+
+                <div style={{display:'flex',justifyContent:'space-between',marginTop:'24px'}}>
+                  <button onClick={() => setCampaignStep(3)} style={{...styles.button,...styles.secondaryBtn}}>← Back</button>
+                  <button onClick={() => setCampaignStep(5)} style={{...styles.button,...styles.primaryBtn}}>Review Campaign →</button>
+                </div>
+              </div>
+            )}
+
+            {/* Step 5: Review & Launch */}
+            {campaignStep === 5 && (
+              <div style={styles.card}>
+                <div style={styles.cardTitle}>🚀 Review & Launch Campaign</div>
+                
+                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'24px',marginBottom:'24px'}}>
+                  <div style={styles.metricCard}>
+                    <h4 style={{color:'#6366f1',marginBottom:'16px'}}>Campaign Summary</h4>
+                    <div style={{display:'grid',gap:'12px'}}>
+                      <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Platform:</span><span>{SOCIAL_PLATFORMS.find(p => p.id === selectedPlatform)?.icon} {SOCIAL_PLATFORMS.find(p => p.id === selectedPlatform)?.name}</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Audience:</span><span>{AUDIENCE_PERSONAS.find(p => p.id === selectedPersona)?.icon} {AUDIENCE_PERSONAS.find(p => p.id === selectedPersona)?.name}</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Template:</span><span>{AD_TEMPLATES.find(t => t.id === selectedTemplate)?.title}</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Budget:</span><span style={{color:'#10b981',fontWeight:'600'}}>${campaignBudget}/month</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Duration:</span><span>{campaignDuration} days</span></div>
+                      <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Target ZIPs:</span><span>{targetZips.length || 'All'}</span></div>
+                    </div>
+                  </div>
+
+                  <div style={styles.metricCard}>
+                    <h4 style={{color:'#10b981',marginBottom:'16px'}}>Projected Performance</h4>
+                    {calculateCampaignROI() && (
+                      <div style={{display:'grid',gap:'12px'}}>
+                        <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Estimated Clicks:</span><span style={{fontWeight:'600'}}>{calculateCampaignROI().clicks.toLocaleString()}</span></div>
+                        <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Estimated Conversions:</span><span style={{fontWeight:'600'}}>{calculateCampaignROI().conversions}</span></div>
+                        <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Cost per Conversion:</span><span style={{fontWeight:'600'}}>${Math.round(campaignBudget / calculateCampaignROI().conversions)}</span></div>
+                        <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Projected Revenue:</span><span style={{fontWeight:'700',color:'#10b981'}}>${calculateCampaignROI().projectedRevenue.toLocaleString()}</span></div>
+                        <div style={{display:'flex',justifyContent:'space-between'}}><span style={{color:'#888'}}>Expected ROI:</span><span style={{fontWeight:'700',color:'#6366f1'}}>{calculateCampaignROI().roi}%</span></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Ad Preview */}
+                <div style={{...styles.metricCard,marginBottom:'24px'}}>
+                  <h4 style={{color:'#f59e0b',marginBottom:'16px'}}>📱 Ad Preview</h4>
+                  {selectedTemplate && (() => {
+                    const template = AD_TEMPLATES.find(t => t.id === selectedTemplate);
+                    return (
+                      <div style={{maxWidth:'400px',padding:'16px',background:'#fff',borderRadius:'12px',color:'#333'}}>
+                        <div style={{fontSize:'12px',color:'#888',marginBottom:'8px'}}>Sponsored</div>
+                        <div style={{fontWeight:'700',fontSize:'16px',marginBottom:'8px'}}>{template?.headline}</div>
+                        <div style={{fontSize:'14px',marginBottom:'12px',color:'#555'}}>{template?.body}</div>
+                        <button style={{background:'#6366f1',color:'white',border:'none',padding:'10px 20px',borderRadius:'8px',fontWeight:'600'}}>{template?.cta}</button>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                <div style={{display:'flex',justifyContent:'space-between'}}>
+                  <button onClick={() => setCampaignStep(4)} style={{...styles.button,...styles.secondaryBtn}}>← Back</button>
+                  <div style={{display:'flex',gap:'12px'}}>
+                    <button onClick={resetCampaign} style={{...styles.button,...styles.secondaryBtn}}>Start Over</button>
+                    <button onClick={() => alert('Campaign launched! (Demo mode)')} style={{...styles.button,...styles.primaryBtn}}>🚀 Launch Campaign</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
         {/* Competitors Tab */}
         {activeTab === 'competitors' && (
           <>
@@ -402,23 +688,8 @@ export default function Benchmarks() {
             <div style={{...styles.card, marginBottom: '24px'}}>
               <div style={styles.cardTitle}>🔍 Filter by Practice Type</div>
               <div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}>
-                {[
-                  { key: 'all', label: 'All Practices', icon: '📍' },
-                  { key: 'ophthalmology', label: 'Ophthalmology', icon: '🔬' },
-                  { key: 'optometry', label: 'Optometry', icon: '👓' },
-                  { key: 'general', label: 'General Eye Care', icon: '🏥' }
-                ].map(f => (
-                  <button 
-                    key={f.key} 
-                    onClick={() => setPracticeTypeFilter(f.key)} 
-                    style={{
-                      ...styles.filterBtn, 
-                      background: practiceTypeFilter === f.key ? getTypeColor(f.key) : 'rgba(99,102,241,0.1)', 
-                      color: practiceTypeFilter === f.key ? 'white' : '#a0a0a0'
-                    }}
-                  >
-                    {f.icon} {f.label}
-                  </button>
+                {[{ key: 'all', label: 'All Practices', icon: '📍' },{ key: 'ophthalmology', label: 'Ophthalmology', icon: '🔬' },{ key: 'optometry', label: 'Optometry', icon: '👓' },{ key: 'general', label: 'General Eye Care', icon: '🏥' }].map(f => (
+                  <button key={f.key} onClick={() => setPracticeTypeFilter(f.key)} style={{...styles.filterBtn, background: practiceTypeFilter === f.key ? getTypeColor(f.key) : 'rgba(99,102,241,0.1)', color: practiceTypeFilter === f.key ? 'white' : '#a0a0a0'}}>{f.icon} {f.label}</button>
                 ))}
               </div>
             </div>
@@ -432,27 +703,15 @@ export default function Benchmarks() {
                 <div style={{display:'grid',gridTemplateColumns:`repeat(${Math.min(compareList.length + 1, 5)}, 1fr)`,gap:'16px'}}>
                   <div style={{...styles.metricCard,background:'rgba(99,102,241,0.1)'}}>
                     <h4 style={{fontWeight:'600',marginBottom:'12px',color:'#6366f1'}}>📍 Your Practice</h4>
-                    <div style={{marginBottom:'8px'}}>
-                      <span style={{color:'#888',fontSize:'12px'}}>Google</span>
-                      <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                        <div style={styles.ratingBar}><div style={{...styles.progressFill,width:'92%'}}/></div>
-                        <span style={{fontWeight:'600'}}>4.6</span>
+                    {['Google','Yelp','Healthgrades'].map((r,i) => (
+                      <div key={r} style={{marginBottom:'8px'}}>
+                        <span style={{color:'#888',fontSize:'12px'}}>{r}</span>
+                        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                          <div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${[92,86,94][i]}%`}}/></div>
+                          <span style={{fontWeight:'600'}}>{[4.6,4.3,4.7][i]}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div style={{marginBottom:'8px'}}>
-                      <span style={{color:'#888',fontSize:'12px'}}>Yelp</span>
-                      <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                        <div style={styles.ratingBar}><div style={{...styles.progressFill,width:'86%'}}/></div>
-                        <span style={{fontWeight:'600'}}>4.3</span>
-                      </div>
-                    </div>
-                    <div>
-                      <span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span>
-                      <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                        <div style={styles.ratingBar}><div style={{...styles.progressFill,width:'94%'}}/></div>
-                        <span style={{fontWeight:'600'}}>4.7</span>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                   {compareList.map(comp => (
                     <div key={comp.id} style={styles.metricCard}>
@@ -460,33 +719,15 @@ export default function Benchmarks() {
                         <h4 style={{fontWeight:'600',fontSize:'14px'}}>{comp.name}</h4>
                         <button onClick={() => toggleCompare(comp)} style={{background:'none',border:'none',color:'#ef4444',cursor:'pointer',fontSize:'16px'}}>×</button>
                       </div>
-                      <div style={{marginBottom:'8px'}}>
-                        <span style={{color:'#888',fontSize:'12px'}}>Google</span>
-                        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                          <div style={styles.ratingBar}>
-                            <div style={{...styles.progressFill,width:`${comp.ratings.google*20}%`,background: comp.ratings.google > 4.6 ? '#10b981' : '#6366f1'}}/>
+                      {['google','yelp','healthgrades'].map(r => (
+                        <div key={r} style={{marginBottom:'8px'}}>
+                          <span style={{color:'#888',fontSize:'12px'}}>{r.charAt(0).toUpperCase()+r.slice(1)}</span>
+                          <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                            <div style={styles.ratingBar}><div style={{...styles.progressFill,width:`${comp.ratings[r]*20}%`}}/></div>
+                            <span style={{fontWeight:'600'}}>{comp.ratings[r]}</span>
                           </div>
-                          <span style={{fontWeight:'600'}}>{comp.ratings.google}</span>
                         </div>
-                      </div>
-                      <div style={{marginBottom:'8px'}}>
-                        <span style={{color:'#888',fontSize:'12px'}}>Yelp</span>
-                        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                          <div style={styles.ratingBar}>
-                            <div style={{...styles.progressFill,width:`${comp.ratings.yelp*20}%`,background: comp.ratings.yelp > 4.3 ? '#10b981' : '#6366f1'}}/>
-                          </div>
-                          <span style={{fontWeight:'600'}}>{comp.ratings.yelp}</span>
-                        </div>
-                      </div>
-                      <div>
-                        <span style={{color:'#888',fontSize:'12px'}}>Healthgrades</span>
-                        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                          <div style={styles.ratingBar}>
-                            <div style={{...styles.progressFill,width:`${comp.ratings.healthgrades*20}%`,background: comp.ratings.healthgrades > 4.7 ? '#10b981' : '#6366f1'}}/>
-                          </div>
-                          <span style={{fontWeight:'600'}}>{comp.ratings.healthgrades}</span>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   ))}
                 </div>
@@ -498,9 +739,7 @@ export default function Benchmarks() {
                 <div key={comp.id} style={styles.competitorCard}>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'16px'}}>
                     <div>
-                      <span style={{...styles.badge, background:`${getTypeColor(comp.type)}22`, color: getTypeColor(comp.type), marginBottom:'8px', display:'inline-block'}}>
-                        {getTypeIcon(comp.type)} {comp.type}
-                      </span>
+                      <span style={{...styles.badge, background:`${getTypeColor(comp.type)}22`, color: getTypeColor(comp.type), marginBottom:'8px', display:'inline-block'}}>{getTypeIcon(comp.type)} {comp.type}</span>
                       <h3 style={{fontSize:'18px',fontWeight:'600'}}>{comp.name}</h3>
                       <p style={{color:'#888',fontSize:'12px',marginTop:'4px'}}>{comp.address}</p>
                     </div>
@@ -510,36 +749,13 @@ export default function Benchmarks() {
                     </div>
                   </div>
                   <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px',marginBottom:'16px'}}>
-                    <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
-                      <div style={{fontSize:'11px',color:'#888'}}>Google</div>
-                      <div style={{fontWeight:'600',color:'#f59e0b'}}>{comp.ratings.google}</div>
-                    </div>
-                    <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
-                      <div style={{fontSize:'11px',color:'#888'}}>Yelp</div>
-                      <div style={{fontWeight:'600',color:'#ef4444'}}>{comp.ratings.yelp}</div>
-                    </div>
-                    <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}>
-                      <div style={{fontSize:'11px',color:'#888'}}>Healthgrades</div>
-                      <div style={{fontWeight:'600',color:'#3b82f6'}}>{comp.ratings.healthgrades}</div>
-                    </div>
+                    <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}><div style={{fontSize:'11px',color:'#888'}}>Google</div><div style={{fontWeight:'600',color:'#f59e0b'}}>{comp.ratings.google}</div></div>
+                    <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}><div style={{fontSize:'11px',color:'#888'}}>Yelp</div><div style={{fontWeight:'600',color:'#ef4444'}}>{comp.ratings.yelp}</div></div>
+                    <div style={{textAlign:'center',padding:'8px',background:'rgba(20,20,40,0.5)',borderRadius:'8px'}}><div style={{fontSize:'11px',color:'#888'}}>Healthgrades</div><div style={{fontWeight:'600',color:'#3b82f6'}}>{comp.ratings.healthgrades}</div></div>
                   </div>
                   <div style={{display:'flex',gap:'8px'}}>
-                    <button 
-                      onClick={() => toggleCompare(comp)} 
-                      style={{
-                        ...styles.button, 
-                        ...(compareList.find(c => c.id === comp.id) ? {background:'#ef4444',color:'white'} : styles.secondaryBtn), 
-                        flex:1, padding:'10px', fontSize:'13px'
-                      }}
-                    >
-                      {compareList.find(c => c.id === comp.id) ? '✓ Comparing' : '+ Compare'}
-                    </button>
-                    <button 
-                      onClick={() => {setSelectedCompetitor(comp); setShowIntelModal(true);}} 
-                      style={{...styles.button,...styles.primaryBtn,flex:1,padding:'10px',fontSize:'13px'}}
-                    >
-                      🔍 Website Intel
-                    </button>
+                    <button onClick={() => toggleCompare(comp)} style={{...styles.button, ...(compareList.find(c => c.id === comp.id) ? {background:'#ef4444',color:'white'} : styles.secondaryBtn), flex:1, padding:'10px', fontSize:'13px'}}>{compareList.find(c => c.id === comp.id) ? '✓ Comparing' : '+ Compare'}</button>
+                    <button onClick={() => {setSelectedCompetitor(comp); setShowIntelModal(true);}} style={{...styles.button,...styles.primaryBtn,flex:1,padding:'10px',fontSize:'13px'}}>🔍 Website Intel</button>
                   </div>
                 </div>
               ))}
@@ -556,22 +772,9 @@ export default function Benchmarks() {
             <div style={{...styles.card, marginBottom: '24px'}}>
               <div style={styles.cardTitle}>📊 Profit Index Legend</div>
               <div style={{display:'flex',gap:'16px',flexWrap:'wrap'}}>
-                <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                  <div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#10b981'}}/>
-                  <span style={{fontSize:'13px'}}>High (90-100)</span>
-                </div>
-                <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                  <div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#3b82f6'}}/>
-                  <span style={{fontSize:'13px'}}>Good (80-89)</span>
-                </div>
-                <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                  <div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#f59e0b'}}/>
-                  <span style={{fontSize:'13px'}}>Medium (70-79)</span>
-                </div>
-                <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                  <div style={{width:'16px',height:'16px',borderRadius:'4px',background:'#ef4444'}}/>
-                  <span style={{fontSize:'13px'}}>Low (&lt;70)</span>
-                </div>
+                {[{c:'#10b981',l:'High (90-100)'},{c:'#3b82f6',l:'Good (80-89)'},{c:'#f59e0b',l:'Medium (70-79)'},{c:'#ef4444',l:'Low (<70)'}].map(i => (
+                  <div key={i.l} style={{display:'flex',alignItems:'center',gap:'8px'}}><div style={{width:'16px',height:'16px',borderRadius:'4px',background:i.c}}/><span style={{fontSize:'13px'}}>{i.l}</span></div>
+                ))}
               </div>
             </div>
 
@@ -580,221 +783,18 @@ export default function Benchmarks() {
                 <div style={styles.cardTitle}>🗺️ ZIP Code Profit Map</div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(4, 1fr)',gap:'8px'}}>
                   {PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).map(zip => (
-                    <div 
-                      key={zip.zip} 
-                      style={{
-                        ...styles.heatmapCell, 
-                        background: `${getProfitColor(zip.profitIndex)}22`, 
-                        border: `1px solid ${getProfitColor(zip.profitIndex)}`
-                      }}
-                    >
+                    <div key={zip.zip} style={{...styles.heatmapCell, background: `${getProfitColor(zip.profitIndex)}22`, border: `1px solid ${getProfitColor(zip.profitIndex)}`}}>
                       <div style={{fontWeight:'700',color:getProfitColor(zip.profitIndex),fontSize:'16px'}}>{zip.zip}</div>
                       <div style={{fontSize:'11px',color:'#888',marginTop:'4px'}}>{zip.name}</div>
-                      <div style={{display:'flex',justifyContent:'space-between',marginTop:'8px',fontSize:'11px'}}>
-                        <span>👥 {zip.patients}</span>
-                        <span style={{fontWeight:'600',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</span>
-                      </div>
+                      <div style={{display:'flex',justifyContent:'space-between',marginTop:'8px',fontSize:'11px'}}><span>👥 {zip.patients}</span><span style={{fontWeight:'600',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</span></div>
                     </div>
                   ))}
                 </div>
               </div>
-
               <div style={styles.card}>
                 <div style={styles.cardTitle}>🏆 Top 10 High-Profit ZIPs</div>
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      <th style={styles.th}>ZIP</th>
-                      <th style={styles.th}>Area</th>
-                      <th style={styles.th}>Index</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).slice(0, 10).map(zip => (
-                      <tr key={zip.zip}>
-                        <td style={{...styles.td,fontFamily:'monospace',fontWeight:'600'}}>{zip.zip}</td>
-                        <td style={{...styles.td,fontSize:'12px'}}>{zip.name}</td>
-                        <td style={{...styles.td,fontWeight:'700',color:getProfitColor(zip.profitIndex)}}>{zip.profitIndex}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div style={{...styles.card, marginTop: '24px'}}>
-              <div style={styles.cardTitle}>📈 Patient Distribution Summary</div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'16px'}}>
-                <div style={{textAlign:'center',padding:'16px',background:'rgba(16,185,129,0.1)',borderRadius:'12px'}}>
-                  <div style={{fontSize:'28px',fontWeight:'700',color:'#10b981'}}>{PATIENT_HEATMAP_DATA.filter(z => z.profitIndex >= 90).length}</div>
-                  <div style={{color:'#888',fontSize:'12px'}}>High Profit Areas</div>
-                </div>
-                <div style={{textAlign:'center',padding:'16px',background:'rgba(59,130,246,0.1)',borderRadius:'12px'}}>
-                  <div style={{fontSize:'28px',fontWeight:'700',color:'#3b82f6'}}>{PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.patients, 0).toLocaleString()}</div>
-                  <div style={{color:'#888',fontSize:'12px'}}>Total Patients Mapped</div>
-                </div>
-                <div style={{textAlign:'center',padding:'16px',background:'rgba(245,158,11,0.1)',borderRadius:'12px'}}>
-                  <div style={{fontSize:'28px',fontWeight:'700',color:'#f59e0b'}}>{Math.round(PATIENT_HEATMAP_DATA.reduce((sum, z) => sum + z.profitIndex, 0) / PATIENT_HEATMAP_DATA.length)}</div>
-                  <div style={{color:'#888',fontSize:'12px'}}>Avg Profit Index</div>
-                </div>
-                <div style={{textAlign:'center',padding:'16px',background:'rgba(139,92,246,0.1)',borderRadius:'12px'}}>
-                  <div style={{fontSize:'28px',fontWeight:'700',color:'#8b5cf6'}}>{PATIENT_HEATMAP_DATA.length}</div>
-                  <div style={{color:'#888',fontSize:'12px'}}>ZIP Codes Covered</div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* CPT Codes Tab */}
-        {activeTab === 'cpt' && (
-          <>
-            <h1 style={styles.pageTitle}>Price Transparency</h1>
-            <p style={styles.pageSubtitle}>2025 Medicare Rates</p>
-            
-            <div style={{...styles.card, marginBottom:'24px'}}>
-              <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
-                {['all', ...new Set(CPT_CODES.map(c => c.category))].map(c => (
-                  <button 
-                    key={c} 
-                    onClick={() => setCptFilter(c)} 
-                    style={{
-                      ...styles.button, 
-                      ...(cptFilter === c ? styles.primaryBtn : styles.secondaryBtn), 
-                      padding:'8px 16px', 
-                      fontSize:'13px'
-                    }}
-                  >
-                    {c === 'all' ? 'All' : c}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div style={styles.card}>
-              <table style={styles.table}>
-                <thead>
-                  <tr>
-                    <th style={styles.th}>CPT</th>
-                    <th style={styles.th}>Description</th>
-                    <th style={styles.th}>Category</th>
-                    <th style={styles.th}>Medicare</th>
-                    <th style={styles.th}>wRVU</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(cptFilter === 'all' ? CPT_CODES : CPT_CODES.filter(c => c.category === cptFilter)).map(c => (
-                    <tr key={c.code}>
-                      <td style={{...styles.td,fontFamily:'monospace',fontWeight:'600',color:'#6366f1'}}>{c.code}</td>
-                      <td style={styles.td}>{c.description}</td>
-                      <td style={styles.td}>
-                        <span style={{...styles.badge,background:'rgba(99,102,241,0.2)',color:'#a0a0ff'}}>{c.category}</span>
-                      </td>
-                      <td style={{...styles.td,fontWeight:'600',color:'#10b981'}}>${c.medicareRate.toFixed(2)}</td>
-                      <td style={styles.td}>{c.wRVU}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-
-        {/* Innovations Tab */}
-        {activeTab === 'innovations' && (
-          <>
-            <h1 style={styles.pageTitle}>OnPacePlus Innovation Tracker</h1>
-            <p style={styles.pageSubtitle}>Emerging technologies</p>
-            
-            <div style={{...styles.card, marginBottom:'24px'}}>
-              <div style={{display:'flex',gap:'8px',flexWrap:'wrap'}}>
-                {['all', ...new Set(INNOVATIONS.map(i => i.category))].map(c => (
-                  <button 
-                    key={c} 
-                    onClick={() => setInnovationFilter(c)} 
-                    style={{
-                      ...styles.button, 
-                      ...(innovationFilter === c ? styles.primaryBtn : styles.secondaryBtn), 
-                      padding:'8px 16px', 
-                      fontSize:'13px'
-                    }}
-                  >
-                    {c === 'all' ? 'All' : c}
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-            <div style={styles.grid}>
-              {(innovationFilter === 'all' ? INNOVATIONS : INNOVATIONS.filter(i => i.category === innovationFilter)).map(i => (
-                <div key={i.id} style={styles.card}>
-                  <div style={{display:'flex',justifyContent:'space-between',marginBottom:'12px'}}>
-                    <span style={{...styles.badge,background:'rgba(16,185,129,0.2)',color:'#10b981'}}>{i.status}</span>
-                    <span style={{color:'#888',fontSize:'12px'}}>{i.year}</span>
-                  </div>
-                  <h3 style={{fontSize:'16px',fontWeight:'600',marginBottom:'8px'}}>{i.name}</h3>
-                  <p style={{fontSize:'13px',color:'#888',marginBottom:'16px'}}>{i.manufacturer}</p>
-                  <div style={{display:'flex',justifyContent:'space-between'}}>
-                    <div>
-                      <div style={{fontSize:'11px',color:'#888'}}>Adoption</div>
-                      <div style={{fontWeight:'600',color:'#6366f1'}}>{i.adoptionRate}%</div>
-                    </div>
-                    <div>
-                      <div style={{fontSize:'11px',color:'#888'}}>Impact</div>
-                      <div style={{fontWeight:'600',color:'#10b981'}}>{i.clinicalImpact}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {/* Chat Tab */}
-        {activeTab === 'chat' && (
-          <>
-            <h1 style={styles.pageTitle}>KCN Intelligence Chat</h1>
-            <p style={styles.pageSubtitle}>Ask about metrics, CPT codes, competitors, innovations</p>
-            
-            <div style={{...styles.card, maxWidth:'800px'}}>
-              <div style={styles.chatContainer}>
-                {chatMessages.map((m, i) => (
-                  <div key={i} style={{...styles.chatMessage, ...(m.role === 'user' ? styles.userMessage : styles.botMessage)}}>
-                    {m.content}
-                  </div>
-                ))}
-                <div ref={chatEndRef} />
-              </div>
-              <div style={{display:'flex',gap:'12px'}}>
-                <input 
-                  type="text" 
-                  style={{...styles.input, flex:1}} 
-                  placeholder="Ask about metrics, competitors, heat map..." 
-                  value={chatInput} 
-                  onChange={e => setChatInput(e.target.value)} 
-                  onKeyPress={e => e.key === 'Enter' && handleChat()} 
-                />
-                <button onClick={handleChat} style={{...styles.button,...styles.primaryBtn}}>Send</button>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* CSV Hub Tab */}
-        {activeTab === 'csv' && (
-          <>
-            <h1 style={styles.pageTitle}>CSV Data Hub</h1>
-            <p style={styles.pageSubtitle}>Import and export practice data</p>
-            
-            <div style={{...styles.card, marginBottom: '24px'}}>
-              <div style={styles.cardTitle}>📥 Import CSV Data</div>
-              <input 
-                type="file" 
-                accept=".csv" 
-                onChange={handleCSVImport} 
-                ref={fileInputRef} 
-                style={{display:'none'}} 
-              />
+                <table style={styles.table}><thead><tr><th style={styles.th}>ZIP</th><th style={styles.th}>Area</th><th style={styles.th}>Index</th></tr></thead>
+                  <tbody>{PATIENT_HEATMAP_DATA.sort((a,b) => b.profitIndex - a.profitIndex).slice(0, 10).map(zip => (
               <button 
                 onClick={() => fileInputRef.current.click()} 
                 style={{...styles.button, flex: 1, padding:'12px 24px'}}
