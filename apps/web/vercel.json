@@ -1,12 +1,20 @@
 {
   "builds": [
-    {
+    {ilds": [
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": {
+      "config": {rcel/static-build",
         "distDir": "dist"
-      }
-    }
-  ],
-  "cleanUrls": true
-}
+      } "distDir": "dist"
+    } }
+  ],}
+  "cleanUrls": true,
+  "buildCommand": "npm run build", "cleanUrls": true
+  "outputDirectory": "dist",}
+
+
+
+
+
+
+}  ]    { "source": "/(.*)", "destination": "/index.html" }  "rewrites": [  "framework": "vite",

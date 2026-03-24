@@ -8,7 +8,34 @@
   --muted: #94a3b8;
 }
 
-body{ @apply bg-slate-50 text-slate-900 }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  @apply bg-slate-50 text-slate-900;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .container{ @apply max-w-6xl mx-auto p-6 }
 .card{ @apply bg-white shadow rounded-lg p-4 }
 .header{ @apply flex items-center justify-between mb-4 }
+
+/* Deployment commands */
+/* Uncomment and run these commands in your terminal to deploy */
+/*
+cd /Users/christopherwilliams/Projects/medpact-practice-intelligence/apps/web
+
+# Build locally first to test
+npm run build
+
+# Check that dist folder has files
+ls -la dist/
+
+# Redeploy
+npx vercel --prod
+*/
