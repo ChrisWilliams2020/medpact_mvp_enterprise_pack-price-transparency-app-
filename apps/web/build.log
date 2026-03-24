@@ -1,0 +1,13 @@
+
+> medpact-web@0.0.1 build
+> vite build --config vite.config.mjs
+
+vite v5.2.0 building for production...
+transforming...
+✓ 83 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.39 kB │ gzip:  0.26 kB
+dist/assets/index-CHYGDRBf.css    9.45 kB │ gzip:  2.61 kB
+dist/assets/index-CkESVtnE.js   201.13 kB │ gzip: 66.86 kB
+✓ built in 1.99s
