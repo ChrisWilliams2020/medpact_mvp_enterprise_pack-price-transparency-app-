@@ -39,6 +39,436 @@ const SOCIAL_PLATFORMS = [
   { id: 'google', name: 'Google Ads', icon: '🔍', color: '#4285F4', cpc: 2.85 }
 ];
 
+const STAFF_MEMBERS = [
+  { id: 1, name: 'Dr. Sarah Chen', role: 'Lead Ophthalmologist', email: 'sarah.chen@eyecare.com', department: 'Clinical', icon: '👩‍⚕️' },
+  { id: 2, name: 'Dr. Michael Torres', role: 'Retina Specialist', email: 'michael.torres@eyecare.com', department: 'Clinical', icon: '👨‍⚕️' },
+  { id: 3, name: 'Dr. Emily Watson', role: 'Optometrist', email: 'emily.watson@eyecare.com', department: 'Clinical', icon: '👩‍⚕️' },
+  { id: 4, name: 'Jessica Miller', role: 'Office Manager', email: 'jessica.miller@eyecare.com', department: 'Admin', icon: '👩‍💼' },
+  { id: 5, name: 'Robert Kim', role: 'Billing Specialist', email: 'robert.kim@eyecare.com', department: 'Billing', icon: '👨‍💼' },
+  { id: 6, name: 'Amanda Lopez', role: 'Technician Lead', email: 'amanda.lopez@eyecare.com', department: 'Technical', icon: '👩‍🔬' },
+  { id: 7, name: 'David Park', role: 'Front Desk Lead', email: 'david.park@eyecare.com', department: 'Admin', icon: '👨‍💼' },
+  { id: 8, name: 'Lisa Chang', role: 'Medical Assistant', email: 'lisa.chang@eyecare.com', department: 'Clinical', icon: '👩‍⚕️' },
+  { id: 9, name: 'James Wilson', role: 'Insurance Coordinator', email: 'james.wilson@eyecare.com', department: 'Billing', icon: '👨‍💼' },
+  { id: 10, name: 'Maria Garcia', role: 'Patient Coordinator', email: 'maria.garcia@eyecare.com', department: 'Admin', icon: '👩‍💼' }
+};
+
+const SURVEY_TEMPLATES = {
+  satisfaction: {
+    name: 'Employee Satisfaction',
+    icon: '😊',
+    description: 'Measure overall job satisfaction and workplace happiness',
+    questions: [
+      { text: 'How satisfied are you with your current role?', type: 'scale', required: true },
+      { text: 'Do you feel valued by your team and leadership?', type: 'scale', required: true },
+      { text: 'How would you rate work-life balance at our practice?', type: 'scale', required: true },
+      { text: 'Would you recommend this workplace to others?', type: 'nps', required: true },
+      { text: 'What could we do to improve your work experience?', type: 'text', required: false }
+    ]
+  },
+  workflow: {
+    name: 'Workflow Efficiency',
+    icon: '⚡',
+    description: 'Identify bottlenecks and process improvement opportunities',
+    questions: [
+      { text: 'How efficient is your daily workflow?', type: 'scale', required: true },
+      { text: 'Which processes slow you down the most?', type: 'multiselect', options: ['Patient check-in', 'Documentation', 'Billing/Coding', 'Communication', 'Equipment/Tech', 'Other'], required: true },
+      { text: 'Do you have the tools needed to do your job effectively?', type: 'scale', required: true },
+      { text: 'How much time do you spend on administrative tasks daily?', type: 'select', options: ['<1 hour', '1-2 hours', '2-3 hours', '3-4 hours', '4+ hours'], required: true },
+      { text: 'What one change would most improve your efficiency?', type: 'text', required: false }
+    ]
+  },
+  training: {
+    name: 'Training Needs Assessment',
+    icon: '📚',
+    description: 'Identify skill gaps and professional development needs',
+    questions: [
+      { text: 'How confident do you feel in your current role?', type: 'scale', required: true },
+      { text: 'Which areas would you like more training in?', type: 'multiselect', options: ['Clinical skills', 'Technology/EMR', 'Customer service', 'Billing/Coding', 'Leadership', 'Compliance', 'Communication'], required: true },
+      { text: 'How often do you receive helpful feedback from supervisors?', type: 'select', options: ['Daily', 'Weekly', 'Monthly', 'Rarely', 'Never'], required: true },
+      { text: 'Do you have clear career growth opportunities here?', type: 'scale', required: true },
+      { text: 'What specific training would help you most?', type: 'text', required: false }
+    ]
+  },
+  culture: {
+    name: 'Workplace Culture',
+    icon: '🏢',
+    description: 'Assess team dynamics and organizational culture',
+    questions: [
+      { text: 'How well does leadership communicate with staff?', type: 'scale', required: true },
+      { text: 'Do you feel comfortable sharing ideas and concerns?', type: 'scale', required: true },
+      { text: 'How would you describe team collaboration?', type: 'scale', required: true },
+      { text: 'Is diversity and inclusion valued at our practice?', type: 'scale', required: true },
+      { text: 'What aspects of our culture should we preserve or change?', type: 'text', required: false }
+    ]
+  },
+  technology: {
+    name: 'Technology Assessment',
+    icon: '💻',
+    description: 'Evaluate technology tools and digital readiness',
+    questions: [
+      { text: 'How satisfied are you with our current EMR system?', type: 'scale', required: true },
+      { text: 'Which technology tools cause the most frustration?', type: 'multiselect', options: ['EMR/EHR', 'Scheduling software', 'Billing system', 'Communication tools', 'Diagnostic equipment', 'Patient portal'], required: true },
+      { text: 'How comfortable are you with new technology adoption?', type: 'scale', required: true },
+      { text: 'Do you receive adequate tech support when needed?', type: 'scale', required: true },
+      { text: 'What technology improvements would help you most?', type: 'text', required: false }
+    ]
+  },
+  burnout: {
+    name: 'Burnout & Wellbeing',
+    icon: '🧘',
+    description: 'Monitor staff wellbeing and prevent burnout',
+    questions: [
+      { text: 'How often do you feel overwhelmed by your workload?', type: 'select', options: ['Never', 'Rarely', 'Sometimes', 'Often', 'Always'], required: true },
+      { text: 'Do you feel emotionally drained from work?', type: 'scale', required: true },
+      { text: 'Are you able to take breaks during your workday?', type: 'select', options: ['Always', 'Usually', 'Sometimes', 'Rarely', 'Never'], required: true },
+      { text: 'How supported do you feel by management?', type: 'scale', required: true },
+      { text: 'What would help reduce stress in your role?', type: 'text', required: false }
+    ]
+  }
+};
+
+const SAVED_SURVEYS = [
+  { id: 1, title: 'Q1 2026 Staff Satisfaction', category: 'satisfaction', status: 'completed', responses: 8, total: 10, date: 'Mar 15, 2026', score: 4.2 },
+  { id: 2, title: 'Workflow Efficiency Audit', category: 'workflow', status: 'completed', responses: 10, total: 10, date: 'Feb 28, 2026', score: 3.8 },
+  { id: 3, title: 'New EMR Feedback', category: 'technology', status: 'active', responses: 5, total: 10, date: 'Mar 20, 2026', score: null },
+  { id: 4, title: 'Annual Training Needs', category: 'training', status: 'draft', responses: 0, total: 0, date: 'Mar 25, 2026', score: null }
+];
+
+const EMR_TEMPLATES = {
+  patient_demographics: {
+    name: 'Patient Demographics',
+    icon: '👤',
+    description: 'Basic patient information including contact details',
+    fields: [
+      { name: 'patient_id', label: 'Patient ID', type: 'text', required: true },
+      { name: 'first_name', label: 'First Name', type: 'text', required: true },
+      { name: 'last_name', label: 'Last Name', type: 'text', required: true },
+      { name: 'dob', label: 'Date of Birth', type: 'date', required: true },
+      { name: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'], required: true },
+      { name: 'ssn', label: 'SSN (Last 4)', type: 'text', required: false },
+      { name: 'phone', label: 'Phone', type: 'phone', required: true },
+      { name: 'email', label: 'Email', type: 'email', required: false },
+      { name: 'address', label: 'Street Address', type: 'text', required: true },
+      { name: 'city', label: 'City', type: 'text', required: true },
+      { name: 'state', label: 'State', type: 'text', required: true },
+      { name: 'zip', label: 'ZIP Code', type: 'text', required: true },
+      { name: 'insurance_id', label: 'Insurance ID', type: 'text', required: false },
+      { name: 'insurance_name', label: 'Insurance Name', type: 'text', required: false }
+    ],
+    sampleData: [
+      { patient_id: 'P001', first_name: 'John', last_name: 'Smith', dob: '1965-03-15', gender: 'Male', phone: '555-123-4567', email: 'john.smith@email.com', address: '123 Main St', city: 'Philadelphia', state: 'PA', zip: '19103' }
+    ]
+  },
+  encounter_data: {
+    name: 'Encounter/Visit Data',
+    icon: '📋',
+    description: 'Patient visit records with diagnoses and procedures',
+    fields: [
+      { name: 'encounter_id', label: 'Encounter ID', type: 'text', required: true },
+      { name: 'patient_id', label: 'Patient ID', type: 'text', required: true },
+      { name: 'visit_date', label: 'Visit Date', type: 'date', required: true },
+      { name: 'provider_id', label: 'Provider ID', type: 'text', required: true },
+      { name: 'provider_name', label: 'Provider Name', type: 'text', required: false },
+      { name: 'visit_type', label: 'Visit Type', type: 'select', options: ['New Patient', 'Follow-up', 'Procedure', 'Emergency'], required: true },
+      { name: 'chief_complaint', label: 'Chief Complaint', type: 'text', required: false },
+      { name: 'icd10_primary', label: 'Primary ICD-10', type: 'text', required: true },
+      { name: 'icd10_secondary', label: 'Secondary ICD-10', type: 'text', required: false },
+      { name: 'cpt_codes', label: 'CPT Codes', type: 'text', required: true },
+      { name: 'modifiers', label: 'Modifiers', type: 'text', required: false },
+      { name: 'units', label: 'Units', type: 'number', required: false },
+      { name: 'location', label: 'Service Location', type: 'select', options: ['Office', 'ASC', 'Hospital', 'Telehealth'], required: true }
+    ],
+    sampleData: [
+      { encounter_id: 'E001', patient_id: 'P001', visit_date: '2026-03-15', provider_id: 'DR001', provider_name: 'Dr. Chen', visit_type: 'Procedure', chief_complaint: 'Cataract', icd10_primary: 'H25.11', cpt_codes: '66984', modifiers: 'RT', location: 'ASC' }
+    ]
+  },
+  billing_claims: {
+    name: 'Billing & Claims',
+    icon: '💰',
+    description: 'Insurance claims and payment information',
+    fields: [
+      { name: 'claim_id', label: 'Claim ID', type: 'text', required: true },
+      { name: 'patient_id', label: 'Patient ID', type: 'text', required: true },
+      { name: 'encounter_id', label: 'Encounter ID', type: 'text', required: true },
+      { name: 'dos', label: 'Date of Service', type: 'date', required: true },
+      { name: 'cpt_code', label: 'CPT Code', type: 'text', required: true },
+      { name: 'icd10', label: 'ICD-10 Code', type: 'text', required: true },
+      { name: 'billed_amount', label: 'Billed Amount', type: 'currency', required: true },
+      { name: 'allowed_amount', label: 'Allowed Amount', type: 'currency', required: false },
+      { name: 'paid_amount', label: 'Paid Amount', type: 'currency', required: false },
+      { name: 'patient_responsibility', label: 'Patient Responsibility', type: 'currency', required: false },
+      { name: 'payer_name', label: 'Payer Name', type: 'text', required: true },
+      { name: 'payer_id', label: 'Payer ID', type: 'text', required: false },
+      { name: 'claim_status', label: 'Claim Status', type: 'select', options: ['Submitted', 'Pending', 'Paid', 'Denied', 'Appealed'], required: true },
+      { name: 'denial_reason', label: 'Denial Reason', type: 'text', required: false },
+      { name: 'submission_date', label: 'Submission Date', type: 'date', required: false },
+      { name: 'payment_date', label: 'Payment Date', type: 'date', required: false }
+    ],
+    sampleData: [
+      { claim_id: 'CLM001', patient_id: 'P001', encounter_id: 'E001', dos: '2026-03-15', cpt_code: '66984', icd10: 'H25.11', billed_amount: '2500.00', allowed_amount: '1850.00', paid_amount: '1480.00', payer_name: 'Blue Cross', claim_status: 'Paid' }
+    ]
+  },
+  provider_productivity: {
+    name: 'Provider Productivity',
+    icon: '👨‍⚕️',
+    description: 'Provider metrics, wRVUs, and productivity data',
+    fields: [
+      { name: 'provider_id', label: 'Provider ID', type: 'text', required: true },
+      { name: 'provider_name', label: 'Provider Name', type: 'text', required: true },
+      { name: 'specialty', label: 'Specialty', type: 'text', required: true },
+      { name: 'report_period', label: 'Report Period', type: 'text', required: true },
+      { name: 'total_encounters', label: 'Total Encounters', type: 'number', required: true },
+      { name: 'new_patients', label: 'New Patients', type: 'number', required: false },
+      { name: 'total_wrvu', label: 'Total wRVU', type: 'number', required: true },
+      { name: 'surgeries_performed', label: 'Surgeries Performed', type: 'number', required: false },
+      { name: 'total_charges', label: 'Total Charges', type: 'currency', required: true },
+      { name: 'total_collections', label: 'Total Collections', type: 'currency', required: true },
+      { name: 'avg_patients_per_day', label: 'Avg Patients/Day', type: 'number', required: false },
+      { name: 'no_show_rate', label: 'No-Show Rate %', type: 'percentage', required: false }
+    ],
+    sampleData: [
+      { provider_id: 'DR001', provider_name: 'Dr. Sarah Chen', specialty: 'Ophthalmology', report_period: 'Mar 2026', total_encounters: 245, new_patients: 48, total_wrvu: 312.5, surgeries_performed: 32, total_charges: '425000', total_collections: '368000' }
+    ]
+  },
+  inventory_supplies: {
+    name: 'Inventory & Supplies',
+    icon: '📦',
+    description: 'Medical supplies, IOLs, and equipment tracking',
+    fields: [
+      { name: 'item_id', label: 'Item ID', type: 'text', required: true },
+      { name: 'item_name', label: 'Item Name', type: 'text', required: true },
+      { name: 'category', label: 'Category', type: 'select', options: ['IOL', 'Surgical Supply', 'Medication', 'Equipment', 'Office Supply'], required: true },
+      { name: 'manufacturer', label: 'Manufacturer', type: 'text', required: false },
+      { name: 'model_number', label: 'Model/Part Number', type: 'text', required: false },
+      { name: 'quantity_on_hand', label: 'Quantity on Hand', type: 'number', required: true },
+      { name: 'reorder_level', label: 'Reorder Level', type: 'number', required: false },
+      { name: 'unit_cost', label: 'Unit Cost', type: 'currency', required: true },
+      { name: 'expiration_date', label: 'Expiration Date', type: 'date', required: false },
+      { name: 'location', label: 'Storage Location', type: 'text', required: false },
+      { name: 'last_ordered', label: 'Last Ordered', type: 'date', required: false }
+    ],
+    sampleData: [
+      { item_id: 'IOL001', item_name: 'AcrySof IQ Toric', category: 'IOL', manufacturer: 'Alcon', model_number: 'SN6AT3', quantity_on_hand: 12, reorder_level: 5, unit_cost: '350.00' }
+    ]
+  },
+  quality_metrics: {
+    name: 'Quality Metrics & Outcomes',
+    icon: '✅',
+    description: 'Clinical outcomes, satisfaction scores, and quality measures',
+    fields: [
+      { name: 'metric_id', label: 'Metric ID', type: 'text', required: true },
+      { name: 'metric_name', label: 'Metric Name', type: 'text', required: true },
+      { name: 'category', label: 'Category', type: 'select', options: ['Clinical Outcome', 'Patient Safety', 'Patient Experience', 'Efficiency', 'Cost'], required: true },
+      { name: 'measurement_period', label: 'Measurement Period', type: 'text', required: true },
+      { name: 'numerator', label: 'Numerator', type: 'number', required: true },
+      { name: 'denominator', label: 'Denominator', type: 'number', required: true },
+      { name: 'rate', label: 'Rate/Percentage', type: 'percentage', required: true },
+      { name: 'benchmark', label: 'Benchmark', type: 'percentage', required: false },
+      { name: 'target', label: 'Target', type: 'percentage', required: false },
+      { name: 'trend', label: 'Trend', type: 'select', options: ['Improving', 'Stable', 'Declining'], required: false }
+    ],
+    sampleData: [
+      { metric_id: 'QM001', metric_name: 'Cataract Surgery Success Rate', category: 'Clinical Outcome', measurement_period: 'Q1 2026', numerator: 148, denominator: 150, rate: '98.7', benchmark: '95.0', trend: 'Stable' }
+    ]
+  }
+};
+
+const FILE_FORMAT_SUPPORT = {
+  csv: { name: 'CSV', icon: '📊', extensions: ['.csv'], description: 'Comma-separated values' },
+  excel: { name: 'Excel', icon: '📗', extensions: ['.xlsx', '.xls'], description: 'Microsoft Excel workbooks' },
+  text: { name: 'Text/TSV', icon: '📄', extensions: ['.txt', '.tsv'], description: 'Tab or delimiter-separated' },
+  json: { name: 'JSON', icon: '🔧', extensions: ['.json'], description: 'JavaScript Object Notation' },
+  xml: { name: 'XML/HL7', icon: '🏥', extensions: ['.xml', '.hl7'], description: 'Healthcare interchange formats' }
+};
+
+const COMMON_FIELD_MAPPINGS = {
+  // Patient identifiers
+  'patient_id': ['patientid', 'patient_id', 'pt_id', 'mrn', 'medical_record_number', 'id', 'patient_number', 'chart_number'],
+  'first_name': ['firstname', 'first_name', 'fname', 'first', 'patient_first', 'given_name'],
+  'last_name': ['lastname', 'last_name', 'lname', 'last', 'patient_last', 'family_name', 'surname'],
+  'dob': ['dob', 'date_of_birth', 'dateofbirth', 'birth_date', 'birthdate', 'birthday'],
+  'gender': ['gender', 'sex', 'patient_gender', 'patient_sex'],
+  'phone': ['phone', 'telephone', 'phone_number', 'phonenumber', 'mobile', 'cell', 'contact_phone'],
+  'email': ['email', 'email_address', 'emailaddress', 'e_mail', 'patient_email'],
+  'address': ['address', 'street', 'street_address', 'address1', 'address_line_1', 'patient_address'],
+  'city': ['city', 'patient_city', 'town'],
+  'state': ['state', 'patient_state', 'province', 'st'],
+  'zip': ['zip', 'zipcode', 'zip_code', 'postal_code', 'postalcode'],
+  
+  // Clinical data
+  'visit_date': ['visit_date', 'visitdate', 'dos', 'date_of_service', 'service_date', 'encounter_date', 'appt_date'],
+  'provider_name': ['provider_name', 'providername', 'physician', 'doctor', 'attending', 'provider'],
+  'cpt_code': ['cpt_code', 'cptcode', 'cpt', 'procedure_code', 'proc_code', 'service_code'],
+  'icd10': ['icd10', 'icd_10', 'icd10_code', 'diagnosis_code', 'dx_code', 'icd'],
+  
+  // Billing data
+  'billed_amount': ['billed_amount', 'billedamount', 'charges', 'charge_amount', 'total_charges', 'billed'],
+  'paid_amount': ['paid_amount', 'paidamount', 'payment', 'payment_amount', 'collected', 'reimbursement'],
+  'payer_name': ['payer_name', 'payername', 'insurance', 'insurance_name', 'carrier', 'payer']
+};
+
+// Add this AI analysis function after the generateAIQuestions function:
+
+const analyzeUploadedData = (data, headers) => {
+  const suggestions = [];
+  const detectedMappings = {};
+  
+  // Analyze each header
+  headers.forEach(header => {
+    const normalizedHeader = header.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    
+    // Find matching template field
+    for (const [templateField, aliases] of Object.entries(COMMON_FIELD_MAPPINGS)) {
+      if (aliases.some(alias => normalizedHeader.includes(alias) || alias.includes(normalizedHeader))) {
+        detectedMappings[header] = templateField;
+        break;
+      }
+    }
+  });
+  
+  // Generate suggestions based on data patterns
+  if (data.length > 0) {
+    const sampleRow = data[0];
+    
+    headers.forEach(header => {
+      const value = sampleRow[header];
+      if (!value) return;
+      
+      // Detect date patterns
+      if (/^\d{4}-\d{2}-\d{2}/.test(value) || /^\d{2}\/\d{2}\/\d{4}/.test(value)) {
+        if (!detectedMappings[header]) {
+          suggestions.push({
+            type: 'date_detected',
+            field: header,
+            message: `"${header}" appears to contain dates. Consider mapping to a date field.`,
+            icon: '📅'
+          });
+        }
+      }
+      
+      // Detect currency patterns
+      if (/^\$?[\d,]+\.?\d{0,2}$/.test(value) && parseFloat(value.replace(/[$,]/g, '')) > 10) {
+        if (!detectedMappings[header]) {
+          suggestions.push({
+            type: 'currency_detected',
+            field: header,
+            message: `"${header}" appears to contain currency values.`,
+            icon: '💰'
+          });
+        }
+      }
+      
+      // Detect CPT codes
+      if (/^\d{5}$/.test(value)) {
+        suggestions.push({
+          type: 'cpt_detected',
+          field: header,
+          message: `"${header}" may contain CPT codes (5-digit format detected).`,
+          icon: '🏥'
+        });
+      }
+      
+      // Detect ICD-10 codes
+      if (/^[A-Z]\d{2}\.?\d{0,2}$/.test(value)) {
+        suggestions.push({
+          type: 'icd10_detected',
+          field: header,
+          message: `"${header}" appears to contain ICD-10 diagnosis codes.`,
+          icon: '🩺'
+        });
+      }
+    });
+    
+    // Check for missing required fields
+    const hasPatientId = Object.values(detectedMappings).includes('patient_id');
+    const hasDate = Object.values(detectedMappings).some(m => m.includes('date'));
+    
+    if (!hasPatientId) {
+      suggestions.push({
+        type: 'missing_field',
+        message: 'No patient identifier detected. Consider adding a Patient ID column.',
+        icon: '⚠️'
+      });
+    }
+    
+    if (!hasDate) {
+      suggestions.push({
+        type: 'missing_field',
+        message: 'No date field detected. Dates are important for tracking and reporting.',
+        icon: '⚠️'
+      });
+    }
+  }
+  
+  // Suggest best matching template
+  const templateScores = {};
+  Object.entries(EMR_TEMPLATES).forEach(([templateId, template]) => {
+    let score = 0;
+    template.fields.forEach(field => {
+      if (Object.values(detectedMappings).includes(field.name)) {
+        score += field.required ? 2 : 1;
+      }
+    });
+    templateScores[templateId] = score;
+  });
+  
+  const bestTemplate = Object.entries(templateScores).sort((a, b) => b[1] - a[1])[0];
+  if (bestTemplate && bestTemplate[1] > 0) {
+    suggestions.unshift({
+      type: 'template_match',
+      templateId: bestTemplate[0],
+      message: `Best match: ${EMR_TEMPLATES[bestTemplate[0]].name} template (${bestTemplate[1]} fields matched)`,
+      icon: '✨'
+    });
+  }
+  
+  return { detectedMappings, suggestions };
+};
+
+const parseCSVContent = (content) => {
+  const lines = content.split('\n').filter(line => line.trim());
+  if (lines.length === 0) return { headers: [], data: [] };
+  
+  // Detect delimiter
+  const firstLine = lines[0];
+  const commaCount = (firstLine.match(/,/g) || []).length;
+  const tabCount = (firstLine.match(/\t/g) || []).length;
+  const pipeCount = (firstLine.match(/\|/g) || []).length;
+  
+  let delimiter = ',';
+  if (tabCount > commaCount && tabCount > pipeCount) delimiter = '\t';
+  if (pipeCount > commaCount && pipeCount > tabCount) delimiter = '|';
+  
+  const headers = lines[0].split(delimiter).map(h => h.trim().replace(/^["']|["']$/g, ''));
+  const data = lines.slice(1).map(line => {
+    const values = line.split(delimiter).map(v => v.trim().replace(/^["']|["']$/g, ''));
+    return headers.reduce((obj, header, i) => {
+      obj[header] = values[i] || '';
+      return obj;
+    }, {});
+  });
+  
+  return { headers, data, delimiter };
+};
+
+const generateCSVFromTemplate = (template, data) => {
+  const headers = template.fields.map(f => f.name);
+  const headerRow = headers.join(',');
+  
+  const dataRows = data.map(row => {
+    return headers.map(h => {
+      const value = row[h] || '';
+      // Escape commas and quotes
+      if (value.includes(',') || value.includes('"')) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value;
+    }).join(',');
+  });
+  
+  return [headerRow, ...dataRows].join('\n');
+};
+
 export default function Benchmarks() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [practiceProfile, setPracticeProfile] = useState(() => {
@@ -78,6 +508,51 @@ export default function Benchmarks() {
   const fileInputRef = useRef(null);
   const [selectedPlatform, setSelectedPlatform] = useState(null);
   const [demoMode, setDemoMode] = useState(isDemoMode());
+  const [chatInput, setChatInput] = useState('');
+  const [chatHistory, setChatHistory] = useState([
+    { 
+      role: 'assistant', 
+      content: `👋 Welcome to KCN Intelligence Assistant! I'm here to help you with:
+
+**📊 Application Help**
+• Navigate features and understand metrics
+• Interpret your benchmark comparisons
+• Export reports and data
+
+**💰 Revenue Optimization**
+• Identify revenue leakage opportunities
+• Optimize payer mix strategies
+• Premium service conversion tactics
+
+**📋 Coding & Billing**
+• CPT code selection guidance
+• Modifier usage and compliance
+• Documentation requirements
+
+**🔄 Revenue Cycle Management**
+• Reduce denial rates
+• Improve collections
+• A/R management strategies
+
+What would you like to explore today?`
+    }
+  ]);
+  const [surveyMode, setSurveyMode] = useState('list'); // 'list', 'create', 'preview', 'results'
+  const [currentSurvey, setCurrentSurvey] = useState(null);
+  const [surveyQuestions, setSurveyQuestions] = useState([]);
+  const [selectedStaff, setSelectedStaff] = useState([]);
+  const [surveyTitle, setSurveyTitle] = useState('');
+  const [surveyCategory, setSurveyCategory] = useState('satisfaction');
+  const [aiSuggesting, setAiSuggesting] = useState(false);
+  const [uploadMode, setUploadMode] = useState('upload'); // 'upload', 'create', 'map', 'preview', 'templates'
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [parsedData, setParsedData] = useState(null);
+  const [fieldMappings, setFieldMappings] = useState({});
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [aiAnalyzing, setAiAnalyzing] = useState(false);
+  const [aiSuggestions, setAiSuggestions] = useState([]);
+  const [manualEntryData, setManualEntryData] = useState([]);
+  const [csvPreview, setCsvPreview] = useState(null);
 
   useEffect(() => { 
     if (practiceProfile) localStorage.setItem('medpact_profile', JSON.stringify(practiceProfile)); 
@@ -113,12 +588,314 @@ export default function Benchmarks() {
     }
   };
 
-  const handleChat = () => {
+  const getKCNResponse = (question) => {
+    const q = question.toLowerCase();
+    
+    // Application Help
+    if (q.includes('how to') || q.includes('where') || q.includes('navigate') || q.includes('find') || q.includes('use')) {
+      if (q.includes('dashboard')) {
+        return `📊 **Dashboard Tab Guide**
+
+The Dashboard displays your key practice metrics compared to industry benchmarks:
+
+1. **Metric Cards** - Each card shows:
+   • Your current value
+   • Industry benchmark
+   • Performance indicator (green = above, red = below)
+
+2. **How to Use:**
+   • Click any metric card to see detailed trends
+   • Use the package selector to switch metric categories
+   • Values are auto-saved to your profile
+
+3. **Quick Actions:**
+   • Export dashboard data via the Export tab
+   • Set alerts for specific thresholds in Alerts tab
+
+Would you like me to explain any specific metric?`;
+      }
+      if (q.includes('cpt') || q.includes('price') || q.includes('code')) {
+        return `💰 **CPT Codes / Price Transparency Tab**
+
+This feature helps you understand reimbursement rates:
+
+1. **Regional Lookup:**
+   • Enter your ZIP code to see local commercial rates
+   • Rates are based on actual CMS Price Transparency data
+
+2. **Three Rate Columns:**
+   • 🟢 Medicare - CMS fee schedule rates
+   • 🟡 Medicaid - ~80% of Medicare (varies by state)
+   • 🟣 Commercial - Actual negotiated rates (NOT Medicare multipliers)
+
+3. **Category Filters:**
+   • Filter by procedure type (Cataract, Glaucoma, etc.)
+
+4. **Blended Rate Calculator:**
+   • See weighted average based on your payer mix
+
+Try entering ZIP code 19103 (Philadelphia) or 94102 (San Francisco) to see regional differences!`;
+      }
+    }
+    
+    // Revenue Optimization
+    if (q.includes('revenue') || q.includes('profit') || q.includes('money') || q.includes('increase') || q.includes('opportunity')) {
+      if (q.includes('premium') || q.includes('iol') || q.includes('lens')) {
+        return `💎 **Premium IOL Conversion Strategy**
+
+**Current Benchmark:** Top practices achieve 35-45% premium IOL conversion
+
+**Revenue Impact:**
+• Each premium upgrade = $1,500-$2,500 additional revenue
+• 100 cataract cases/month × 10% improvement = $150K-$250K annual increase
+
+**Proven Tactics:**
+
+1. **Patient Education**
+   • Pre-surgery video explaining IOL options
+   • Visual aids showing vision simulation
+   • Patient testimonials from premium IOL recipients
+
+2. **Staff Training**
+   • Counselors trained in lifestyle assessment
+   • Scripts for addressing cost objections
+   • Financial options presentation
+
+3. **Process Optimization**
+   • Dedicated consultation time for IOL discussion
+   • Follow-up call 48 hours before surgery
+   • Post-op satisfaction surveys for testimonials
+
+4. **Financial Accessibility**
+   • CareCredit and Alphaeon financing
+   • HSA/FSA payment education
+   • Price transparency upfront
+
+Would you like specific scripts for patient conversations?`;
+      }
+      if (q.includes('denial') || q.includes('rejected') || q.includes('claim')) {
+        return `🚫 **Denial Reduction Strategy**
+
+**Industry Benchmark:** <4% denial rate | **Top Performers:** <2%
+
+**Common Denial Reasons in Ophthalmology:**
+
+1. **Medical Necessity (35% of denials)**
+   • Solution: Robust documentation templates
+   • Include visual acuity, functional impairment
+   • Use LCD/NCD compliant language
+
+2. **Authorization Issues (25%)**
+   • Implement real-time eligibility checks
+   • Track prior auth requirements by payer
+   • Automated auth status tracking
+
+3. **Coding Errors (20%)**
+   • Regular coder education on updates
+   • Audit high-volume codes quarterly
+   • Modifier usage review
+
+4. **Timely Filing (10%)**
+   • Daily charge entry monitoring
+   • Automated filing deadline alerts
+   • Same-day charge capture goals
+
+**Quick Win:** Implement a pre-billing audit on your top 10 CPT codes - typically catches 60% of preventable denials.
+
+Want me to analyze your specific denial patterns?`;
+      }
+      return `💰 **Revenue Optimization Overview**
+
+Based on typical ophthalmology practices, here are the highest-impact opportunities:
+
+**🔴 High Priority (Quick Wins)**
+| Opportunity | Potential Impact |
+|-------------|------------------|
+| Premium IOL Conversion | +$150-300K/year |
+| Denial Rate Reduction | +$50-100K/year |
+| A/R Days Improvement | +$30-60K/year |
+
+**🟡 Medium Priority**
+| Opportunity | Potential Impact |
+|-------------|------------------|
+| Charge Capture | +$25-50K/year |
+| Patient Recall Compliance | +$40-80K/year |
+| Ancillary Service Expansion | +$50-100K/year |
+
+**🟢 Long-term Strategy**
+| Opportunity | Potential Impact |
+|-------------|------------------|
+| Payer Contract Negotiation | +5-15% rates |
+| ASC Utilization | +$100-200K/year |
+| Referral Network Expansion | +20% volume |
+
+Which area would you like to explore in detail?`;
+    }
+    
+    // Coding & Billing
+    if (q.includes('code') || q.includes('coding') || q.includes('cpt') || q.includes('modifier') || q.includes('billing')) {
+      if (q.includes('66984') || q.includes('cataract')) {
+        return `👁️ **CPT 66984 - Cataract Surgery Coding Guide**
+
+**Code:** 66984 - Extracapsular cataract removal with insertion of IOL, 1 stage
+
+**2025 Medicare Rate:** $535.47 (national average)
+
+**Documentation Requirements:**
+✅ Pre-operative visual acuity
+✅ Functional impairment documentation
+✅ Lens opacity description (grading scale)
+✅ Surgical technique details
+✅ IOL power and model
+
+**Common Modifier Usage:**
+• -RT / -LT (Right/Left eye)
+• -24 (Unrelated E/M during post-op)
+• -25 (Significant, separate E/M same day)
+• -59 (Distinct procedural service)
+
+**Billing Tips:**
+1. Bill 66984 with modifier RT or LT
+2. IOL is included in facility fee
+3. Premium IOL: Bill V2788 separately to patient
+4. Post-op visits included in global period (90 days)
+
+**Common Denials:**
+• Missing medical necessity documentation
+• Incorrect modifier usage
+• Duplicate billing for global period services
+
+Need guidance on complex cataract (66982) or MIGS add-ons?`;
+      }
+      if (q.includes('modifier')) {
+        return `🏷️ **Ophthalmology Modifier Guide**
+
+**Most Common Modifiers:**
+
+| Modifier | Description | When to Use |
+|----------|-------------|-------------|
+| -RT/-LT | Right/Left eye | Every eye-specific procedure |
+| -25 | Significant E/M | Same-day E/M before procedure |
+| -24 | Unrelated E/M | E/M during global period |
+| -59 | Distinct procedure | Separate services same session |
+| -79 | Unrelated procedure | Surgery during global period |
+| -XE | Separate encounter | Distinct encounter modifier |
+| -XS | Separate structure | Different anatomical site |
+| -76 | Repeat procedure | Same physician, same day |
+| -77 | Repeat procedure | Different physician, same day |
+
+**Common Mistakes:**
+❌ Using -59 when -XE/XS is more appropriate
+❌ Missing -25 on E/M with minor procedure
+❌ Forgetting laterality modifiers
+
+**Pro Tip:** CMS prefers X-modifiers (XE, XP, XS, XU) over -59 when applicable.
+
+Want details on any specific modifier?`;
+      }
+      return `📋 **Coding & Billing Resources**
+
+I can help with coding questions for ophthalmology procedures:
+
+**Surgical Codes:**
+• 66984 - Standard cataract surgery
+• 66982 - Complex cataract surgery
+• 67028 - Intravitreal injection
+• 65855 - Laser trabeculoplasty
+• 66170 - Trabeculectomy
+
+**E/M Codes:**
+• 92004/92014 - Comprehensive eye exams
+• 92002/92012 - Intermediate eye exams
+
+**Diagnostic Codes:**
+• 92134 - OCT retina
+• 92133 - OCT optic nerve
+• 92083 - Visual field
+
+**What I can help with:**
+• Documentation requirements
+• Modifier usage
+• Medical necessity criteria
+• Global period rules
+• Bundling/unbundling guidance
+
+What specific code or billing question do you have?`;
+    }
+    
+    // Revenue Cycle Management
+    if (q.includes('rcm') || q.includes('revenue cycle') || q.includes('collection') || q.includes('a/r') || q.includes('ar') || q.includes('aging')) {
+      return `🔄 **Revenue Cycle Management Overview**
+
+**Key RCM Metrics & Benchmarks:**
+
+| Metric | Your Goal | Top Quartile |
+|--------|-----------|--------------|
+| Days in A/R | <35 | <28 |
+| Clean Claim Rate | >95% | >98% |
+| Denial Rate | <5% | <3% |
+| Collection Rate | >96% | >98% |
+| Cost to Collect | <4% | <3% |
+
+**RCM Improvement Framework:**
+
+1. **📥 Patient Access**
+   • Insurance verification
+   • Prior authorization
+   • Financial counseling
+
+2. **📝 Charge Capture**
+   • Same-day charge entry
+   • Coding accuracy
+   • Documentation compliance
+
+3. **📤 Claims Management**
+   • Claim scrubbing
+   • Timely submission
+   • Rejection handling
+
+4. **💵 Payment Posting**
+   • ERA automation
+   • Variance identification
+   • Adjustment review
+
+5. **📞 Follow-Up**
+   • Denial management
+   • Appeals process
+   • Patient collections
+
+Which area of your revenue cycle needs the most attention?`;
+    }
+    
+    // Default response
+    return `I'd be happy to help! I can assist with:
+
+**📊 Application Help**
+Ask me "How do I use the dashboard?" or "Where do I find CPT codes?"
+
+**💰 Revenue Optimization**
+Ask about "premium IOL strategies" or "reducing denials"
+
+**📋 Coding & Billing**
+Ask about specific CPT codes like "66984 documentation" or "modifier usage"
+
+**🔄 Revenue Cycle**
+Ask about "A/R management" or "collection strategies"
+
+**📈 Benchmarks**
+Ask "How do I compare to benchmarks?" or "What metrics should I focus on?"
+
+What would you like to explore?`;
+  };
+
+  const handleChatSubmit = () => {
     if (!chatInput.trim()) return;
-    setChatMessages(p => [...p, { role: 'user', content: chatInput }]);
-    const response = searchKCN(chatInput);
+    
+    const userMessage = { role: 'user', content: chatInput };
+    const assistantResponse = { role: 'assistant', content: getKCNResponse(chatInput) };
+    
+    setChatHistory(prev => [...prev, userMessage, assistantResponse]);
     setChatInput('');
-    setTimeout(() => setChatMessages(p => [...p, { role: 'assistant', content: response }]), 300);
   };
 
   const toggleCompare = (comp) => {
@@ -1118,14 +1895,18 @@ export default function Benchmarks() {
                 { label: '💰 Revenue Tips', query: 'What are my revenue opportunities?' },
                 { label: '📋 Coding Help', query: 'Help me with CPT coding' },
                 { label: '🔄 RCM Guide', query: 'How can I improve my revenue cycle?' },
-                { label: '📈 Benchmarks', query: 'Explain my benchmark comparisons' },
-                { label: '🔬 Research', query: 'What are the latest industry trends?' }
+                { label: '📈 Benchmarks', query: 'Explain my benchmark comparisons' }
               ].map((action, i) => (
                 <button
                   key={i}
                   onClick={() => {
                     setChatInput(action.query);
-                    setTimeout(() => handleChatSubmit(), 100);
+                    setTimeout(() => {
+                      const userMessage = { role: 'user', content: action.query };
+                      const assistantResponse = { role: 'assistant', content: getKCNResponse(action.query) };
+                      setChatHistory(prev => [...prev, userMessage, assistantResponse]);
+                      setChatInput('');
+                    }, 100);
                   }}
                   style={{
                     ...styles.button,
@@ -1156,12 +1937,61 @@ export default function Benchmarks() {
                 flexDirection: 'column',
                 gap: '16px'
               }}>
-                {chatMessages.map((m, i) => (
-                  <div key={i} style={{...styles.chatMessage, ...(m.role === 'user' ? styles.userMessage : styles.botMessage)}}>
-                    {m.content}
+                {chatHistory.map((msg, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start',
+                      gap: '12px'
+                    }}
+                  >
+                    {msg.role === 'assistant' && (
+                      <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                        flexShrink: 0
+                      }}>
+                        🤖
+                      </div>
+                    )}
+                    <div style={{
+                      maxWidth: '75%',
+                      padding: '12px 16px',
+                      borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                      background: msg.role === 'user' 
+                        ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
+                        : 'rgba(99,102,241,0.1)',
+                      color: msg.role === 'user' ? 'white' : styles.pageTitle.color,
+                      fontSize: '14px',
+                      lineHeight: '1.6',
+                      whiteSpace: 'pre-wrap'
+                    }}>
+                      {msg.content}
+                    </div>
+                    {msg.role === 'user' && (
+                      <div style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '50%',
+                        background: 'rgba(99,102,241,0.2)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                        flexShrink: 0
+                      }}>
+                        👤
+                      </div>
+                    )}
                   </div>
                 ))}
-                <div ref={chatEndRef} />
               </div>
 
               {/* Chat Input */}
@@ -1196,661 +2026,343 @@ export default function Benchmarks() {
                 </button>
               </div>
             </div>
-
-            {/* Knowledge Base Quick Links */}
-            <div style={{ ...styles.grid, marginTop: '24px' }}>
-              {[
-                { title: 'Coding Guides', icon: '📋', items: ['CPT 66984 Guide', 'Modifier Reference', 'E/M Documentation'] },
-                { title: 'Revenue Optimization', icon: '💰', items: ['Premium IOL Strategy', 'Denial Reduction', 'Collection Tactics'] },
-                { title: 'RCM Best Practices', icon: '🔄', items: ['A/R Management', 'Clean Claim Rate', 'Patient Collections'] },
-                { title: 'Industry Research', icon: '📚', items: ['2025 Trends', 'Benchmark Data', 'Reimbursement Outlook'] }
-              ].map((category, i) => (
-                <div key={i} style={styles.metricCard}>
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>{category.icon}</div>
-                  <h3 style={{ fontWeight: '600', color: styles.pageTitle.color, marginBottom: '12px' }}>{category.title}</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {category.items.map((item, j) => (
-                      <button
-                        key={j}
-                        onClick={() => {
-                          setChatInput(`Tell me about ${item}`);
-                          setTimeout(() => handleChatSubmit(), 100);
-                        }}
-                        style={{
-                          ...styles.button,
-                          ...styles.secondaryBtn,
-                          fontSize: '12px',
-                          padding: '8px 12px',
-                          textAlign: 'left',
-                          justifyContent: 'flex-start'
-                        }}
-                      >
-                        {item}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
           </>
         )}
 
         {activeTab === 'staff' && (
           <>
-            <h1 style={styles.pageTitle}>👥 Staff Intelligence</h1>
-            <div style={styles.grid}>
+            <h1 style={styles.pageTitle}>👥 Staff Intelligence & Surveys</h1>
+            
+            {/* Tab Navigation */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', flexWrap: 'wrap' }}>
               {[
-                { name: 'Dr. Sarah Chen', role: 'Lead Ophthalmologist', patients: 847, satisfaction: 96, revenue: '$1.2M', icon: '👩‍⚕️' },
-                { name: 'Dr. Michael Torres', role: 'Retina Specialist', patients: 623, satisfaction: 94, revenue: '$980K', icon: '👨‍⚕️' },
-                { name: 'Dr. Emily Watson', role: 'Optometrist', patients: 1205, satisfaction: 98, revenue: '$650K', icon: '👩‍⚕️' },
-                { name: 'Jessica Miller', role: 'Office Manager', patients: null, satisfaction: 95, revenue: null, icon: '👩‍💼' },
-                { name: 'Robert Kim', role: 'Billing Specialist', patients: null, satisfaction: 92, revenue: null, icon: '👨‍💼' },
-                { name: 'Amanda Lopez', role: 'Technician Lead', patients: 2100, satisfaction: 97, revenue: null, icon: '👩‍🔬' }
-              ].map((staff, i) => (
-                <div key={i} style={styles.metricCard}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                    <div style={{ fontSize: '36px' }}>{staff.icon}</div>
-                    <div>
-                      <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>{staff.name}</h3>
-                      <p style={{ fontSize: '12px', color: '#888' }}>{staff.role}</p>
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    {staff.patients && (
-                      <div style={{ padding: '8px', background: 'rgba(99,102,241,0.1)', borderRadius: '6px' }}>
-                        <div style={{ fontSize: '18px', fontWeight: '700', color: '#6366f1' }}>{staff.patients}</div>
-                        <div style={{ fontSize: '11px', color: '#888' }}>Patients/Year</div>
-                      </div>
-                    )}
-                    <div style={{ padding: '8px', background: 'rgba(16,185,129,0.1)', borderRadius: '6px' }}>
-                      <div style={{ fontSize: '18px', fontWeight: '700', color: '#10b981' }}>{staff.satisfaction}%</div>
-                      <div style={{ fontSize: '11px', color: '#888' }}>Satisfaction</div>
-                    </div>
-                    {staff.revenue && (
-                      <div style={{ padding: '8px', background: 'rgba(245,158,11,0.1)', borderRadius: '6px' }}>
-                        <div style={{ fontSize: '18px', fontWeight: '700', color: '#f59e0b' }}>{staff.revenue}</div>
-                        <div style={{ fontSize: '11px', color: '#888' }}>Revenue</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {activeTab === 'forecasting' && (
-          <>
-            <h1 style={styles.pageTitle}>📈 Revenue Forecasting</h1>
-            <div style={{ ...styles.card, marginBottom: '24px' }}>
-              <div style={styles.cardTitle}>12-Month Revenue Projection</div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: '200px', padding: '20px 0' }}>
-                {[
-                  { month: 'Apr', value: 285, projected: false },
-                  { month: 'May', value: 312, projected: false },
-                  { month: 'Jun', value: 298, projected: false },
-                  { month: 'Jul', value: 345, projected: true },
-                  { month: 'Aug', value: 358, projected: true },
-                  { month: 'Sep', value: 372, projected: true },
-                  { month: 'Oct', value: 385, projected: true },
-                  { month: 'Nov', value: 368, projected: true },
-                  { month: 'Dec', value: 342, projected: true },
-                  { month: 'Jan', value: 395, projected: true },
-                  { month: 'Feb', value: 412, projected: true },
-                  { month: 'Mar', value: 428, projected: true }
-                ].map((m, i) => (
-                  <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{
-                      width: '100%',
-                      height: `${m.value / 5}px`,
-                      background: m.projected 
-                        ? 'linear-gradient(180deg, rgba(99,102,241,0.3), rgba(99,102,241,0.6))' 
-                        : 'linear-gradient(180deg, #6366f1, #8b5cf6)',
-                      borderRadius: '4px 4px 0 0',
-                      border: m.projected ? '2px dashed #6366f1' : 'none'
-                    }} />
-                    <div style={{ fontSize: '10px', color: '#888', marginTop: '4px' }}>{m.month}</div>
-                    <div style={{ fontSize: '11px', fontWeight: '600', color: m.projected ? '#6366f1' : '#10b981' }}>${m.value}K</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={styles.grid}>
-              <div style={styles.metricCard}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>📊</div>
-                <div style={{ fontSize: '28px', fontWeight: '700', color: '#10b981' }}>$4.2M</div>
-                <div style={{ color: '#888', fontSize: '13px' }}>Projected Annual Revenue</div>
-                <div style={{ color: '#10b981', fontSize: '12px', marginTop: '4px' }}>↑ 12% vs Last Year</div>
-              </div>
-              <div style={styles.metricCard}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎯</div>
-                <div style={{ fontSize: '28px', fontWeight: '700', color: '#6366f1' }}>89%</div>
-                <div style={{ color: '#888', fontSize: '13px' }}>Forecast Confidence</div>
-                <div style={{ color: '#6366f1', fontSize: '12px', marginTop: '4px' }}>Based on 3yr history</div>
-              </div>
-              <div style={styles.metricCard}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>⚡</div>
-                <div style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>Q3</div>
-                <div style={{ color: '#888', fontSize: '13px' }}>Peak Revenue Quarter</div>
-                <div style={{ color: '#f59e0b', fontSize: '12px', marginTop: '4px' }}>Cataract season</div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'quality' && (
-          <>
-            <h1 style={styles.pageTitle}>✅ Quality Metrics</h1>
-            <div style={styles.grid}>
-              {[
-                { metric: 'Patient Safety Score', value: 98, benchmark: 95, icon: '🛡️', status: 'excellent' },
-                { metric: 'Infection Rate', value: 0.02, benchmark: 0.05, icon: '🦠', unit: '%', status: 'excellent' },
-                { metric: 'Readmission Rate', value: 1.8, benchmark: 2.5, icon: '🏥', unit: '%', status: 'good' },
-                { metric: 'Documentation Accuracy', value: 96, benchmark: 95, icon: '📝', status: 'excellent' },
-                { metric: 'MIPS Score', value: 92, benchmark: 85, icon: '🏆', status: 'excellent' },
-                { metric: 'Patient Wait Time', value: 12, benchmark: 15, icon: '⏱️', unit: ' min', status: 'good' },
-                { metric: 'Follow-up Compliance', value: 88, benchmark: 85, icon: '📅', status: 'good' },
-                { metric: 'Surgical Success Rate', value: 99.2, benchmark: 98, icon: '✨', unit: '%', status: 'excellent' }
-              ].map((item, i) => (
-                <div key={i} style={{
-                  ...styles.metricCard,
-                  borderLeft: `4px solid ${item.status === 'excellent' ? '#10b981' : item.status === 'good' ? '#6366f1' : '#f59e0b'}`
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '24px' }}>{item.icon}</span>
-                    <span style={{
-                      ...styles.badge,
-                      background: item.status === 'excellent' ? 'rgba(16,185,129,0.2)' : 'rgba(99,102,241,0.2)',
-                      color: item.status === 'excellent' ? '#10b981' : '#6366f1'
-                    }}>
-                      {item.status === 'excellent' ? '★ Excellent' : '✓ Good'}
-                    </span>
-                  </div>
-                  <h3 style={{ fontWeight: '600', color: styles.pageTitle.color, marginBottom: '8px' }}>{item.metric}</h3>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                    <span style={{ fontSize: '28px', fontWeight: '700', color: '#10b981' }}>
-                      {item.value}{item.unit || '%'}
-                    </span>
-                    <span style={{ color: '#888', fontSize: '12px' }}>
-                      Benchmark: {item.benchmark}{item.unit || '%'}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {activeTab === 'alerts' && (
-          <>
-            <h1 style={styles.pageTitle}>🔔 Alerts & Notifications</h1>
-            <div style={{ ...styles.card, maxWidth: '800px' }}>
-              {[
-                { type: 'urgent', icon: '🚨', title: 'A/R Alert', message: '3 accounts over 120 days require immediate attention', time: '2 hours ago', amount: '$45,230' },
-                { type: 'warning', icon: '⚠️', title: 'Claim Denial Spike', message: 'Denial rate increased 2.3% this week - review coding patterns', time: '5 hours ago' },
-                { type: 'success', icon: '✅', title: 'Collection Goal Met', message: 'March collections exceeded target by 8%', time: '1 day ago', amount: '+$32,100' },
-                { type: 'info', icon: 'ℹ️', title: 'Benchmark Update', message: 'Q1 2024 industry benchmarks now available', time: '2 days ago' },
-                { type: 'warning', icon: '📊', title: 'Patient Volume Drop', message: 'New patient appointments down 15% vs last month', time: '3 days ago' },
-                { type: 'success', icon: '🏆', title: 'Top Quartile Achievement', message: 'Your clean claim rate reached top 10% nationally', time: '1 week ago' }
-              ].map((alert, i) => (
-                <div key={i} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: '16px', padding: '16px',
-                  borderBottom: '1px solid rgba(99,102,241,0.1)',
-                  background: i === 0 ? 'rgba(239,68,68,0.05)' : 'transparent'
-                }}>
-                  <span style={{ fontSize: '24px' }}>{alert.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>{alert.title}</h3>
-                      <span style={{ fontSize: '11px', color: '#888' }}>{alert.time}</span>
-                    </div>
-                    <p style={{ color: '#666', fontSize: '13px', margin: '4px 0' }}>{alert.message}</p>
-                    {alert.amount && (
-                      <span style={{
-                        ...styles.badge,
-                        background: alert.type === 'success' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
-                        color: alert.type === 'success' ? '#10b981' : '#ef4444'
-                      }}>
-                        {alert.amount}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        {activeTab === 'export' && (
-          <>
-            <h1 style={styles.pageTitle}>📤 Data Export & Reports</h1>
-            <div style={styles.grid}>
-              {[
-                { title: 'Executive Summary', icon: '📊', description: 'High-level KPIs and trends', format: 'PDF' },
-                { title: 'Financial Report', icon: '💰', description: 'Revenue, collections, A/R aging', format: 'Excel' },
-                { title: 'Quality Metrics', icon: '✅', description: 'MIPS scores and quality data', format: 'PDF' },
-                { title: 'Competitor Analysis', icon: '🎯', description: 'Market positioning report', format: 'PDF' },
-                { title: 'Staff Performance', icon: '👥', description: 'Provider productivity metrics', format: 'Excel' },
-                { title: 'Raw Data Export', icon: '📁', description: 'All metrics in CSV format', format: 'CSV' }
-              ].map((report, i) => (
-                <div key={i} style={styles.metricCard}>
-                  <div style={{ fontSize: '36px', marginBottom: '12px' }}>{report.icon}</div>
-                  <h3 style={{ fontWeight: '600', color: styles.pageTitle.color, marginBottom: '4px' }}>{report.title}</h3>
-                  <p style={{ color: '#888', fontSize: '12px', marginBottom: '12px' }}>{report.description}</p>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ ...styles.badge, background: 'rgba(99,102,241,0.2)', color: '#6366f1' }}>{report.format}</span>
-                    <button 
-                      onClick={() => alert(`Exporting ${report.title}...`)}
-                      style={{ ...styles.button, ...styles.primaryBtn, padding: '6px 12px', fontSize: '12px' }}
-                    >
-                      Export
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={{ ...styles.card, marginTop: '24px' }}>
-              <div style={styles.cardTitle}>📅 Scheduled Reports</div>
-              <p style={{ color: '#888', fontSize: '13px', marginBottom: '16px' }}>
-                Set up automated report delivery to your inbox
-              </p>
-              <button style={{ ...styles.button, ...styles.primaryBtn }}>
-                + Schedule New Report
-              </button>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'social' && (
-          <>
-            <h1 style={styles.pageTitle}>📱 Social Media Marketing</h1>
-            <div style={styles.grid}>
-              {SOCIAL_PLATFORMS.map(platform => (
-                <div 
-                  key={platform.id} 
-                  style={{
-                    ...styles.metricCard,
-                    cursor: 'pointer',
-                    border: selectedPlatform === platform.id ? `2px solid ${platform.color}` : '1px solid rgba(99,102,241,0.1)'
+                { id: 'overview', label: '📊 Overview', active: surveyMode === 'list' && !currentSurvey },
+                { id: 'create', label: '➕ Create Survey', active: surveyMode === 'create' },
+                { id: 'results', label: '📈 Results', active: surveyMode === 'results' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    if (tab.id === 'overview') { setSurveyMode('list'); setCurrentSurvey(null); }
+                    else if (tab.id === 'create') { 
+                      setSurveyMode('create'); 
+                      setCurrentSurvey(null);
+                      setSurveyQuestions([]);
+                      setSelectedStaff([]);
+                      setSurveyTitle('');
+                      setSurveyCategory('satisfaction');
+                    }
+                    else if (tab.id === 'results') { setSurveyMode('results'); }
                   }}
-                  onClick={() => setSelectedPlatform(platform.id)}
+                  style={{
+                    ...styles.button,
+                    ...(tab.active ? styles.primaryBtn : styles.secondaryBtn)
+                  }}
                 >
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>{platform.icon}</div>
-                  <h3 style={{ fontWeight: '600', color: platform.color }}>{platform.name}</h3>
-                  <div style={{ marginTop: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ color: '#888', fontSize: '12px' }}>Avg CPC</span>
-                      <span style={{ fontWeight: '600', color: styles.pageTitle.color }}>${platform.cpc}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div style={{ ...styles.card, marginTop: '24px' }}>
-              <div style={styles.cardTitle}>📊 Campaign Performance</div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
-                <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(16,185,129,0.1)', borderRadius: '12px' }}>
-                  <div style={{ fontSize: '28px', fontWeight: '700', color: '#10b981' }}>2,847</div>
-                  <div style={{ color: '#888', fontSize: '12px' }}>New Leads (MTD)</div>
-                </div>
-                <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(99,102,241,0.1)', borderRadius: '12px' }}>
-                  <div style={{ fontSize: '28px', fontWeight: '700', color: '#6366f1' }}>4.2%</div>
-                  <div style={{ color: '#888', fontSize: '12px' }}>Conversion Rate</div>
-                </div>
-                <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(245,158,11,0.1)', borderRadius: '12px' }}>
-                  <div style={{ fontSize: '28px', fontWeight: '700', color: '#f59e0b' }}>$12.50</div>
-                  <div style={{ color: '#888', fontSize: '12px' }}>Cost Per Lead</div>
-                </div>
-                <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(139,92,246,0.1)', borderRadius: '12px' }}>
-                  <div style={{ fontSize: '28px', fontWeight: '700', color: '#8b5cf6' }}>$35,600</div>
-                  <div style={{ color: '#888', fontSize: '12px' }}>Ad Spend (MTD)</div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'profile' && (
-          <>
-            <h1 style={styles.pageTitle}>Practice Profile</h1>
-            <div style={{...styles.card, maxWidth: '600px'}}>
-              <div style={{fontSize: '48px', textAlign: 'center', marginBottom: '16px'}}>🏥</div>
-              <h2 style={{fontSize: '24px', fontWeight: '700', textAlign: 'center', marginBottom: '24px', color: styles.pageTitle.color}}>
-                {practiceProfile?.name || 'Demo'}
-              </h2>
-              {practiceProfile && Object.entries(practiceProfile).filter(([k]) => k !== 'createdAt').map(([k, v]) => (
-                <div key={k} style={{
-                  display: 'flex', justifyContent: 'space-between', padding: '12px',
-                  background: 'rgba(99,102,241,0.05)', borderRadius: '8px', marginBottom: '8px'
-                }}>
-                  <span style={{color: '#888', textTransform: 'capitalize'}}>{k}</span>
-                  <span style={{fontWeight: '500', color: styles.pageTitle.color}}>
-                    {Array.isArray(v) ? v.join(', ') : v}
-                  </span>
-                </div>
-              ))}
-              <button onClick={() => {setShowRegistration(true); setRegStep(0); setRegAnswers({});}} 
-                style={{...styles.button, ...styles.secondaryBtn, width: '100%', marginTop: '16px'}}>
-                Edit Profile
-              </button>
-              <button onClick={() => {
-                localStorage.clear(); 
-                setPracticeProfile(null); 
-                setMetricValues({}); 
-                setDemoMode(false);
-                setShowRegistration(true); 
-                setRegStep(0);
-              }} style={{
-                width: '100%', marginTop: '12px', padding: '12px', background: 'none',
-                border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '14px'
-              }}>
-                Reset All
-              </button>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'upload' && (
-          <>
-            <h1 style={styles.pageTitle}>📁 Data Upload Center</h1>
-            
-            <div style={styles.grid}>
-              <div style={{...styles.card, gridColumn: 'span 2'}}>
-                <div style={styles.cardTitle}>📤 Upload Practice Data</div>
-                <p style={{ color: '#888', fontSize: '13px', marginBottom: '16px' }}>
-                  Import your practice metrics from CSV, Excel, or connect directly to your EMR system.
-                </p>
-                
-                <div style={{
-                  border: '2px dashed #6366f1',
-                  borderRadius: '12px',
-                  padding: '40px',
-                  textAlign: 'center',
-                  background: 'rgba(99,102,241,0.05)',
-                  cursor: 'pointer',
-                  marginBottom: '24px'
-                }} onClick={() => fileInputRef.current?.click()}>
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>📂</div>
-                  <p style={{ fontWeight: '600', color: styles.pageTitle.color, marginBottom: '8px' }}>
-                    Drag & drop files here or click to browse
-                  </p>
-                  <p style={{ color: '#888', fontSize: '12px' }}>
-                    Supports CSV, XLSX, and JSON files up to 10MB
-                  </p>
-                  <input 
-                    type="file" 
-                    ref={fileInputRef}
-                    onChange={handleCSVImport}
-                    accept=".csv,.xlsx,.json"
-                    style={{ display: 'none' }}
-                  />
-                </div>
-
-                {importedData && (
-                  <div style={{
-                    padding: '16px',
-                    background: 'rgba(16,185,129,0.1)',
-                    borderRadius: '8px',
-                    marginBottom: '16px'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '20px' }}>✅</span>
-                      <strong style={{ color: '#10b981' }}>File Uploaded Successfully</strong>
-                    </div>
-                    <p style={{ color: '#666', fontSize: '13px' }}>
-                      {importedData.length} records imported and ready for analysis
-                    </p>
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <button 
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{...styles.button, ...styles.primaryBtn, flex: 1}}
-                  >
-                    📤 Upload File
-                  </button>
-                  <button 
-                    onClick={() => alert('EMR connection coming soon!')}
-                    style={{...styles.button, ...styles.secondaryBtn, flex: 1}}
-                  >
-                    🔗 Connect EMR
-                  </button>
-                </div>
-              </div>
-
-              <div style={styles.card}>
-                <div style={styles.cardTitle}>🔌 EMR Integrations</div>
-                {[
-                  { name: 'Modernizing Medicine', status: 'available', icon: '💊' },
-                  { name: 'NextGen', status: 'available', icon: '🏥' },
-                  { name: 'Epic', status: 'coming', icon: '📋' },
-                  { name: 'Cerner', status: 'coming', icon: '🖥️' },
-                  { name: 'athenahealth', status: 'available', icon: '☁️' }
-                ].map((emr, i) => (
-                  <div key={i} style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '12px', borderRadius: '8px', marginBottom: '8px',
-                    background: 'rgba(99,102,241,0.05)'
-                  }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span>{emr.icon}</span>
-                      <span style={{ fontWeight: '500', color: styles.pageTitle.color }}>{emr.name}</span>
-                    </div>
-                    <span style={{
-                      ...styles.badge,
-                      background: emr.status === 'available' ? 'rgba(16,185,129,0.2)' : 'rgba(245,158,11,0.2)',
-                      color: emr.status === 'available' ? '#10b981' : '#f59e0b'
-                    }}>
-                      {emr.status === 'available' ? '✓ Available' : 'Coming Soon'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <div style={styles.card}>
-                <div style={styles.cardTitle}>📊 Recent Uploads</div>
-                {[
-                  { name: 'March_Metrics.csv', date: 'Mar 15, 2026', records: 1247, status: 'processed' },
-                  { name: 'Q1_Revenue.xlsx', date: 'Mar 10, 2026', records: 89, status: 'processed' },
-                  { name: 'Patient_Data.csv', date: 'Mar 5, 2026', records: 3420, status: 'processed' }
-                ].map((file, i) => (
-                  <div key={i} style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '12px', borderRadius: '8px', marginBottom: '8px',
-                    background: 'rgba(99,102,241,0.05)'
-                  }}>
-                    <div>
-                      <div style={{ fontWeight: '500', color: styles.pageTitle.color }}>{file.name}</div>
-                      <div style={{ fontSize: '11px', color: '#888' }}>{file.date} • {file.records} records</div>
-                    </div>
-                    <span style={{
-                      ...styles.badge,
-                      background: 'rgba(16,185,129,0.2)',
-                      color: '#10b981'
-                    }}>
-                      ✓ Processed
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div style={{...styles.card, marginTop: '24px'}}>
-              <div style={styles.cardTitle}>📋 Data Mapping</div>
-              <p style={{ color: '#888', fontSize: '13px', marginBottom: '16px' }}>
-                Map your data columns to MedPact metrics for accurate benchmarking
-              </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
-                {[
-                  { source: 'Collection %', target: 'collection_rate' },
-                  { source: 'Days in A/R', target: 'days_in_ar' },
-                  { source: 'Denial %', target: 'denial_rate' },
-                  { source: 'First Pass %', target: 'first_pass_rate' }
-                ].map((mapping, i) => (
-                  <div key={i} style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '12px', background: 'rgba(99,102,241,0.05)', borderRadius: '8px'
-                  }}>
-                    <span style={{ color: '#888', fontSize: '13px' }}>{mapping.source}</span>
-                    <span style={{ color: '#6366f1' }}>→</span>
-                    <span style={{ fontWeight: '500', color: '#6366f1', fontSize: '13px' }}>{mapping.target}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        {activeTab === 'consultant' && (
-          <>
-            <h1 style={styles.pageTitle}>🧑‍💼 Consultant Portal</h1>
-            
-            <div style={{...styles.card, marginBottom: '24px'}}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                <div style={{
-                  width: '80px', height: '80px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '36px'
-                }}>
-                  🧑‍💼
-                </div>
-                <div>
-                  <h2 style={{ fontSize: '24px', fontWeight: '700', color: styles.pageTitle.color }}>
-                    Your KCN Consultant
-                  </h2>
-                  <p style={{ color: '#888' }}>Dedicated practice optimization specialist</p>
-                </div>
-              </div>
-
-              <div style={styles.grid}>
-                <div style={styles.metricCard}>
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>👤</div>
-                  <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>Sarah Mitchell</h3>
-                  <p style={{ color: '#888', fontSize: '12px' }}>Senior Practice Consultant</p>
-                  <p style={{ color: '#6366f1', fontSize: '12px', marginTop: '8px' }}>15+ years ophthalmology experience</p>
-                </div>
-                <div style={styles.metricCard}>
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>📞</div>
-                  <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>Contact</h3>
-                  <p style={{ color: '#888', fontSize: '13px', marginTop: '8px' }}>sarah.mitchell@kcn.com</p>
-                  <p style={{ color: '#888', fontSize: '13px' }}>(555) 123-4567</p>
-                </div>
-                <div style={styles.metricCard}>
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>📅</div>
-                  <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>Next Meeting</h3>
-                  <p style={{ color: '#10b981', fontSize: '13px', marginTop: '8px', fontWeight: '600' }}>
-                    April 2, 2026 at 2:00 PM
-                  </p>
-                  <p style={{ color: '#888', fontSize: '12px' }}>Quarterly Review</p>
-                </div>
-              </div>
-            </div>
-
-            <div style={styles.grid}>
-              <div style={{...styles.card, gridColumn: 'span 2'}}>
-                <div style={styles.cardTitle}>📋 Action Items</div>
-                {[
-                  { task: 'Review denial patterns for CPT 66984', status: 'in-progress', priority: 'high', due: 'Mar 28' },
-                  { task: 'Implement premium IOL conversion strategy', status: 'pending', priority: 'high', due: 'Apr 5' },
-                  { task: 'Staff training on new billing codes', status: 'completed', priority: 'medium', due: 'Mar 20' },
-                  { task: 'Optimize A/R follow-up workflow', status: 'in-progress', priority: 'medium', due: 'Apr 10' },
-                  { task: 'Patient recall system audit', status: 'pending', priority: 'low', due: 'Apr 15' }
-                ].map((item, i) => (
-                  <div key={i} style={{
-                    display: 'flex', alignItems: 'center', gap: '12px',
-                    padding: '12px', borderRadius: '8px', marginBottom: '8px',
-                    background: item.status === 'completed' ? 'rgba(16,185,129,0.05)' : 'rgba(99,102,241,0.05)',
-                    borderLeft: `3px solid ${
-                      item.status === 'completed' ? '#10b981' : 
-                      item.priority === 'high' ? '#ef4444' : 
-                      item.priority === 'medium' ? '#f59e0b' : '#6366f1'
-                    }`
-                  }}>
-                    <input 
-                      type="checkbox" 
-                      checked={item.status === 'completed'}
-                      readOnly
-                      style={{ width: '18px', height: '18px' }}
-                    />
-                    <div style={{ flex: 1 }}>
-                      <div style={{ 
-                        fontWeight: '500', 
-                        color: item.status === 'completed' ? '#888' : styles.pageTitle.color,
-                        textDecoration: item.status === 'completed' ? 'line-through' : 'none'
-                      }}>
-                        {item.task}
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#888' }}>Due: {item.due}</div>
-                    </div>
-                    <span style={{
-                      ...styles.badge,
-                      background: item.status === 'completed' ? 'rgba(16,185,129,0.2)' : 
-                                 item.status === 'in-progress' ? 'rgba(99,102,241,0.2)' : 'rgba(245,158,11,0.2)',
-                      color: item.status === 'completed' ? '#10b981' : 
-                             item.status === 'in-progress' ? '#6366f1' : '#f59e0b'
-                    }}>
-                      {item.status === 'completed' ? '✓ Done' : 
-                       item.status === 'in-progress' ? '⏳ In Progress' : '○ Pending'}
-                    </span>
-                  </div>
-                ))}
-                <button style={{...styles.button, ...styles.primaryBtn, marginTop: '12px'}}>
-                  + Add Action Item
+                  {tab.label}
                 </button>
-              </div>
+              ))}
+            </div>
 
-              <div style={styles.card}>
-                <div style={styles.cardTitle}>📊 Engagement Summary</div>
-                <div style={{ marginBottom: '16px' }}>
-                  {[
-                    { label: 'Meetings This Quarter', value: '4', icon: '📅' },
-                    { label: 'Action Items Completed', value: '12', icon: '✅' },
-                    { label: 'Revenue Impact', value: '+$127K', icon: '💰' },
-                    { label: 'Days to Next Review', value: '6', icon: '⏱️' }
-                  ].map((stat, i) => (
-                    <div key={i} style={{
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      padding: '12px', background: 'rgba(99,102,241,0.05)', borderRadius: '8px', marginBottom: '8px'
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span>{stat.icon}</span>
-                        <span style={{ color: '#888', fontSize: '13px' }}>{stat.label}</span>
+            {/* Survey List View */}
+            {surveyMode === 'list' && !currentSurvey && (
+              <>
+                {/* Staff Overview Cards */}
+                <div style={styles.grid}>
+                  {STAFF_MEMBERS.slice(0, 6).map((staff, i) => (
+                    <div key={i} style={styles.metricCard}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                        <div style={{ fontSize: '36px' }}>{staff.icon}</div>
+                        <div>
+                          <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>{staff.name}</h3>
+                          <p style={{ fontSize: '12px', color: '#888' }}>{staff.role}</p>
+                        </div>
                       </div>
-                      <span style={{ fontWeight: '700', color: '#6366f1' }}>{stat.value}</span>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                        <div style={{ padding: '8px', background: 'rgba(16,185,129,0.1)', borderRadius: '6px' }}>
+                          <div style={{ fontSize: '18px', fontWeight: '700', color: '#10b981' }}>
+                            {Math.floor(Math.random() * 10) + 90}%
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#888' }}>Satisfaction</div>
+                        </div>
+                        <div style={{ padding: '8px', background: 'rgba(99,102,241,0.1)', borderRadius: '6px' }}>
+                          <div style={{ fontSize: '18px', fontWeight: '700', color: '#6366f1' }}>
+                            {Math.floor(Math.random() * 3) + 1}/{3}
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#888' }}>Surveys</div>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
-                <button style={{...styles.button, ...styles.secondaryBtn, width: '100%'}}>
-                  📅 Schedule Meeting
-                </button>
-              </div>
-            </div>
 
-            <div style={{...styles.card, marginTop: '24px'}}>
-              <div style={styles.cardTitle}>💬 Recent Notes</div>
-              {[
-                { date: 'Mar 22, 2026', note: 'Discussed premium IOL strategy. Practice showing strong interest in expanding Symfony offering. Follow up on staff training needs.' },
-                { date: 'Mar 15, 2026', note: 'Reviewed Q1 metrics. Collection rate improved 2.3%. Identified A/R aging as priority focus area for Q2.' },
-                { date: 'Mar 8, 2026', note: 'Initial assessment complete. Key opportunities: denial reduction, premium IOL conversion, patient recall optimization.' }
-              ].map((note, i) => (
-                <div key={i} style={{
-                  padding: '16px', background: 'rgba(99,102,241,0.05)', borderRadius: '8px', marginBottom: '12px'
-                }}>
-                  <div style={{ fontSize: '12px', color: '#6366f1', fontWeight: '600', marginBottom: '8px' }}>{note.date}</div>
-                  <p style={{ color: '#666', fontSize: '13px', lineHeight: '1.6' }}>{note.note}</p>
+                {/* Recent Surveys */}
+                <div style={{ ...styles.card, marginTop: '24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <div style={styles.cardTitle}>📋 Recent Surveys</div>
+                    <button 
+                      onClick={() => {
+                        setSurveyMode('create');
+                        setSurveyQuestions([]);
+                        setSelectedStaff([]);
+                        setSurveyTitle('');
+                      }}
+                      style={{ ...styles.button, ...styles.primaryBtn }}
+                    >
+                      ➕ Create New Survey
+                    </button>
+                  </div>
+                  
+                  {SAVED_SURVEYS.map(survey => (
+                    <div 
+                      key={survey.id}
+                      onClick={() => setCurrentSurvey(survey)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '16px',
+                        background: 'rgba(99,102,241,0.05)',
+                        borderRadius: '12px',
+                        marginBottom: '12px',
+                        cursor: 'pointer',
+                        border: '1px solid rgba(99,102,241,0.1)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ fontSize: '32px' }}>{SURVEY_TEMPLATES[survey.category]?.icon}</div>
+                        <div>
+                          <h3 style={{ fontWeight: '600', color: styles.pageTitle.color }}>{survey.title}</h3>
+                          <p style={{ fontSize: '12px', color: '#888' }}>
+                            {survey.date} • {SURVEY_TEMPLATES[survey.category]?.name}
+                          </p>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: '14px', fontWeight: '600', color: styles.pageTitle.color }}>
+                            {survey.responses}/{survey.total} responses
+                          </div>
+                          {survey.score && (
+                            <div style={{ fontSize: '12px', color: '#10b981' }}>
+                              Avg Score: {survey.score}/5
+                            </div>
+                          )}
+                        </div>
+                        <span style={{
+                          ...styles.badge,
+                          background: survey.status === 'completed' ? 'rgba(16,185,129,0.2)' :
+                                     survey.status === 'active' ? 'rgba(99,102,241,0.2)' : 'rgba(245,158,11,0.2)',
+                          color: survey.status === 'completed' ? '#10b981' :
+                                 survey.status === 'active' ? '#6366f1' : '#f59e0b'
+                        }}>
+                          {survey.status === 'completed' ? '✓ Completed' :
+                           survey.status === 'active' ? '● Active' : '○ Draft'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </>
-        )}
-      </main>
+              </>
+            )}
 
-      <footer style={{textAlign: 'center', padding: '24px', color: '#666', fontSize: '12px'}}>
-        <p>MedPact v3.2.0</p>
-      </footer>
-    </div>
-  );
-}
+            {/* Survey Detail View */}
+            {surveyMode === 'list' && currentSurvey && (
+              <div style={styles.card}>
+                <button 
+                  onClick={() => setCurrentSurvey(null)}
+                  style={{ ...styles.button, ...styles.secondaryBtn, marginBottom: '16px' }}
+                >
+                  ← Back to Surveys
+                </button>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                  <div style={{ fontSize: '48px' }}>{SURVEY_TEMPLATES[currentSurvey.category]?.icon}</div>
+                  <div>
+                    <h2 style={{ fontSize: '24px', fontWeight: '700', color: styles.pageTitle.color }}>
+                      {currentSurvey.title}
+                    </h2>
+                    <p style={{ color: '#888' }}>{currentSurvey.date} • {currentSurvey.responses} responses</p>
+                  </div>
+                </div>
 
+                {currentSurvey.score && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+                    <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(16,185,129,0.1)', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '32px', fontWeight: '700', color: '#10b981' }}>{currentSurvey.score}</div>
+                      <div style={{ color: '#888', fontSize: '13px' }}>Average Score</div>
+                    </div>
+                    <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(99,102,241,0.1)', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '32px', fontWeight: '700', color: '#6366f1' }}>
+                        {Math.round(currentSurvey.responses / currentSurvey.total * 100)}%
+                      </div>
+                      <div style={{ color: '#888', fontSize: '13px' }}>Response Rate</div>
+                    </div>
+                    <div style={{ textAlign: 'center', padding: '20px', background: 'rgba(245,158,11,0.1)', borderRadius: '12px' }}>
+                      <div style={{ fontSize: '32px', fontWeight: '700', color: '#f59e0b' }}>+12%</div>
+                      <div style={{ color: '#888', fontSize: '13px' }}>vs Last Survey</div>
+                    </div>
+                  </div>
+                )}
+
+                <div style={styles.cardTitle}>📊 Question Results</div>
+                {SURVEY_TEMPLATES[currentSurvey.category]?.questions.map((q, i) => (
+                  <div key={i} style={{
+                    padding: '16px',
+                    background: 'rgba(99,102,241,0.05)',
+                    borderRadius: '8px',
+                    marginBottom: '12px'
+                  }}>
+                    <div style={{ 
+                      fontWeight: '600', 
+                      color: styles.pageTitle.color, 
+                      marginBottom: '12px',
+                      fontSize: '14px'
+                    }}>
+                      {i + 1}. {q.text}
+                      {q.required && <span style={{ color: '#ef4444', marginLeft: '4px' }}>*</span>}
+                    </div>
+                    
+                    {q.type === 'scale' && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ flex: 1, height: '8px', background: 'rgba(99,102,241,0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ 
+                            width: `${(Math.random() * 30 + 60)}%`, 
+                            height: '100%', 
+                            background: 'linear-gradient(90deg, #6366f1, #10b981)',
+                            borderRadius: '4px'
+                          }} />
+                        </div>
+                        <span style={{ fontWeight: '600', color: '#10b981' }}>
+                          {(Math.random() * 1.5 + 3.5).toFixed(1)}/5
+                        </span>
+                      </div>
+                    )}
+                    
+                    {q.type === 'nps' && (
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <span style={{ color: '#10b981', fontWeight: '600' }}>Promoters: 60%</span>
+                        <span style={{ color: '#f59e0b', fontWeight: '600' }}>Passive: 30%</span>
+                        <span style={{ color: '#ef4444', fontWeight: '600' }}>Detractors: 10%</span>
+                        <span style={{ marginLeft: 'auto', fontSize: '18px', fontWeight: '700', color: '#10b981' }}>NPS: +50</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+                  <button style={{ ...styles.button, ...styles.primaryBtn }}>📤 Export Results</button>
+                  <button style={{ ...styles.button, ...styles.secondaryBtn }}>📧 Send Reminder</button>
+                  <button style={{ ...styles.button, ...styles.secondaryBtn }}>🔄 Clone Survey</button>
+                </div>
+              </div>
+            )}
+
+            {/* Survey Creation View */}
+            {surveyMode === 'create' && (
+              <>
+                <div style={styles.grid}>
+                  {/* Left Column - Survey Builder */}
+                  <div style={{ ...styles.card, gridColumn: 'span 2' }}>
+                    <div style={styles.cardTitle}>🤖 AI-Guided Survey Builder</div>
+                    
+                    {/* Survey Title */}
+                    <div style={{ marginBottom: '24px' }}>
+                      <label style={{ display: 'block', fontWeight: '600', color: styles.pageTitle.color, marginBottom: '8px' }}>
+                        Survey Title
+                      </label>
+                      <input
+                        type="text"
+                        value={surveyTitle}
+                        onChange={(e) => setSurveyTitle(e.target.value)}
+                        placeholder="e.g., Q2 2026 Staff Satisfaction Survey"
+                        style={{ ...styles.input, width: '100%', fontSize: '16px', padding: '12px 16px' }}
+                      />
+                        onClick={() => {
+                          if (!surveyTitle || surveyQuestions.length === 0 || selectedStaff.length === 0) {
+                            alert('Please complete all required fields:\n- Survey title\n- At least one question\n- At least one recipient');
+                            return;
+                          }
+                          const confirmed = window.confirm(
+                            `Send "${surveyTitle}" to ${selectedStaff.length} staff members?\n\n` +
+                            `Questions: ${surveyQuestions.length}\n` +
+                            `Delivery: Email`
+                          );
+                          if (confirmed) {
+                            alert(`✅ Survey sent successfully!\n\n` +
+                              `"${surveyTitle}" has been sent to ${selectedStaff.length} staff members.\n\n` +
+                              `They will receive an email with the survey link.`
+                            );
+                            setSurveyMode('list');
+                            setCurrentSurvey(null);
+                            setSurveyQuestions([]);
+                            setSelectedStaff([]);
+                            setSurveyTitle('');
+                          }
+                        }}
+                        style={{
+                          ...styles.button,
+                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          color: 'white',
+                          border: 'none',
+                          padding: '16px',
+                          fontSize: '16px',
+                          fontWeight: '700'
+                        }}
+                      >
+                        📤 Send Survey Now
+                      </button>
+                      <button
+                        onClick={() => {
+                          alert('Survey saved as draft!');
+                          setSurveyMode('list');
+                        }}
+                        style={{ ...styles.button, ...styles.secondaryBtn }}
+                      >
+                        💾 Save as Draft
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSurveyMode('preview');
+                        }}
+                        style={{ ...styles.button, ...styles.secondaryBtn }}
+                      >
+                        👁️ Preview Survey
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Survey Preview Mode */}
+            {surveyMode === 'preview' && (
+              <div style={{ ...styles.card, maxWidth: '700px', margin: '0 auto' }}>
+                <button
+                  onClick={() => setSurveyMode('create')}
+                  style={{ ...styles.button, ...styles.secondaryBtn, marginBottom: '24px' }}
+                >
+                  ← Back to Editor
+                </button>
+
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                  <div style={{ fontSize: '48px', marginBottom: '16px' }}>
+                    {SURVEY_TEMPLATES[surveyCategory]?.icon}
+                  </div>
+                  <h2 style={{ fontSize: '24px', fontWeight: '700', color: styles.pageTitle.color }}>
+                    {surveyTitle || 'Untitled Survey'}
+                  </h2>
+                  <p style={{ color: '#888' }}>
+                    {SURVEY_TEMPLATES[surveyCategory]?.description}
+                  </p>
+                </div>
+
+                {surveyQuestions.map((q, i) => (
+                  <div key={q.id || i} style={{
+                    padding: '24px',
+                    background: 'rgba(99,102,241,0.05)',
+                    borderRadius: '12px',
+                    marginBottom: '16px'
+                  }}>
+                    <div style={{ 
