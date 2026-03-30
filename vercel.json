@@ -1,3 +1,4 @@
+
 {
   "builds": [
     {
@@ -16,5 +17,6 @@
   ],
   "github": {
     "silent": false
-  }
+  },
+  "rootDirectory": "apps/web"
 }
