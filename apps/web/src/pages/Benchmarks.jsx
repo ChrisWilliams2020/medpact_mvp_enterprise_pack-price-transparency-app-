@@ -899,101 +899,100 @@ function CompetitorsTab() {
 
           {/* Competitor Cards */}
           <div style={styles.grid(2)}>
-            {filteredCompetitors.map((comp) => (
-              <div key={comp.id} style={styles.card}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <h3 style={{ margin: 0 }}>{comp.name}</h3>
-                      <span style={styles.badge(
-                        comp.type === 'ophthalmology' ? '#3b82f6' : 
-                        comp.type === 'optometry' ? '#8b5cf6' : '#10b981'
-                      )}>
-                        {comp.type === 'ophthalmology' ? '🔬' : comp.type === 'optometry' ? '👓' : '🏥'} {comp.type}
-                      </span>
+            {filteredCompetitors.map(consultant => {
+              const category = CONSULTANT_CATEGORIES.find(c => c.id === consultant.category);
+              return (
+                <div key={consultant.id} style={styles.card}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                    <div>
+                      <h3 style={{ margin: 0 }}>{consultant.name}</h3>
+                      <div style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '0.25rem' }}>{consultant.title}</div>
+                      <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem' }}>{consultant.company}</div>
+                      <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <span>⭐ {consultant.rating} ({consultant.reviews} reviews)</span>
+                        <span>📍 {consultant.location}</span>
+                        <span>⏱️ Response: {consultant.responseTime}</span>
+                      </div>
                     </div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
-                      📍 {comp.distance} • {comp.providers} providers
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        style={{
+                          ...styles.button(compareList.find(c => c.id === consultant.id) ? 'success' : 'secondary'),
+                          padding: '0.4rem 0.75rem',
+                          fontSize: '0.75rem'
+                        }}
+                        onClick={() => toggleCompare(consultant)}
+                      >
+                        {compareList.find(c => c.id === consultant.id) ? '✓ Added' : '+ Compare'}
+                      </button>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+
+                  {/* Ratings */}
+                  <div style={{ marginBottom: '1rem' }}>
+                    <RatingBar value={consultant.googleRating} label={`Google (${consultant.googleReviews} reviews)`} color="#4285f4" />
+                    <RatingBar value={consultant.yelpRating} label={`Yelp (${consultant.yelpReviews} reviews)`} color="#d32323" />
+                    <RatingBar value={consultant.healthgradesRating} label="Healthgrades" color="#00a5a5" />
+                  </div>
+
+                  {/* Services */}
+                  <div style={{ marginBottom: '1rem' }}>
+                    <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.25rem' }}>Services</div>
+                    <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                      {consultant.services.slice(0, 4).map((s, i) => (
+                        <span key={i} style={styles.badge('#3b82f6')}>{s}</span>
+                      ))}
+                      {consultant.services.length > 4 && (
+                        <span style={styles.badge('#6b7280')}>+{consultant.services.length - 4}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Strengths/Weaknesses */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                    <div>
+                      <div style={{ fontSize: '0.8rem', color: '#10b981', marginBottom: '0.25rem' }}>💪 Strengths</div>
+                      <ul style={{ margin: 0, paddingLeft: '1rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>
+                        {consultant.strengths.slice(0, 2).map((s, i) => <li key={i}>{s}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.8rem', color: '#ef4444', marginBottom: '0.25rem' }}>⚠️ Weaknesses</div>
+                      <ul style={{ margin: 0, paddingLeft: '1rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>
+                        {consultant.weaknesses.slice(0, 2).map((w, i) => <li key={i}>{w}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
+                    borderTop: '1px solid rgba(255,255,255,0.1)', 
+                    paddingTop: '0.75rem' 
+                  }}>
+                    <div>
+                      <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>Market Share: </span>
+                      <span style={{ fontWeight: 'bold' }}>{consultant.marketShare}%</span>
+                    </div>
                     <button
                       style={{
-                        ...styles.button(compareList.find(c => c.id === comp.id) ? 'success' : 'secondary'),
+                        ...styles.button('primary'),
                         padding: '0.4rem 0.75rem',
                         fontSize: '0.75rem'
                       }}
-                      onClick={() => toggleCompare(comp)}
+                      onClick={() => {
+                        setSelectedCompetitor(consultant);
+                        setShowWebsiteIntel(true);
+                      }}
                     >
-                      {compareList.find(c => c.id === comp.id) ? '✓ Added' : '+ Compare'}
+                      🔍 Website Intel
                     </button>
                   </div>
                 </div>
-
-                {/* Ratings */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <RatingBar value={comp.googleRating} label={`Google (${comp.googleReviews} reviews)`} color="#4285f4" />
-                  <RatingBar value={comp.yelpRating} label={`Yelp (${comp.yelpReviews} reviews)`} color="#d32323" />
-                  <RatingBar value={comp.healthgradesRating} label="Healthgrades" color="#00a5a5" />
-                </div>
-
-                {/* Services */}
-                <div style={{ marginBottom: '1rem' }}>
-                  <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginBottom: '0.25rem' }}>Services</div>
-                  <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                    {comp.services.slice(0, 4).map((s, i) => (
-                      <span key={i} style={styles.badge('#3b82f6')}>{s}</span>
-                    ))}
-                    {comp.services.length > 4 && (
-                      <span style={styles.badge('#6b7280')}>+{comp.services.length - 4}</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Strengths/Weaknesses */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: '#10b981', marginBottom: '0.25rem' }}>💪 Strengths</div>
-                    <ul style={{ margin: 0, paddingLeft: '1rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>
-                      {comp.strengths.slice(0, 2).map((s, i) => <li key={i}>{s}</li>)}
-                    </ul>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: '#ef4444', marginBottom: '0.25rem' }}>⚠️ Weaknesses</div>
-                    <ul style={{ margin: 0, paddingLeft: '1rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)' }}>
-                      {comp.weaknesses.slice(0, 2).map((w, i) => <li key={i}>{w}</li>)}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  borderTop: '1px solid rgba(255,255,255,0.1)', 
-                  paddingTop: '0.75rem' 
-                }}>
-                  <div>
-                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>Market Share: </span>
-                    <span style={{ fontWeight: 'bold' }}>{comp.marketShare}%</span>
-                  </div>
-                  <button
-                    style={{
-                      ...styles.button('primary'),
-                      padding: '0.4rem 0.75rem',
-                      fontSize: '0.75rem'
-                    }}
-                    onClick={() => {
-                      setSelectedCompetitor(comp);
-                      setShowWebsiteIntel(true);
-                    }}
-                  >
-                    🔍 Website Intel
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </>
       )}
@@ -1456,109 +1455,110 @@ function ConsultantsTab() {
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
 
-        {/* Consultant Detail Modal */}
-        {selectedConsultant && (
-          <div style={styles.modal} onClick={() => setSelectedConsultant(null)}>
-            <div style={styles.modalContent} onClick={e => e.stopPropagation()}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                <div style={{ display: 'flex', gap: '1.5rem' }}>
-                  <div style={{ fontSize: '5rem' }}>{selectedConsultant.avatar}</div>
-                  <div>
-                    <h2 style={{ margin: 0 }}>{selectedConsultant.name}</h2>
-                    <div style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '0.25rem' }}>{selectedConsultant.title}</div>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem' }}>{selectedConsultant.company}</div>
-                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                      <span>⭐ {selectedConsultant.rating} ({selectedConsultant.reviews} reviews)</span>
-                      <span>📍 {selectedConsultant.location}</span>
-                      <span>⏱️ Response: {selectedConsultant.responseTime}</span>
-                    </div>
+      {/* Consultant Detail Modal */}
+      {selectedConsultant && (
+        <div style={styles.modal} onClick={() => setSelectedConsultant(null)}>
+          <div style={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', gap: '1.5rem' }}>
+                <div style={{ fontSize: '5rem' }}>{selectedConsultant.avatar}</div>
+                <div>
+                  <h2 style={{ margin: 0 }}>{selectedConsultant.name}</h2>
+                  <div style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '0.25rem' }}>{selectedConsultant.title}</div>
+                  <div style={{ color: 'rgba(255,255,255,0.5)', marginBottom: '0.5rem' }}>{selectedConsultant.company}</div>
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <span>⭐ {selectedConsultant.rating} ({selectedConsultant.reviews} reviews)</span>
+                    <span>📍 {selectedConsultant.location}</span>
+                    <span>⏱️ Response: {selectedConsultant.responseTime}</span>
                   </div>
                 </div>
-                <button style={styles.button('secondary')} onClick={() => setSelectedConsultant(null)}>✕</button>
               </div>
+              <button style={styles.button('secondary')} onClick={() => setSelectedConsultant(null)}>✕</button>
+            </div>
 
-              <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '1.5rem' }}>{selectedConsultant.bio}</p>
+            <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '1.5rem' }}>{selectedConsultant.bio}</p>
 
-              <div style={styles.grid(3)}>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{selectedConsultant.experience} yrs</div>
-                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Experience</div>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{selectedConsultant.projectsCompleted}</div>
-                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Projects</div>
-                </div>
-                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{selectedConsultant.successRate}%</div>
-                  <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Success Rate</div>
-                </div>
+            <div style={styles.grid(3)}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{selectedConsultant.experience} yrs</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Experience</div>
               </div>
-
-              <div style={{ marginTop: '1.5rem' }}>
-                <h4>Specialties</h4>
-                <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                  {selectedConsultant.specialties.map((s, i) => (
-                    <span key={i} style={styles.badge('#3b82f6')}>{s}</span>
-                  ))}
-                </div>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{selectedConsultant.projectsCompleted}</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Projects</div>
               </div>
-
-              <div style={{ marginTop: '1rem' }}>
-                <h4>Certifications</h4>
-                <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                  {selectedConsultant.certifications.map((c, i) => (
-                    <span key={i} style={styles.badge('#10b981')}>{c}</span>
-                  ))}
-                </div>
-              </div>
-
-              {selectedConsultant.caseStudies && selectedConsultant.caseStudies.length > 0 && (
-                <div style={{ marginTop: '1.5rem' }}>
-                  <h4>Case Studies</h4>
-                  {selectedConsultant.caseStudies.map((cs, i) => (
-                    <div key={i} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
-                      <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>{cs.title}</div>
-                      <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem' }}>
-                        <span style={{ color: '#10b981' }}>📈 {cs.result}</span>
-                        <span style={{ color: 'rgba(255,255,255,0.5)' }}>Client: {cs.client}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {selectedConsultant.packages && selectedConsultant.packages.length > 0 && (
-                <div style={{ marginTop: '1.5rem' }}>
-                  <h4>Service Packages</h4>
-                  <div style={styles.grid(selectedConsultant.packages.length)}>
-                    {selectedConsultant.packages.map((pkg, i) => (
-                      <div key={i} style={{ 
-                        background: 'rgba(255,255,255,0.05)', 
-                        padding: '1rem', 
-                        borderRadius: '0.5rem',
-                        border: '1px solid rgba(255,255,255,0.1)'
-                      }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{pkg.name}</div>
-                        <div style={{ fontSize: '1.25rem', color: '#10b981', fontWeight: 'bold', marginBottom: '0.5rem' }}>
-                          ${pkg.price.toLocaleString()}
-                        </div>
-                        <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>{pkg.description}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                <button style={{ ...styles.button('primary'), flex: 1 }}>💬 Message</button>
-                <button style={{ ...styles.button('success'), flex: 1 }}>📅 Schedule Call</button>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{selectedConsultant.successRate}%</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Success Rate</div>
               </div>
             </div>
+
+            <div style={{ marginTop: '1.5rem' }}>
+              <h4>Specialties</h4>
+              <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                {selectedConsultant.specialties.map((s, i) => (
+                  <span key={i} style={styles.badge('#3b82f6')}>{s}</span>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ marginTop: '1rem' }}>
+              <h4>Certifications</h4>
+              <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                {selectedConsultant.certifications.map((c, i) => (
+                  <span key={i} style={styles.badge('#10b981')}>{c}</span>
+                ))}
+              </div>
+            </div>
+
+            {selectedConsultant.caseStudies && selectedConsultant.caseStudies.length > 0 && (
+              <div style={{ marginTop: '1.5rem' }}>
+                <h4>Case Studies</h4>
+                {selectedConsultant.caseStudies.map((cs, i) => (
+                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '0.5rem' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>{cs.title}</div>
+                    <div style={{ display: 'flex', gap: '1rem', fontSize: '0.85rem' }}>
+                      <span style={{ color: '#10b981' }}>📈 {cs.result}</span>
+                      <span style={{ color: 'rgba(255,255,255,0.5)' }}>Client: {cs.client}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {selectedConsultant.packages && selectedConsultant.packages.length > 0 && (
+              <div style={{ marginTop: '1.5rem' }}>
+                <h4>Service Packages</h4>
+                <div style={styles.grid(selectedConsultant.packages.length)}>
+                  {selectedConsultant.packages.map((pkg, i) => (
+                    <div key={i} style={{ 
+                      background: 'rgba(255,255,255,0.05)', 
+                      padding: '1rem', 
+                      borderRadius: '0.5rem',
+                      border: '1px solid rgba(255,255,255,0.1)'
+                    }}>
+                      <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>{pkg.name}</div>
+                      <div style={{ fontSize: '1.25rem', color: '#10b981', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                        ${pkg.price.toLocaleString()}
+                      </div>
+                      <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>{pkg.description}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+              <button style={{ ...styles.button('primary'), flex: 1 }}>💬 Message</button>
+              <button style={{ ...styles.button('success'), flex: 1 }}>📅 Schedule Call</button>
+            </div>
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }
@@ -2094,7 +2094,6 @@ function SurveysTab() {
                 {question.type === 'text' && (
                   <textarea
                     style={{ ...styles.input, minHeight: '80px', resize: 'vertical' }}
-                    placeholder="Your response..."
                     value={responses[question.id] || ''}
                     onChange={(e) => handleResponseChange(question.id, e.target.value)}
                   />
@@ -2274,7 +2273,7 @@ function MarketingTab() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                   <div>
                     <h3 style={{ margin: 0 }}>{campaign.name}</h3>
-                    <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem' }}>
+                    <div style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '0.25rem' }}>
                       {campaign.channel} • {campaign.startDate} to {campaign.endDate}
                     </div>
                   </div>
@@ -2466,7 +2465,12 @@ function DataUploadTab() {
               >
                 <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{template.icon}</div>
                 <h4 style={{ margin: '0 0 0.5rem 0' }}>{template.name}</h4>
-                <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>{template.description}</p>
+                <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>
+                  {template.description}
+                </p>
+                <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
+                  {template.fields.length} fields
+                </div>
               </div>
             ))}
           </div>
