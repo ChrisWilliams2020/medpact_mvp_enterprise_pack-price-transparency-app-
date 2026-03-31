@@ -1,4 +1,6 @@
+
 from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 from .api.imports import router as imports_router
 from .api.qa import router as qa_router
 from .api.todos import router as todos_router
@@ -17,7 +19,20 @@ from . import db as _db
 import json
 from sqlalchemy import text
 
-app = FastAPI(title="MedPact Demo API")
+app = FastAPI(
+    title="MedPact Practice Intelligence API",
+    version="3.4.0",
+    description="Practice analytics and intelligence for eyecare professionals"
+)
+
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.on_event('startup')
@@ -31,14 +46,11 @@ def startup():
         logging.exception('init_db failed: %s', e)
 
 
+# Health check
 @app.get("/")
-async def root():
-    return {"status": "ok", "message": "MedPact demo API"}
-
-
 @app.get("/health")
 async def health():
-    return {"status": "healthy"}
+    return {"status": "ok", "message": "MedPact Practice Intelligence API v3.4"}
 
 
 @app.get('/ready')
@@ -76,3 +88,25 @@ try:
 except Exception:
     # If authlib / OIDC not available, skip mounting the auth routes
     pass
+
+# Import and include routers
+try:
+    from app.routers import auth, practices
+    app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+    app.include_router(practices.router, prefix="/practices", tags=["Practices"])
+except ImportError as e:
+    print(f"Warning: Could not import routers: {e}")
+
+
+# Root API info
+@app.get("/api")
+async def api_info():
+    return {
+        "name": "MedPact Practice Intelligence",
+        "version": "3.4.0",
+        "endpoints": {
+            "auth": "/auth",
+            "practices": "/practices",
+            "fee_schedule": "/practices/fee-schedule",
+        }
+    }

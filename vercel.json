@@ -1,4 +1,21 @@
 {
+  "builds": [
+    {
+      "src": "app/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app/main.py"
+    }
+  ],
+  "env": {
+    "DATABASE_URL": postgresql://postgres:[YOUR-PASSWORD]@db.wlvivbqofzpikfqokefq.supabase.co:5432/postgres,
+    "SECRET_KEY": "your-super-secret-key-change-this-in-production",
+    "DEBUG": "false"
+  },
   "buildCommand": "cd apps/web && npm install && npm run build",
   "outputDirectory": "apps/web/dist",
   "rewrites": [

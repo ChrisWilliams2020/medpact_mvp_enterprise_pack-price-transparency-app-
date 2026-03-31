@@ -4,7 +4,7 @@ from redis import Redis
 from rq import Queue
 from rq import Retry
 import json
-from apps.api.app.db import create_import_job_record, update_import_job, get_engine, get_claim_lines
+from ..db import create_import_job_record, update_import_job, get_engine, get_claim_lines
 
 redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
 redis_conn = Redis.from_url(redis_url)
@@ -15,7 +15,7 @@ def enqueue_import(filepath: str, checksum: str = None, practice_id: str = None)
     # If checksum provided and an import with that checksum exists, return existing job_id
     # create a job_id and insert-or-get via DB helper
     job_id = str(uuid4())
-    from apps.api.app.db import create_or_get_import_job
+    from ..db import create_or_get_import_job
     canonical_job_id = create_or_get_import_job(job_id, filepath, checksum=checksum, practice_id=practice_id)
     if canonical_job_id != job_id:
         return canonical_job_id
