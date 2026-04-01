@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LandingPage from './pages/LandingPage';
+import Home from './pages/Home';
+import PracticeLanding from './pages/PracticeLanding';
+import MedTechLanding from './pages/MedTechLanding';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -25,11 +27,17 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<LandingPage />} />
+        {/* Main Home - Product Selection */}
+        <Route path="/" element={<Home />} />
+        
+        {/* Practice Intelligence (v3.4) */}
+        <Route path="/practice" element={<PracticeLanding />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/fee-schedule" element={<FeeSchedule />} />
+        
+        {/* Medical Tech (v3.5) */}
+        <Route path="/medtech" element={<MedTechLanding />} />
         
         {/* Protected routes */}
         <Route path="/dashboard" element={

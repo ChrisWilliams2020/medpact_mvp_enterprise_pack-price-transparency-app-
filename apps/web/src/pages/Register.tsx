@@ -316,16 +316,4 @@ export default function Register() {
       </div>
     </div>
   );
-}cd /Users/christopherwilliams/Projects/medpact-practice-intelligence
-
-# Check status
-git status
-
-# Add all changes
-git add .
-
-# Commit
-git commit -m "Add 5-step practice registration form with HIPAA BAA"
-
-# Push to GitHub
-git push origin main
+}
