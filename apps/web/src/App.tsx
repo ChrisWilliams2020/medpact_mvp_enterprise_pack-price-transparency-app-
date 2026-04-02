@@ -2,8 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import 
-Dashboard from './pages/Dashboard';
+import Dashboard from './pages/Dashboard';
 import PracticeIntelligence from './pages/PracticeIntelligence';
 import MedTech from './pages/MedTech';
 
