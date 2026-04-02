@@ -1,22 +1,19 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import Home from './pages/Home';
-import PracticeLanding from './pages/PracticeLanding';
-import MedTechLanding from './pages/MedTechLanding';
-import Register from './pages/Register';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import FeeSchedule from './pages/FeeSchedule';
-import Metrics from './pages/Metrics';
-import Settings from './pages/Settings';
+import 
+Dashboard from './pages/Dashboard';
+import PracticeIntelligence from './pages/PracticeIntelligence';
+import MedTech from './pages/MedTech';
 
-// Auth check
+// Simple auth check
 const isAuthenticated = () => {
-  return !!localStorage.getItem('access_token');
+  return localStorage.getItem('isAuthenticated') === 'true';
 };
 
 // Protected route wrapper
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
@@ -24,37 +21,41 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 function App() {
+  // Handle GitHub Pages SPA redirect
+  useEffect(() => {
+    const redirect = sessionStorage.getItem('redirect');
+    if (redirect) {
+      sessionStorage.removeItem('redirect');
+      window.history.replaceState(null, '', redirect);
+    }
+  }, []);
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/medpact-practice-intelligence">
       <Routes>
-        {/* Main Home - Product Selection */}
+        {/* Public routes */}
         <Route path="/" element={<Home />} />
-        
-        {/* Practice Intelligence (v3.4) */}
-        <Route path="/practice" element={<PracticeLanding />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/fee-schedule" element={<FeeSchedule />} />
-        
-        {/* Medical Tech (v3.5) */}
-        <Route path="/medtech" element={<MedTechLanding />} />
+        <Route path="/practice" element={<PracticeIntelligence />} />
+        <Route path="/medtech" element={<MedTech />} />
         
         {/* Protected routes */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/metrics" element={
-          <ProtectedRoute>
-            <Metrics />
-          </ProtectedRoute>
-        } />
-        <Route path="/settings" element={
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        } />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/dashboard/:section" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
         
         {/* Catch all */}
         <Route path="*" element={<Navigate to="/" replace />} />

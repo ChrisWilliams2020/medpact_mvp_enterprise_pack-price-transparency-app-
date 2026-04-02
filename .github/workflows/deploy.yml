@@ -1,218 +1,245 @@
 name: Build and Deploy
-
+name: Build and Deploy
 on:
   push:
     branches: [main]
-    tags:
+    tags:hes: [main]
       - 'v*'
   workflow_dispatch:
-    inputs:
+    inputs:dispatch:
       environment:
         description: 'Deployment environment'
-        required: true
+        required: trueDeployment environment'
         default: 'staging'
-        type: choice
-        options:
+        type: choiceaging'
+        options:oice
           - staging
           - production
-
+          - production
 env:
   REGISTRY: ghcr.io
   API_IMAGE_NAME: ${{ github.repository }}/api
   WORKER_IMAGE_NAME: ${{ github.repository }}/worker
+  WEB_IMAGE_NAME: ${{ github.repository }}/webworker
   WEB_IMAGE_NAME: ${{ github.repository }}/web
-
 jobs:
   # Run tests before building
-  test:
+  test: tests before building
     runs-on: ubuntu-latest
-    services:
+    services:ubuntu-latest
       postgres:
         image: postgres:15
-        env:
+        env:e: postgres:15
           POSTGRES_USER: medpact
           POSTGRES_PASSWORD: medpact
-          POSTGRES_DB: medpact
-        ports:
+          POSTGRES_DB: medpactedpact
+        ports:GRES_DB: medpact
           - 5432:5432
-        options: >-
+        options: >-32
           --health-cmd="pg_isready -U medpact" --health-interval=5s --health-timeout=5s --health-retries=5
-      redis:
+      redis:health-cmd="pg_isready -U medpact" --health-interval=5s --health-timeout=5s --health-retries=5
         image: redis:7
-        ports:
+        ports: redis:7
           - 6379:6379
-
+          - 6379:6379
     env:
       DATABASE_URL: postgresql+pg8000://medpact:medpact@localhost:5432/medpact
+      REDIS_URL: redis://localhost:6379/0edpact:medpact@localhost:5432/medpact
       REDIS_URL: redis://localhost:6379/0
-
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
-        with:
+        with: actions/setup-python@v4
           python-version: '3.11'
-
+          python-version: '3.11'
       - name: Install dependencies
-        run: |
+        run: |Install dependencies
           python -m pip install --upgrade pip
           pip install -r apps/api/requirements.txt
           pip install -r apps/api/requirements-dev.txt
-
+          pip install -r apps/api/requirements-dev.txt
       - name: Run migrations
-        run: |
+        run: |Run migrations
           PYTHONPATH=$(pwd) alembic upgrade head
-
+          PYTHONPATH=$(pwd) alembic upgrade head
       - name: Run tests
-        run: |
+        run: |Run tests
           PYTHONPATH=$(pwd) pytest tests/ apps/api/tests/ -v --tb=short
-
+          PYTHONPATH=$(pwd) pytest tests/ apps/api/tests/ -v --tb=short
   # Build and push Docker images
-  build:
+  build:d and push Docker images
     needs: test
     runs-on: ubuntu-latest
-    permissions:
+    permissions:ntu-latest
       contents: read
       packages: write
-
+      packages: write
     outputs:
       api-image: ${{ steps.meta-api.outputs.tags }}
       worker-image: ${{ steps.meta-worker.outputs.tags }}
+      web-image: ${{ steps.meta-web.outputs.tags }}ags }}
       web-image: ${{ steps.meta-web.outputs.tags }}
-
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+        uses: docker/setup-buildx-action@v3
       - name: Log in to Container Registry
-        uses: docker/login-action@v3
-        with:
+        uses: docker/login-action@v3gistry
+        with: docker/login-action@v3
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+          password: ${{ secrets.GITHUB_TOKEN }}
       # API Image
       - name: Extract metadata for API
-        id: meta-api
+        id: meta-apit metadata for API
         uses: docker/metadata-action@v5
-        with:
+        with: docker/metadata-action@v5
           images: ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}
-          tags: |
+          tags: | ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}
             type=ref,event=branch
             type=semver,pattern={{version}}
+            type=sha,prefix=ern={{version}}
             type=sha,prefix=
-
       - name: Build and push API image
         uses: docker/build-push-action@v5
-        with:
+        with: docker/build-push-action@v5
           context: .
           file: apps/api/Dockerfile
-          push: true
+          push: true/api/Dockerfile
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=ghata-api.outputs.labels }}
           cache-to: type=gha,mode=max
-
+          cache-to: type=gha,mode=max
       # Worker Image
       - name: Extract metadata for Worker
-        id: meta-worker
+        id: meta-workeretadata for Worker
         uses: docker/metadata-action@v5
-        with:
+        with: docker/metadata-action@v5
           images: ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE_NAME }}
-          tags: |
+          tags: | ${{ env.REGISTRY }}/${{ env.WORKER_IMAGE_NAME }}
             type=ref,event=branch
             type=semver,pattern={{version}}
+            type=sha,prefix=ern={{version}}
             type=sha,prefix=
-
       - name: Build and push Worker image
         uses: docker/build-push-action@v5
-        with:
+        with: docker/build-push-action@v5
           context: .
           file: apps/api/Dockerfile.worker
-          push: true
+          push: true/api/Dockerfile.worker
           tags: ${{ steps.meta-worker.outputs.tags }}
           labels: ${{ steps.meta-worker.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=ghata-worker.outputs.labels }}
           cache-to: type=gha,mode=max
-
+          cache-to: type=gha,mode=max
       # Web Image
       - name: Extract metadata for Web
-        id: meta-web
+        id: meta-webt metadata for Web
         uses: docker/metadata-action@v5
-        with:
+        with: docker/metadata-action@v5
           images: ${{ env.REGISTRY }}/${{ env.WEB_IMAGE_NAME }}
-          tags: |
+          tags: | ${{ env.REGISTRY }}/${{ env.WEB_IMAGE_NAME }}
             type=ref,event=branch
             type=semver,pattern={{version}}
+            type=sha,prefix=ern={{version}}
             type=sha,prefix=
-
       - name: Build and push Web image
         uses: docker/build-push-action@v5
-        with:
+        with: docker/build-push-action@v5
           context: ./apps/web
           file: apps/web/Dockerfile
-          push: true
+          push: true/web/Dockerfile
           tags: ${{ steps.meta-web.outputs.tags }}
           labels: ${{ steps.meta-web.outputs.labels }}
-          cache-from: type=gha
+          cache-from: type=ghata-web.outputs.labels }}
           cache-to: type=gha,mode=max
-          build-args: |
+          build-args: |e=gha,mode=max
             VITE_API_URL=
-
+            VITE_API_URL=
   # Deploy to staging (on main branch push)
-  deploy-staging:
-    needs: build
+  deploy-staging:ging (on main branch push)
+    needs: build:
     if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latests/heads/main' || github.event.inputs.environment == 'staging'
+    environment: stagingst
     environment: staging
-    
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Deploy to staging
-        run: |
+        run: |Deploy to staging
           echo "🚀 Deploying to staging..."
           echo "API Image: ${{ needs.build.outputs.api-image }}"
           echo "Worker Image: ${{ needs.build.outputs.worker-image }}"
-          echo "Web Image: ${{ needs.build.outputs.web-image }}"
-          # Add your deployment commands here, e.g.:
+          echo "Web Image: ${{ needs.build.outputs.web-image }}"ge }}"
+          # Add your deployment commands here, e.g.:eb-image }}"
           # - kubectl set image deployment/api api=${{ needs.build.outputs.api-image }}
           # - aws ecs update-service --cluster staging --service api --force-new-deployment
           # - docker-compose -f docker-compose.staging.yml pull && docker-compose -f docker-compose.staging.yml up -d
-
+          # - docker-compose -f docker-compose.staging.yml pull && docker-compose -f docker-compose.staging.yml up -d
   # Deploy to production (on version tags)
-  deploy-production:
-    needs: build
+  deploy-production:tion (on version tags)
+    needs: buildion:
     if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latestref, 'refs/tags/v') || github.event.inputs.environment == 'production'
     environment: production
-    
+    environment: production
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Deploy to production
-        run: |
+        run: |Deploy to production
           echo "🚀 Deploying to production..."
           echo "API Image: ${{ needs.build.outputs.api-image }}"
           echo "Worker Image: ${{ needs.build.outputs.worker-image }}"
-          echo "Web Image: ${{ needs.build.outputs.web-image }}"
+          echo "Web Image: ${{ needs.build.outputs.web-image }}"ge }}"
+          # Add your production deployment commands heremage }}"
           # Add your production deployment commands here
-
   # Run post-deployment health checks
-  health-check:
+  health-check:ployment health checks
     needs: [deploy-staging, deploy-production]
     if: always() && (needs.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
+    runs-on: ubuntu-latest.deploy-staging.result == 'success' || needs.deploy-production.result == 'success')
     runs-on: ubuntu-latest
-    
     steps:
       - name: Wait for deployment
+        run: sleep 30r deployment
         run: sleep 30
-
       - name: Health check
-        run: |
+        run: |Health check
           # Add health check commands for your deployed services
-          echo "Running health checks..."
+          echo "Running health checks..." your deployed services
           # curl -f https://staging.medpact.ai/ready || exit 1
+          # curl -f https://staging.medpact.ai/ready || exit 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        uses: actions/deploy-pages@v4      - name: Deploy to GitHub Pages        run: npm run build        working-directory: ./apps/web      - name: Build        run: npm install        working-directory: ./apps/web      - name: Install dependencies          node-version: '20'        with:        uses: actions/setup-node@v4      - name: Setup Node        uses: actions/checkout@v4      - name: Checkout    steps:        if: github.ref == 'refs/heads/main'    runs-on: ubuntu-latest  pages:  # Deploy to GitHub Pages
