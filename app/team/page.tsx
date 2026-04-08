@@ -1,5 +1,6 @@
 import { Container, Pill } from "@/components/ui";
 import TeamGrid from "@/components/TeamGrid";
+import AdvisoryBoards from "@/components/AdvisoryBoards";
 
 type Member = {
   name: string;
@@ -20,7 +21,14 @@ const members: Member[] = [
       "Physician-aligned data intelligence",
     ],
     highlight:
-      "Practicing ophthalmologist; founder of OnPacePlus and MedPACT—building Healthcare Intelligence Infrastructure™ on top of fragmented healthcare systems.",
+      "Dr. Christopher Williams is a physician–entrepreneur, innovator, and Founder & CEO of MedPact, focused on transforming healthcare through data intelligence and scalable software platforms. Trained at the University of Iowa and Wills Eye Hospital, he has performed over 30,000 cataract and LASIK procedures. A lifelong builder, he developed early interactive medical education tools, pioneered real-time telemedicine solutions, and holds multiple patents in blockchain-based healthcare data storage. He contributes surgical expertise to underserved communities in rural Africa. His vision: create the intelligence infrastructure that enables providers to compete, thrive, and lead.",
+  },
+  {
+    name: "Richard Lindstrom, MD",
+    title: "Senior Advisor",
+    focus: ["Strategic guidance", "Clinical integrity", "National ophthalmology credibility"],
+    highlight:
+      "Dr. Richard L. Lindstrom is a board-certified ophthalmologist and internationally recognized leader in cornea, cataract, refractive, and laser surgery. Founder of Minnesota Eye Consultants and Attending Surgeon Emeritus, he has spent over 55 years advancing ophthalmology. He has authored 400+ publications, holds 45 patents—including Optisol GS—and has served as President of multiple major ophthalmic societies. Widely honored, he is considered one of the most influential figures in ophthalmology worldwide.",
   },
   {
     name: "Jason Bacharach, MD",
@@ -32,7 +40,7 @@ const members: Member[] = [
       "Conference & event strategy",
     ],
     highlight:
-      "Bridges real-world ophthalmology practice dynamics with operational intelligence to ensure the platform enhances—not burdens—clinical workflows.",
+      "Dr. Jason Bacharach is a glaucoma consultant in Sonoma County, California since 1993. He is the Founding Partner as well as Medical & Research Director of North Bay Eye Associates, Inc., a multi-subspecialty ophthalmology practice. He serves on multiple advisory boards and consults for various ophthalmologic pharmaceutical and surgical manufacturers. Academically, he is Chair of the Department of Glaucoma at California Pacific Medical Center, in San Francisco, California.",
   },
   {
     name: "Cathleen McCabe, MD",
@@ -44,14 +52,14 @@ const members: Member[] = [
       "Industry alignment & real‑world evidence",
     ],
     highlight:
-      "National cataract & refractive surgery innovation leader who operationalizes clinical excellence—validating real‑world deployment, workflow impact, and scalability across ophthalmic enterprises.",
+      "Cathleen McCabe, MD, is a board-certified ophthalmologist with extensive surgical experience in cataract and refractive procedures at The Eye Associates in Sarasota, Florida. As a MedPACT board member, she leverages leadership expertise as Past President of OOSS, Executive Board member and Chair of the Sustainability Clinical Committee for ASCRS, and currently Chief Medical Officer at Eye Health America. Recognized as an innovator in cataract surgery, she has contributed to numerous clinical trials involving intraocular lenses, glaucoma devices, and dry eye treatments.",
   },
   {
-    name: "Richard Lindstrom, MD",
-    title: "Senior Advisor",
-    focus: ["Strategic guidance", "Clinical integrity", "National ophthalmology credibility"],
+    name: "Brian Murphey",
+    title: "Chief Commercialization Officer (CCO)",
+    focus: ["Go-to-market execution", "Marketing positioning", "Sales strategy execution"],
     highlight:
-      "Provides platform validation and national positioning guidance to ensure clinical integrity at scale.",
+      "Current Radius executive and MedPACT Chief Commercialization Officer; drives national lead generation and footprint expansion across independent and PE-backed groups.",
   },
   {
     name: "Terrence Duckette",
@@ -61,18 +69,18 @@ const members: Member[] = [
       "Leads sales management, marketing communications, and overall brand strategy—aligning growth with long-term corporate vision.",
   },
   {
-    name: "Brian Murphey",
-    title: "Chief Commercial Officer (CCO)",
-    focus: ["Go-to-market execution", "Marketing positioning", "Sales strategy execution"],
+    name: "Dave Davis",
+    title: "Operations & Business Planning",
+    focus: ["Operating cadence", "Business planning", "Milestone execution", "Cross-functional alignment"],
     highlight:
-      "Former RadiusXR commercial leader; drives national lead generation and footprint expansion across independent and PE-backed groups.",
+      "Founder and operating executive of technology and ISO-certified medical device companies. Extensive experience in strategy and managing growth from concept to market leadership. Active in charitable and community organizations, and has been a board member, advisor, and investor in entrepreneurial ventures. He holds a BBA from Ursinus College and is working toward a Master's degree in Psychology at Harvard University.",
   },
   {
     name: "Rob Ostoich",
     title: "President of Sales",
     focus: ["Revenue engine buildout", "CRM & sales infrastructure", "Pricing & packaging", "Conversion optimization"],
     highlight:
-      "30+ years in enterprise software sales leadership—including Director of Sales experience with companies such as SAP—building repeatable growth systems.",
+      "With over 30 years in enterprise software sales, Rob has helped companies of all sizes—from agile startups to global software leaders—achieve exceptional growth. A proven sales leader and hands-on contributor, he combines strategic insight with practical execution. Passionate about driving results and building lasting client relationships, Rob brings both experience and energy to every venture.",
   },
   {
     name: "Bill Williams",
@@ -80,13 +88,6 @@ const members: Member[] = [
     focus: ["Governance", "Contract execution", "Institutional discipline", "Risk management"],
     highlight:
       "Former CFO at MetricStream and LifeScan; former Comptroller at McNeil Pharma—bringing public-company grade controls and contracting discipline.",
-  },
-  {
-    name: "Dave Davis",
-    title: "Operations & Business Planning",
-    focus: ["Operating cadence", "Business planning", "Milestone execution", "Cross-functional alignment"],
-    highlight:
-      "Serial entrepreneur and inventor focused on translating strategy into measurable operational milestones.",
   },
   {
     name: "Anita Galiano",
@@ -107,7 +108,7 @@ const members: Member[] = [
     title: "Communications | Research | CRM Management",
     focus: ["Corporate communications", "Research initiatives", "Executive coordination", "CRM oversight"],
     highlight:
-      "Owns messaging alignment, research, and CRM hygiene to keep internal intelligence systems and external communications coherent at scale.",
+      "Lindsay Saddic is the Director of Communications and Assistant to Chris Williams, managing internal and external communications and supporting key organizational initiatives. She brings a strong foundation in strategic messaging, organization, and cross-functional collaboration. She graduated cum laude from Washington College with a degree in Clinical Psychology. As a four-year varsity volleyball student-athlete, she developed a disciplined, team-oriented approach that informs her work today.",
   },
   {
     name: "Chuck Yardley (Advisor)",
@@ -128,7 +129,7 @@ const members: Member[] = [
     title: "Product Testing | Quality Assurance",
     focus: ["Testing strategy", "Release validation", "Quality systems", "Operational reliability"],
     highlight:
-      "Author, tennis professional, and founder of a padel facility management company—brings performance discipline and execution rigor to product QA.",
+      "Chris Louis is a teacher, author, father and ritualist. Chris has spent most of his adult life building businesses, traveling the world and exploring consciousness.",
   },
 ];
 
@@ -144,6 +145,17 @@ export default function Page() {
         </p>
 
   <TeamGrid members={members} />
+
+        {/* Advisory Boards Section */}
+        <div className="mt-20 pt-16 border-t border-black/10">
+          <div className="mb-4"><Pill>Advisory Boards</Pill></div>
+          <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">Strategic Guidance</h2>
+          <p className="mt-4 max-w-3xl text-base text-black/70 md:text-lg">
+            MedPACT is guided by distinguished leaders across medicine, technology, practice management, and strategic consulting—ensuring our platform delivers real-world value at every level of healthcare operations.
+          </p>
+          
+          <AdvisoryBoards />
+        </div>
 
         <div className="mt-12 rounded-3xl border border-black/10 bg-black/[0.02] p-7">
           <div className="text-sm font-semibold">How to strengthen this page</div>

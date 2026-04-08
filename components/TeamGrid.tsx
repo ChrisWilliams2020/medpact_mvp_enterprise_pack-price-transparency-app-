@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui";
 
 type Member = {
@@ -11,9 +12,44 @@ type Member = {
   note?: string;
 };
 
+// Helper to create slug from name
+function nameToSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+// Optimized Image component with loading state
+function TeamImage({ src, alt }: { src: string; alt: string }) {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
+
+  if (error) {
+    return <div className="text-xs text-black/50 px-2 text-center">No photo</div>;
+  }
+
+  return (
+    <>
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-100 animate-pulse rounded-xl" />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="80px"
+        className={`object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => setError(true)}
+      />
+    </>
+  );
+}
+
 export default function TeamGrid({ members }: { members: Member[] }) {
   const [images, setImages] = React.useState<Record<string, string>>({});
   const [uploading, setUploading] = React.useState<Record<string, boolean>>({});
+
+  // Show all members - no visibility filtering needed for public page
+  const visibleMembers = members;
 
   async function onImageChange(name: string, file?: File) {
     if (!file) return;
@@ -77,13 +113,15 @@ export default function TeamGrid({ members }: { members: Member[] }) {
 
   return (
     <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {members.map((m) => (
-        <div key={m.name} className="rounded-3xl border border-black/10 bg-white p-7 shadow-sm flex gap-4 items-start">
+      {visibleMembers.map((m, index) => (
+        <div 
+          key={m.name} 
+          className={`rounded-3xl border border-black/10 bg-white p-7 shadow-sm flex gap-4 items-start scroll-animate scroll-delay-${Math.min(index % 3 + 1, 5)}`}
+        >
           <div className="flex-shrink-0">
-            <div className="h-20 w-20 overflow-hidden rounded-xl bg-black/5 flex items-center justify-center">
+            <div className="h-20 w-20 overflow-hidden rounded-xl bg-black/5 flex items-center justify-center relative">
               {images[m.name] ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={images[m.name]} alt={m.name} className="h-full w-full object-cover" />
+                <TeamImage src={images[m.name]} alt={m.name} />
               ) : (
                 <div className="text-xs text-black/50 px-2 text-center">No photo</div>
               )}

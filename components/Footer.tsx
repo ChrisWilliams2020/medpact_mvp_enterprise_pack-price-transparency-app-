@@ -15,11 +15,21 @@ export function Footer() {
             <Link href="/category" className="hover:text-black">Category</Link>
             <Link href="/manifesto" className="hover:text-black">Manifesto</Link>
             <Link href="/team" className="hover:text-black">Team</Link>
+            <Link href="/advisory" className="hover:text-black">Advisory Boards</Link>
+            <Link href="/faq" className="hover:text-black">FAQ</Link>
             <Link href="/contact" className="hover:text-black">Contact</Link>
           </div>
         </div>
-        <div className="mt-8 text-xs text-black/50">
-          © {new Date().getFullYear()} MedPACT, Inc. All rights reserved. Outcomes vary by organization; nothing on this site constitutes a guarantee of results.
+        <div className="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="text-xs text-black/50">
+            © {new Date().getFullYear()} MedPACT, Inc. All rights reserved. Outcomes vary by organization; nothing on this site constitutes a guarantee of results.
+          </div>
+          <Link 
+            href="/admin/login" 
+            className="text-xs text-black/30 hover:text-black/50 transition-colors"
+          >
+            Team Login
+          </Link>
         </div>
       </Container>
     </footer>

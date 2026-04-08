@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://medpact-site-vscode-packet-v3.vercel.app/sitemap.xml
+
+# Crawl-delay (optional, for polite crawling)
+Crawl-delay: 1
+
+# Disallow admin pages
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/*
