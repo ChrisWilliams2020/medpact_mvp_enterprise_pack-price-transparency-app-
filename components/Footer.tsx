@@ -9,12 +9,11 @@ export function Footer() {
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image 
-              src="/medpact-logo.svg" 
+              src="/medpact-logo.png" 
               alt="MedPACT" 
-              width={180} 
-              height={50} 
-              className="h-12 w-auto object-contain"
-              unoptimized
+              width={120} 
+              height={120} 
+              className="h-10 w-auto object-contain"
             />
           </Link>
           <div className="flex flex-wrap gap-4 text-sm text-black/70">

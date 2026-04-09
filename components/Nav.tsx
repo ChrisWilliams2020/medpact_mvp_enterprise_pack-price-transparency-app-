@@ -42,11 +42,11 @@ export function Nav() {
         <Container className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image 
-              src="/medpact-logo.svg" 
+              src="/medpact-logo.png" 
               alt="MedPACT - Data Intelligence, Payer Transparency and Profitability" 
-              width={220} 
-              height={60} 
-              className="h-14 w-auto object-contain"
+              width={160} 
+              height={160} 
+              className="h-12 w-auto object-contain"
               priority
               unoptimized
             />
