@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Container, Button } from "@/components/ui";
 import PlatformLauncher from "@/components/PlatformLauncher";
 
@@ -40,8 +41,15 @@ export function Nav() {
       >
         <Container className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
-            <span className="h-9 w-9 rounded-full bg-gradient-to-br from-medpact-green to-medpact-blue" />
-            <span className="text-lg md:text-2xl font-extrabold tracking-tight">MedPACT</span>
+            <Image 
+              src="/medpact-logo.svg" 
+              alt="MedPACT - Data Intelligence, Payer Transparency and Profitability" 
+              width={220} 
+              height={60} 
+              className="h-14 w-auto object-contain"
+              priority
+              unoptimized
+            />
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             {/* Render PlatformLauncher for the platform item */}

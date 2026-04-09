@@ -12,6 +12,30 @@
     "addedAt": "2026-03-25T00:00:00.000Z"
   },
   {
+    "id": "dr-zaina-al-mohtaseb-memorial",
+    "name": "Dr. Zaina Al-Mohtaseb",
+    "role": "Medical Advisory Board | Cataract & Refractive Specialist",
+    "organization": "Whitsett Vision Group - Memorial",
+    "city": "Houston",
+    "state": "TX",
+    "lat": 29.7894,
+    "lng": -95.4831,
+    "type": "team",
+    "addedAt": "2026-04-08T00:00:00.000Z"
+  },
+  {
+    "id": "dr-zaina-al-mohtaseb-spring",
+    "name": "Dr. Zaina Al-Mohtaseb",
+    "role": "Medical Advisory Board | Cataract & Refractive Specialist",
+    "organization": "Whitsett Vision Group - Spring",
+    "city": "Spring",
+    "state": "TX",
+    "lat": 30.0799,
+    "lng": -95.4194,
+    "type": "team",
+    "addedAt": "2026-04-08T00:00:00.000Z"
+  },
+  {
     "id": "dr-greg-smith",
     "name": "Dr. Greg Smith",
     "role": "Physician",

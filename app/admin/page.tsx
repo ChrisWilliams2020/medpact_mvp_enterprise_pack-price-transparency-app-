@@ -126,8 +126,51 @@ export default function AdminPage() {
   const [files, setFiles] = React.useState<{ name: string; url: string }[]>([]);
   const [activeTab, setActiveTab] = React.useState<'dashboard' | 'team' | 'advisory' | 'media' | 'crm' | 'chat'>('dashboard');
   const [crmSubmissions, setCrmSubmissions] = React.useState<any[]>([]);
+  const [briefings, setBriefings] = React.useState<any[]>([]);
+  const [briefingsLoading, setBriefingsLoading] = React.useState(false);
   const [chatSessions, setChatSessions] = React.useState<any[]>([]);
   const [teamVisibility, setTeamVisibility] = React.useState<Record<string, boolean>>({});
+
+  // Load briefing requests from API
+  async function loadBriefings() {
+    setBriefingsLoading(true);
+    try {
+      const res = await fetch('/api/briefings');
+      const data = await res.json();
+      setBriefings(data.briefings || []);
+    } catch (e) {
+      console.error('Failed to load briefings:', e);
+    }
+    setBriefingsLoading(false);
+  }
+
+  // Update briefing status
+  async function updateBriefingStatus(id: string, status: string) {
+    try {
+      await fetch('/api/briefings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+      await loadBriefings();
+    } catch (e) {
+      console.error('Failed to update briefing:', e);
+    }
+  }
+
+  // Add note to briefing
+  async function addBriefingNote(id: string, notes: string) {
+    try {
+      await fetch('/api/briefings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, notes }),
+      });
+      await loadBriefings();
+    } catch (e) {
+      console.error('Failed to add note:', e);
+    }
+  }
 
   async function refreshFiles() {
     try {
@@ -161,6 +204,7 @@ export default function AdminPage() {
   React.useEffect(() => { 
     refreshFiles();
     loadTeamVisibility();
+    loadBriefings();
     // Load CRM submissions from localStorage (demo)
     const saved = localStorage.getItem('medpact_crm_submissions');
     if (saved) setCrmSubmissions(JSON.parse(saved));
@@ -647,42 +691,157 @@ export default function AdminPage() {
 
         {/* CRM Tab */}
         {activeTab === 'crm' && (
-          <div className="bg-white rounded-xl p-6 border border-gray-200">
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="font-semibold text-lg">CRM Submissions</h2>
-              <InfoTip text="Contact form submissions. Configure a CRM webhook in Vercel env vars to sync with HubSpot, Salesforce, etc." />
+          <div className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="bg-white rounded-xl p-4 border border-gray-200">
+                <div className="text-2xl font-bold text-blue-600">{briefings.length}</div>
+                <div className="text-xs text-gray-500">Total Requests</div>
+              </div>
+              <div className="rounded-xl p-4 border border-green-200 bg-green-50">
+                <div className="text-2xl font-bold text-green-600">{briefings.filter(b => b.status === 'new').length}</div>
+                <div className="text-xs text-gray-500">New</div>
+              </div>
+              <div className="rounded-xl p-4 border border-yellow-200 bg-yellow-50">
+                <div className="text-2xl font-bold text-yellow-600">{briefings.filter(b => b.status === 'contacted').length}</div>
+                <div className="text-xs text-gray-500">Contacted</div>
+              </div>
+              <div className="rounded-xl p-4 border border-purple-200 bg-purple-50">
+                <div className="text-2xl font-bold text-purple-600">{briefings.filter(b => b.status === 'scheduled').length}</div>
+                <div className="text-xs text-gray-500">Scheduled</div>
+              </div>
+              <div className="bg-white rounded-xl p-4 border border-gray-200">
+                <div className="text-2xl font-bold text-gray-600">{briefings.filter(b => b.status === 'completed').length}</div>
+                <div className="text-xs text-gray-500">Completed</div>
+              </div>
             </div>
-            <p className="text-sm text-gray-500 mb-4">Contact form submissions are sent to your configured CRM. Below shows local demo data.</p>
-            
-            {crmSubmissions.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-2 px-3">Name</th>
-                      <th className="text-left py-2 px-3">Email</th>
-                      <th className="text-left py-2 px-3">Organization</th>
-                      <th className="text-left py-2 px-3">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {crmSubmissions.map((sub, i) => (
-                      <tr key={i} className="border-b border-gray-100">
-                        <td className="py-2 px-3">{sub.name}</td>
-                        <td className="py-2 px-3">{sub.email}</td>
-                        <td className="py-2 px-3">{sub.organization}</td>
-                        <td className="py-2 px-3 text-gray-500">{new Date(sub.date).toLocaleDateString()}</td>
+
+            {/* Briefing Requests Table */}
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h2 className="font-semibold text-lg">📋 Executive Briefing Requests</h2>
+                  <InfoTip text="All contact form submissions are tracked here. Update status as you follow up with leads." />
+                </div>
+                <button 
+                  onClick={loadBriefings} 
+                  className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded text-sm"
+                  disabled={briefingsLoading}
+                >
+                  {briefingsLoading ? '⏳' : '🔄'} Refresh
+                </button>
+              </div>
+              
+              {briefings.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-gray-200 bg-gray-50">
+                        <th className="text-left py-3 px-3 font-medium">Status</th>
+                        <th className="text-left py-3 px-3 font-medium">Name</th>
+                        <th className="text-left py-3 px-3 font-medium">Contact</th>
+                        <th className="text-left py-3 px-3 font-medium">Organization</th>
+                        <th className="text-left py-3 px-3 font-medium">Type</th>
+                        <th className="text-left py-3 px-3 font-medium">Date</th>
+                        <th className="text-left py-3 px-3 font-medium">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {briefings.map((b) => (
+                        <tr key={b.id} className="border-b border-gray-100 hover:bg-gray-50">
+                          <td className="py-3 px-3">
+                            <select
+                              value={b.status}
+                              onChange={(e) => updateBriefingStatus(b.id, e.target.value)}
+                              className={`text-xs px-2 py-1 rounded-full border-0 font-medium ${
+                                b.status === 'new' ? 'bg-green-100 text-green-700' :
+                                b.status === 'contacted' ? 'bg-yellow-100 text-yellow-700' :
+                                b.status === 'scheduled' ? 'bg-purple-100 text-purple-700' :
+                                b.status === 'completed' ? 'bg-gray-100 text-gray-700' :
+                                'bg-red-100 text-red-700'
+                              }`}
+                            >
+                              <option value="new">🟢 New</option>
+                              <option value="contacted">🟡 Contacted</option>
+                              <option value="scheduled">🟣 Scheduled</option>
+                              <option value="completed">✅ Completed</option>
+                              <option value="archived">📁 Archived</option>
+                            </select>
+                          </td>
+                          <td className="py-3 px-3 font-medium">{b.name}</td>
+                          <td className="py-3 px-3">
+                            <div className="text-blue-600">{b.email}</div>
+                            {b.phone && <div className="text-xs text-gray-500">{b.phone}</div>}
+                          </td>
+                          <td className="py-3 px-3">{b.organization || '-'}</td>
+                          <td className="py-3 px-3">
+                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">{b.practiceType || '-'}</span>
+                          </td>
+                          <td className="py-3 px-3 text-gray-500 text-xs">
+                            {new Date(b.submittedAt).toLocaleDateString()}<br/>
+                            {new Date(b.submittedAt).toLocaleTimeString()}
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="flex gap-1">
+                              <a 
+                                href={`mailto:${b.email}?subject=MedPACT Executive Briefing&body=Hi ${b.name},%0D%0A%0D%0AThank you for your interest in MedPACT...`}
+                                className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+                              >
+                                📧 Email
+                              </a>
+                              {b.phone && (
+                                <a 
+                                  href={`tel:${b.phone}`}
+                                  className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
+                                >
+                                  📞 Call
+                                </a>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-400">
+                  <div className="text-4xl mb-3">📭</div>
+                  <p className="font-medium">No briefing requests yet</p>
+                  <p className="text-xs mt-2">When someone fills out the contact form, their request will appear here.</p>
+                  <Link href="/contact" className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+                    Test Contact Form →
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Notification Settings */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <SmsNotificationStatus />
+              
+              <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-semibold text-lg text-blue-900">📧 Email Notifications</h2>
+                  <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Backup</span>
+                </div>
+                
+                <p className="text-sm text-blue-800 mb-4">
+                  Email notifications serve as a backup when SMS is unavailable.
+                </p>
+                
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-blue-200">
+                    <span className="text-blue-700">Provider</span>
+                    <span className="text-blue-800 font-medium">SendGrid / Resend</span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-blue-200">
+                    <span className="text-blue-700">Notify Email</span>
+                    <span className="text-blue-800 font-mono text-xs">Set NOTIFY_EMAIL</span>
+                  </div>
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-8 text-gray-400">
-                <p>No submissions yet.</p>
-                <p className="text-xs mt-2">To see CRM data, configure a CRM integration (HubSpot, Salesforce, etc.)</p>
-              </div>
-            )}
+            </div>
           </div>
         )}
 

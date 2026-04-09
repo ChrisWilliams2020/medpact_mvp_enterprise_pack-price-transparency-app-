@@ -7,7 +7,9 @@ import { CalendlyButton } from "@/components/Calendly";
 export default function ContactPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [organization, setOrganization] = useState("");
+  const [practiceType, setPracticeType] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -21,7 +23,7 @@ export default function ContactPage() {
       const res = await fetch("/api/crm/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, organization, message }),
+        body: JSON.stringify({ name, email, phone, organization, practiceType, message }),
       });
 
       if (!res.ok) {
@@ -33,7 +35,9 @@ export default function ContactPage() {
       // Clear form
       setName("");
       setEmail("");
+      setPhone("");
       setOrganization("");
+      setPracticeType("");
       setMessage("");
     } catch (err: unknown) {
       setStatus("error");
@@ -59,20 +63,20 @@ export default function ContactPage() {
 
             {status === "success" ? (
               <div className="mt-4 rounded-2xl bg-green-50 p-4 text-sm text-green-800">
-                <strong>Thank you!</strong> Your request has been submitted. We will be in touch shortly to schedule your briefing.
+                <strong>Thank you!</strong> Your request has been submitted. Our communications coordinator will be in touch shortly to schedule your briefing.
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-4 grid gap-3 text-sm">
                 <input
                   className="w-full rounded-2xl border border-black/15 px-4 py-3"
-                  placeholder="Name *"
+                  placeholder="Full Name *"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
                 <input
                   className="w-full rounded-2xl border border-black/15 px-4 py-3"
-                  placeholder="Email *"
+                  placeholder="Email Address *"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -80,19 +84,41 @@ export default function ContactPage() {
                 />
                 <input
                   className="w-full rounded-2xl border border-black/15 px-4 py-3"
-                  placeholder="Organization"
+                  placeholder="Phone Number"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+                <input
+                  className="w-full rounded-2xl border border-black/15 px-4 py-3"
+                  placeholder="Practice / Organization Name"
                   value={organization}
                   onChange={(e) => setOrganization(e.target.value)}
                 />
+                <select
+                  className="w-full rounded-2xl border border-black/15 px-4 py-3 bg-white text-black/70"
+                  value={practiceType}
+                  onChange={(e) => setPracticeType(e.target.value)}
+                >
+                  <option value="">Select Practice Type</option>
+                  <option value="Independent Practice">Independent Practice</option>
+                  <option value="Multi-Location Practice">Multi-Location Practice</option>
+                  <option value="PE-Backed Group">PE-Backed Group</option>
+                  <option value="Hospital/Health System">Hospital/Health System</option>
+                  <option value="ASC">Ambulatory Surgery Center (ASC)</option>
+                  <option value="Industry/Vendor">Industry/Vendor</option>
+                  <option value="Consultant">Consultant</option>
+                  <option value="Other">Other</option>
+                </select>
                 <textarea
                   className="w-full rounded-2xl border border-black/15 px-4 py-3"
-                  placeholder="What do you want to solve?"
+                  placeholder="What challenges are you looking to solve? (optional)"
                   rows={4}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
                 <Button type="submit" disabled={status === "submitting"}>
-                  {status === "submitting" ? "Submitting..." : "Submit"}
+                  {status === "submitting" ? "Submitting..." : "Request Briefing"}
                 </Button>
 
                 {status === "error" && (

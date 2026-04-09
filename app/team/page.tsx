@@ -90,6 +90,13 @@ const members: Member[] = [
       "Former CFO at MetricStream and LifeScan; former Comptroller at McNeil Pharma—bringing public-company grade controls and contracting discipline.",
   },
   {
+    name: "Zaina Al-Mohtaseb, MD",
+    title: "Medical Advisory Board | Cataract & Refractive Specialist",
+    focus: ["Cataract surgery", "Refractive surgery", "Clinical research", "Surgical innovation"],
+    highlight:
+      "Dr. Zaina Al-Mohtaseb is a board-certified ophthalmologist specializing in cataract and refractive surgery at Whitsett Vision Group in Houston, Texas. She is fellowship-trained in cornea, external disease, and refractive surgery, and is recognized for her expertise in premium lens implants and advanced surgical techniques. Dr. Al-Mohtaseb serves on MedPACT's Medical Advisory Board, bringing clinical excellence and real-world surgical insight to the platform.",
+  },
+  {
     name: "Anita Galiano",
     title: "Human Resources & Organizational Infrastructure (OnPace)",
     focus: ["HR strategy", "Operational systems", "Documentation infrastructure", "Innovation Hub enablement"],
