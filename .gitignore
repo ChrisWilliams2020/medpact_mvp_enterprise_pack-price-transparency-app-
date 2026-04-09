@@ -8,5 +8,16 @@ dist
 .env.local
 .env.production
 .dev-log
+# Ignore uploaded media but keep team photos
 public/media/*
+!public/media/christopher-williams-md.png
+!public/media/richard-lindstrom-md.jpg
+!public/media/jason-bacharach-md.jpg
+!public/media/cathleen-mccabe-md.jpg
+!public/media/brian-murphey.jpg
+!public/media/terrence-duckette.jpg
+!public/media/dave-davis.png
+!public/media/rob-ostoich.png
+!public/media/lindsay-saddic.png
+!public/media/zaina-al-mohtaseb-md.png
 .vercel
