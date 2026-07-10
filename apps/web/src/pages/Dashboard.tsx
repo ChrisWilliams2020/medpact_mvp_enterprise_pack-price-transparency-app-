@@ -4,6 +4,7 @@ import DashboardMetrics from '../components/dashboard/DashboardMetrics';
 import DashboardPriceTransparency from '../components/dashboard/DashboardPriceTransparency';
 import DashboardTools from '../components/dashboard/DashboardTools';
 import DashboardMedTech from '../components/dashboard/DashboardMedTech';
+import DashboardAdmin from '../components/dashboard/DashboardAdmin';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -64,6 +65,19 @@ export default function Dashboard() {
     { id: 'medtech-quality', label: 'Rep Performance', icon: '⭐', section: 'medtech' },
     { id: 'medtech-survey', label: 'HCP Surveys', icon: '📋', section: 'medtech' },
     { id: 'medtech-marketing', label: 'Product Marketing', icon: '📣', section: 'medtech' },
+
+    // Admin Manager section (added)
+    { id: 'admin-overview', label: 'Admin Overview', icon: '🛡️', section: 'admin' },
+    { id: 'admin-alerts', label: 'Alerts', icon: '🚨', section: 'admin' },
+    { id: 'admin-cpt', label: 'CPT Center', icon: '🩺', section: 'admin' },
+    { id: 'admin-tasks', label: 'Tasks', icon: '🗂️', section: 'admin' },
+    { id: 'admin-users', label: 'User Management', icon: '👤', section: 'admin' },
+    { id: 'admin-roles', label: 'Roles & Permissions', icon: '🔐', section: 'admin' },
+    { id: 'admin-tenants', label: 'Tenant Management', icon: '🏢', section: 'admin' },
+    { id: 'admin-billing', label: 'Billing', icon: '💳', section: 'admin' },
+    { id: 'admin-integrations', label: 'Integrations', icon: '🔗', section: 'admin' },
+    { id: 'admin-audit', label: 'Audit Logs', icon: '📋', section: 'admin' },
+    { id: 'admin-settings', label: 'System Settings', icon: '⚙️', section: 'admin' },
   ];
 
   const groupedNav = {
@@ -72,6 +86,7 @@ export default function Dashboard() {
     analytics: navigationItems.filter(i => i.section === 'analytics'),
     tools: navigationItems.filter(i => i.section === 'tools'),
     medtech: navigationItems.filter(i => i.section === 'medtech'),
+    admin: navigationItems.filter(i => i.section === 'admin'),
   };
 
   const renderContent = () => {
@@ -86,6 +101,9 @@ export default function Dashboard() {
     }
     if (activeSection.startsWith('medtech-')) {
       return <DashboardMedTech view={activeSection} />;
+    }
+    if (activeSection.startsWith('admin-')) {
+      return <DashboardAdmin view={activeSection} />;
     }
     return renderOverview();
   };
@@ -102,7 +120,7 @@ export default function Dashboard() {
           <button onClick={() => setActiveSection('kcn-chat')} className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600">View All</button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <button onClick={() => setActiveSection('private-practice')} className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-5 text-white hover:from-blue-600 hover:to-blue-700 transition-all text-left">
           <div className="text-2xl mb-2">🏥</div>
           <div className="text-lg font-bold">Private Practice</div>
@@ -122,6 +140,11 @@ export default function Dashboard() {
           <div className="text-2xl mb-2">💊</div>
           <div className="text-lg font-bold">Medical Tech</div>
           <div className="text-rose-100 text-sm">Pharma & Device Sales</div>
+        </button>
+        <button onClick={() => setActiveSection('admin-overview')} className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl p-5 text-white hover:from-indigo-600 hover:to-indigo-700 transition-all text-left">
+          <div className="text-2xl mb-2">🛡️</div>
+          <div className="text-lg font-bold">Admin Manager</div>
+          <div className="text-indigo-100 text-sm">Users, Roles & Settings</div>
         </button>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -211,8 +234,14 @@ export default function Dashboard() {
           {Object.entries(groupedNav).map(([section, items]) => (
             <div key={section} className="mb-4">
               {!sidebarCollapsed && (
-                <div className={`px-3 py-2 text-xs font-semibold uppercase ${section === 'medtech' ? 'text-rose-400' : 'text-gray-400'}`}>
-                  {section === 'medtech' ? 'Medical Tech' : section.charAt(0).toUpperCase() + section.slice(1)}
+                <div className={`px-3 py-2 text-xs font-semibold uppercase ${
+                  section === 'medtech' ? 'text-rose-400' :
+                  section === 'admin' ? 'text-indigo-400' :
+                  'text-gray-400'
+                }`}>
+                  {section === 'medtech' ? 'Medical Tech' :
+                   section === 'admin' ? 'Admin Manager' :
+                   section.charAt(0).toUpperCase() + section.slice(1)}
                 </div>
               )}
               {items.map((item) => (
@@ -221,7 +250,9 @@ export default function Dashboard() {
                   onClick={() => setActiveSection(item.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                     activeSection === item.id
-                      ? section === 'medtech' ? 'bg-rose-50 text-rose-700 font-medium' : 'bg-blue-50 text-blue-700 font-medium'
+                      ? section === 'medtech' ? 'bg-rose-50 text-rose-700 font-medium'
+                      : section === 'admin' ? 'bg-indigo-50 text-indigo-700 font-medium'
+                      : 'bg-blue-50 text-blue-700 font-medium'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
